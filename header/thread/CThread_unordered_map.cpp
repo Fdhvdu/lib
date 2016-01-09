@@ -38,26 +38,26 @@ namespace nThread
 	}
 
 	template<class Key,class T,class Hash,class KeyEqual,class Allocator>
-	template<class Func>
-	bool CThread_unordered_map<Key,T,Hash,KeyEqual,Allocator>::try_emplace_func(const Key &key,Func &&func)
+	template<class Generator>
+	bool CThread_unordered_map<Key,T,Hash,KeyEqual,Allocator>::try_emplace_func(const Key &key,Generator &&gen)
 	{
 		std::lock_guard<std::mutex> lock{mut_};
 		if(!find(key))
 		{
-			map_.emplace(key,std::forward<Func>(func)());
+			map_.emplace(key,std::forward<Generator>(gen)());
 			return true;
 		}
 		return false;
 	}
 
 	template<class Key,class T,class Hash,class KeyEqual,class Allocator>
-	template<class Func>
-	bool CThread_unordered_map<Key,T,Hash,KeyEqual,Allocator>::try_emplace_func(Key &&key,Func &&func)
+	template<class Generator>
+	bool CThread_unordered_map<Key,T,Hash,KeyEqual,Allocator>::try_emplace_func(Key &&key,Generator &&gen)
 	{
 		std::lock_guard<std::mutex> lock{mut_};
 		if(!find(key))
 		{
-			map_.emplace(std::move(key),std::forward<Func>(func)());
+			map_.emplace(std::move(key),std::forward<Generator>(gen)());
 			return true;
 		}
 		return false;

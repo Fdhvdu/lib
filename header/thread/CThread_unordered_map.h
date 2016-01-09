@@ -33,10 +33,10 @@ namespace nThread
 		bool try_emplace(const Key &,Args &&...);
 		template<class ... Args>
 		bool try_emplace(Key &&,Args &&...);
-		template<class Func>
-		bool try_emplace_func(const Key &,Func &&);
-		template<class Func>
-		bool try_emplace_func(Key &&,Func &&);
+		template<class Generator>
+		bool try_emplace_func(const Key &,Generator &&);
+		template<class Generator>
+		bool try_emplace_func(Key &&,Generator &&);
 		CThread_unordered_map& operator=(const CThread_unordered_map &)=delete;
 		T& operator[](const Key &);
 		T& operator[](Key &&);
