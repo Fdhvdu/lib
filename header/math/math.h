@@ -11,8 +11,8 @@ namespace nMath
 	template<class T>
 	T C(T,T);
 
-	template<class InIter,class OutIter,class UnaryPred>
-	void combination(InIter,InIter,std::size_t,OutIter,UnaryPred);
+	template<class InIter,class OutIter,class UnaryOp>
+	void combination(InIter,InIter,std::size_t,OutIter,UnaryOp);
 
 	inline std::size_t diff_bit_count(const unsigned long long lhs,const unsigned long long rhs) noexcept
 	{
