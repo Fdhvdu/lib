@@ -3,7 +3,9 @@
 #include<functional>
 #include<iterator>
 #include<numeric>
+#include<stdexcept>	//runtime_error
 #include<vector>
+#include"../algorithm/algorithm.h"
 
 namespace nMath
 {
@@ -96,10 +98,8 @@ namespace nMath
 	{
 		const std::bitset<sizeof(T)*8> temp{val};
 		if(temp.count()==1)
-			for(size_t i{0};i!=temp.size();++i)
-				if(temp[i])
-					return i;
-		return -1;
+			return nAlgorithm::find_if<std::size_t>(0,temp.size(),[&](const auto i){return temp[i];});
+		throw std::runtime_error{"the argument of log_2 is not a power of 2"};
 	}
 	
 	template<class T,class OutIter>
