@@ -11,6 +11,11 @@ namespace nMath
 	template<class T>
 	T C(T,T);
 
+	constexpr std::size_t Cantor_pairing_function(const std::size_t N1,const std::size_t N2)	//invented by Georg Ferdinand Ludwig Philipp Cantor
+	{
+		return (N1+N2)*(N1+N2+1)/2+N2;
+	}
+
 	template<class InIter,class OutIter,class UnaryOp>
 	void combination(InIter,InIter,std::size_t,OutIter,UnaryOp);
 
