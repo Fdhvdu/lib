@@ -71,14 +71,10 @@ namespace nMath
 	template<class T>
 	T factorial(T n)
 	{
-		if(n)
-		{
-			T temp{n};
-			while(--n)
-				temp*=n;
-			return temp;
-		}
-		return 1;
+		T temp{1};
+		while(n)
+			temp*=n--;
+		return temp;
 	}
 
 	template<class T>
