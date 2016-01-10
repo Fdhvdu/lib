@@ -33,11 +33,11 @@ namespace nTool
 		{
 			return std::chrono::duration_cast<std::chrono::nanoseconds>(end_-begin_).count();
 		}
-		inline void start()
+		inline void start() noexcept
 		{
 			begin_=std::chrono::high_resolution_clock::now();
 		}
-		inline void stop()
+		inline void stop() noexcept
 		{
 			end_=std::chrono::high_resolution_clock::now();
 		}
