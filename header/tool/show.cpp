@@ -3,8 +3,8 @@
 
 namespace nTool
 {
-	template<class InIter,class T,class UnaryPred>
-	void show(InIter begin,InIter end,std::ostream &os,const T &delim,const UnaryPred pred)
+	template<class InIter,class T,class UnaryOp>
+	void show(InIter begin,InIter end,std::ostream &os,const T &delim,const UnaryOp pred)
 	{
 		using namespace std;
 		if(begin!=end)

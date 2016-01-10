@@ -5,8 +5,8 @@
 
 namespace nTool
 {
-	template<class InIter,class T,class UnaryPred>
-	void show(InIter,InIter,std::ostream &,const T &,UnaryPred);
+	template<class InIter,class T,class UnaryOp>
+	void show(InIter,InIter,std::ostream &,const T &,UnaryOp);
 
 	template<class InIter,class T>
 	inline void show(InIter begin,InIter end,std::ostream &os,const T &delim)
