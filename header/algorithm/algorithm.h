@@ -10,6 +10,9 @@ namespace nAlgorithm
 	bool all_of(T,T,UnaryPred);
 
 	template<class T,class UnaryPred>
+	T find_if(T,T,UnaryPred);
+
+	template<class T,class UnaryPred>
 	inline bool any_of(const T begin,const T end,UnaryPred pred)
 	{
 		return find_if(begin,end,pred)!=end;
@@ -17,9 +20,6 @@ namespace nAlgorithm
 
 	template<class T,class UnaryPred>
 	std::ptrdiff_t count_if(T,T,UnaryPred);
-
-	template<class T,class UnaryPred>
-	T find_if(T,T,UnaryPred);
 	
 	template<class T,class UnaryFunc>
 	UnaryFunc for_each(T,T,UnaryFunc);
