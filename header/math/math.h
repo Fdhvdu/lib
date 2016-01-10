@@ -35,7 +35,7 @@ namespace nMath
 	std::size_t log_2(T);
 
 	template<class T>
-	inline std::size_t power_of_2(const T val)
+	constexpr std::size_t power_of_2(const T val)
 	{
 		return static_cast<std::size_t>(1)<<val;
 	}
