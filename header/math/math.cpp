@@ -50,7 +50,7 @@ namespace nMath
 	{
 		using namespace std;
 		OutIter &desEnd{des};
-		function<void(InIter,OutIter,const size_t)> combination={[&,takeCount,pred](InIter begin,OutIter des,const size_t level){
+		function<void(InIter,OutIter,size_t)> combination_{[&,takeCount,pred](InIter begin,OutIter des,const size_t level){
 			if(takeCount!=level)
 				while(begin!=end)
 				{
@@ -65,7 +65,7 @@ namespace nMath
 			else
 				++desEnd;
 		}};
-		combination(begin,des,0);
+		combination_(begin,des,0);
 	}
 
 	template<class T>
