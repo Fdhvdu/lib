@@ -54,12 +54,12 @@ namespace nAlgorithm
 	}
 
 	template<class InIter,class OutIter,class BinaryOp>
-	void multiply(InIter lbegin,const InIter lend,const InIter rbegin,const InIter rend,OutIter des,const BinaryOp pred)
+	void multiply(InIter lbegin,const InIter lend,const InIter rbegin,const InIter rend,OutIter des,const BinaryOp op)
 	{
 		while(lbegin!=lend)
 		{
 			for(auto begin{rbegin};begin!=rend;++begin)
-				*des=pred(*lbegin,*begin);
+				*des=op(*lbegin,*begin);
 			++lbegin;
 		}
 	}

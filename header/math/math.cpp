@@ -46,18 +46,18 @@ namespace nMath
 	}
 
 	template<class InIter,class OutIter,class UnaryOp>
-	void combination(InIter begin,const InIter end,const std::size_t takeCount,OutIter des,const UnaryOp pred)
+	void combination(InIter begin,const InIter end,const std::size_t takeCount,OutIter des,const UnaryOp op)
 	{
 		using namespace std;
 		OutIter &desEnd{des};
-		function<void(InIter,OutIter,size_t)> combination_{[&,takeCount,pred](InIter begin,OutIter des,const size_t level){
+		function<void(InIter,OutIter,size_t)> combination_{[&,takeCount,op](InIter begin,OutIter des,const size_t level){
 			if(takeCount!=level)
 				while(begin!=end)
 				{
 					combination(next(begin),des,level+1);
 					while(des!=desEnd)
 					{
-						*next(pred(*des),level)=*begin;
+						*next(op(*des),level)=*begin;
 						++des;
 					}
 					++begin;

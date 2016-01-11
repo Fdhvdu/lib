@@ -10,7 +10,7 @@ namespace nTool
 		if(begin!=end)
 		{
 			os<<pred(*begin);
-			for_each(++begin,end,[&,pred](const typename iterator_traits<InIter>::value_type &val){os<<delim<<pred(val);});
+			for_each(++begin,end,[&,pred](const typename iterator_traits<InIter>::value_type &val){os<<delim<<op(val);});
 			os<<endl;
 		}
 	}
