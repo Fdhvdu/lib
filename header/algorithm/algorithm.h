@@ -24,6 +24,9 @@ namespace nAlgorithm
 	template<class T,class UnaryFunc>
 	UnaryFunc for_each(T,T,UnaryFunc);
 
+	template<class BidIter,class OutIter,class BinaryOp>
+	void exchange_front_and_back_with_swap(BidIter,BidIter,OutIter,BinaryOp);
+
 	template<class InIter,class OutIter,class BinaryOp>
 	void multiply(InIter,InIter,InIter,InIter,OutIter,BinaryOp);
 
