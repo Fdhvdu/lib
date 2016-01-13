@@ -30,18 +30,6 @@ namespace nAlgorithm
 		return accu;
 	}
 
-	template<class T,class UnaryPred>
-	T find_if_val(T begin,const T end,const UnaryPred pred)
-	{
-		while(begin!=end)
-		{
-			if(pred(begin))
-				return begin;
-			++begin;
-		}
-		return end;
-	}
-
 	template<class InIter,class T,class BinaryPred>
 	InIter find_if(InIter begin,const InIter end,const T &val,const BinaryPred pred)
 	{
@@ -52,6 +40,18 @@ namespace nAlgorithm
 			++begin;
 		}
 		return begin;
+	}
+
+	template<class T,class UnaryPred>
+	T find_if_val(T begin,const T end,const UnaryPred pred)
+	{
+		while(begin!=end)
+		{
+			if(pred(begin))
+				return begin;
+			++begin;
+		}
+		return end;
 	}
 
 	template<class T,class UnaryFunc>
