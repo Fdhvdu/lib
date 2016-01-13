@@ -20,15 +20,18 @@ namespace nAlgorithm
 
 	template<class T,class UnaryPred>
 	std::ptrdiff_t count_if(T,T,UnaryPred);
+
+	template<class InIter,class T,class BinaryPred>
+	InIter find_val_if(InIter,InIter,const T &,BinaryPred);
 	
 	template<class T,class UnaryFunc>
 	UnaryFunc for_each(T,T,UnaryFunc);
 
-	template<class BidIter,class OutIter,class BinaryOp>
-	void exchange_front_and_back_with_swap(BidIter,BidIter,OutIter,BinaryOp);
-
 	template<class InIter,class OutIter,class BinaryOp>
 	void multiply(InIter,InIter,InIter,InIter,OutIter,BinaryOp);
+
+	template<class FwdIter,class T,class BinaryPred>
+	FwdIter remove_val_if(FwdIter,FwdIter,const T &,BinaryPred);
 
 	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
 	FwdIter unique_without_sort(FwdIter,FwdIter,BinaryPred pred=BinaryPred());
