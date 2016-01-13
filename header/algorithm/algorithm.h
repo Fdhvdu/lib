@@ -7,31 +7,31 @@
 namespace nAlgorithm
 {
 	template<class T,class UnaryPred>
-	bool all_of(T,T,UnaryPred);
+	bool all_of_val(T,T,UnaryPred);
 
 	template<class T,class UnaryPred>
-	T find_if(T,T,UnaryPred);
+	T find_if_val(T,T,UnaryPred);
 
 	template<class T,class UnaryPred>
-	inline bool any_of(const T begin,const T end,UnaryPred pred)
+	inline bool any_of_val(const T begin,const T end,UnaryPred pred)
 	{
-		return find_if(begin,end,pred)!=end;
+		return find_if_val(begin,end,pred)!=end;
 	}
 
 	template<class T,class UnaryPred>
-	std::ptrdiff_t count_if(T,T,UnaryPred);
+	std::ptrdiff_t count_if_val(T,T,UnaryPred);
 
 	template<class InIter,class T,class BinaryPred>
-	InIter find_val_if(InIter,InIter,const T &,BinaryPred);
+	InIter find_if(InIter,InIter,const T &,BinaryPred);
 	
 	template<class T,class UnaryFunc>
-	UnaryFunc for_each(T,T,UnaryFunc);
+	UnaryFunc for_each_val(T,T,UnaryFunc);
 
 	template<class InIter,class OutIter,class BinaryOp>
 	void multiply(InIter,InIter,InIter,InIter,OutIter,BinaryOp);
 
 	template<class FwdIter,class T,class BinaryPred>
-	FwdIter remove_val_if(FwdIter,FwdIter,const T &,BinaryPred);
+	FwdIter remove_if(FwdIter,FwdIter,const T &,BinaryPred);
 
 	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
 	FwdIter unique_without_sort(FwdIter,FwdIter,BinaryPred pred=BinaryPred());

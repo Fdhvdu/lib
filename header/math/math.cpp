@@ -94,8 +94,8 @@ namespace nMath
 	{
 		const std::bitset<sizeof(T)*8> temp{val};
 		if(temp.count()==1)
-			return nAlgorithm::find_if<std::size_t>(0,temp.size(),[&](const auto i){return temp[i];});
-		throw std::runtime_error{"the argument of log_2 is not a power of 2"};
+			return nAlgorithm::find_if_val<std::size_t>(0,temp.size(),[&](const auto i){return temp[i];});
+		throw std::runtime_error{"The argument of log_2 is not a power of 2"};
 	}
 	
 	template<class T,class OutIter>
