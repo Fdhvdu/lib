@@ -1,6 +1,6 @@
 #include<vector>
-#include"lib/header/math/combination.h"
-#include"lib/header/tool/show.h"
+#include"../header/math/combination.h"
+#include"../header/tool/show.h"
 
 int main()
 {
