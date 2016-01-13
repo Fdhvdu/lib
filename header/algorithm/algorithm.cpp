@@ -1,6 +1,7 @@
 #include"algorithm.h"
-#include<algorithm>
-#include<utility>
+#include<algorithm>	//move
+#include<type_traits>	//make_unsigned
+#include<utility>	//move
 #include"../thread/CSmartThread.h"
 
 namespace nAlgorithm
