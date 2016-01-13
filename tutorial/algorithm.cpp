@@ -24,8 +24,8 @@ void unique_without_sort_tutorial()
 	nTool::show(begin(vec),nAlgorithm::unique_without_sort(begin(vec),end(vec)));
 
 	vector<int> vec2{1,2,1,3,4};
-	nTool::show(begin(vec),nAlgorithm::unique_without_sort(begin(vec),end(vec),[](const auto &lhs,const auto &rhs){return lhs%3==rhs%3;}));
-
+	nTool::show(begin(vec2),nAlgorithm::unique_without_sort(begin(vec2),end(vec2),[](const auto &lhs,const auto &rhs){return lhs%3==rhs%3;}));
+	
 	//nAlgorithm::unique_without_sort_thr is a thread version, the parameter N means
 	//how large distance between begin and end
 	//will create a thread to call unique_without_sort
