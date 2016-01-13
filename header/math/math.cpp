@@ -1,8 +1,6 @@
 #include"math.h"
-#include<algorithm>
-#include<functional>
-#include<iterator>
-#include<numeric>
+#include<algorithm>	//max
+#include<numeric>	//iota
 #include<stdexcept>	//runtime_error
 #include<vector>
 #include"../algorithm/algorithm.h"
@@ -43,29 +41,6 @@ namespace nMath
 		for(auto val:divisor)
 			product/=val;
 		return product;
-	}
-
-	template<class InIter,class OutIter,class UnaryOp>
-	void combination(InIter begin,const InIter end,const std::size_t takeCount,OutIter des,const UnaryOp op)
-	{
-		using namespace std;
-		OutIter &desEnd{des};
-		function<void(InIter,OutIter,size_t)> combination_{[&,takeCount,op](InIter begin,OutIter des,const size_t level){
-			if(takeCount!=level)
-				while(begin!=end)
-				{
-					combination(next(begin),des,level+1);
-					while(des!=desEnd)
-					{
-						*next(op(*des),level)=*begin;
-						++des;
-					}
-					++begin;
-				}
-			else
-				++desEnd;
-		}};
-		combination_(begin,des,0);
 	}
 
 	template<class T>
