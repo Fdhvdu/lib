@@ -1,5 +1,6 @@
 #include<fstream>
 #include<iostream>
+#include<iterator>
 #include<string>
 #include<vector>
 #include"../header/tool/show.h"
