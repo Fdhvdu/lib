@@ -1,6 +1,6 @@
 #include"CInsert_iterator.h"
-#include<type_traits>
-#include<utility>
+#include<memory>	//addressof
+#include<utility>	//move
 
 namespace nTool
 {
