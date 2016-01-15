@@ -35,20 +35,21 @@ inline ostream& operator<<(ostream &os,const Delim &delim)
 int main()
 {
 	vector<int> vec{1,2,3,4,5};
-	nTool::show(vec.begin(),vec.end());
+	nTool::show(vec);
+	nTool::show(next(begin(vec)),end(vec));
 
 	fstream ofs("output");
-	nTool::show(vec.begin(),vec.end(),ofs);
+	nTool::show(begin(vec),end(vec),ofs);
 	//write vector message to file
 
-	nTool::show(vec.begin(),vec.end(),cout,',');
+	nTool::show(begin(vec),end(vec),cout,',');
 	//use ',' as delimiter
 
 	Delim delim{"\nhello world\n"};
-	nTool::show(vec.begin(),vec.end(),cout,delim);
+	nTool::show(begin(vec),end(vec),cout,delim);
 	//use "\nhello world\n" as delimiter
 
 	vector<CTest> vec2(5);
-	nTool::show(vec2.begin(),vec2.end(),cout,' ',[](const CTest &val){return val.get();});
+	nTool::show(begin(vec2),end(vec2),cout,' ',[](const CTest &val){return val.get();});
 	//use lambda to tell show how to show the message of CTest
 }
