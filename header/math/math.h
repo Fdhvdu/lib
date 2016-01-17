@@ -6,12 +6,12 @@
 namespace nMath
 {
 	template<class T>
-	T abs(T);
+	T abs(T) noexcept;
 
 	template<class T>
 	T C(T,T);
 
-	constexpr std::size_t Cantor_pairing_function(const std::size_t N1,const std::size_t N2)	//invented by Georg Ferdinand Ludwig Philipp Cantor
+	constexpr std::size_t Cantor_pairing_function(const std::size_t N1,const std::size_t N2) noexcept	//invented by Georg Ferdinand Ludwig Philipp Cantor
 	{
 		return (N1+N2)*(N1+N2+1)/2+N2;
 	}
@@ -22,13 +22,13 @@ namespace nMath
 	}
 
 	template<class T>
-	T factorial(T);
+	T factorial(T) noexcept;
 
 	template<class T>
-	T gcd(T,T);
+	T gcd(T,T) noexcept;
 
 	template<class T>
-	inline bool is_power_of_2(const T val)
+	inline bool is_power_of_2(const T val) noexcept
 	{
 		return std::bitset<sizeof(T)*8>{val}.count()==1;
 	}
@@ -37,7 +37,7 @@ namespace nMath
 	std::size_t log_2(T);
 
 	template<class T>
-	constexpr std::size_t power_of_2(const T val)
+	constexpr std::size_t power_of_2(const T val) noexcept
 	{
 		return static_cast<std::size_t>(1)<<val;
 	}

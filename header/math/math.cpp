@@ -8,7 +8,7 @@
 namespace nMath
 {
 	template<class T>
-	T abs(const T val)
+	T abs(const T val) noexcept
 	{
 		if(val<0)
 			return -1*val;
@@ -44,7 +44,7 @@ namespace nMath
 	}
 
 	template<class T>
-	T factorial(T n)
+	T factorial(T n) noexcept
 	{
 		T temp{1};
 		while(n)
@@ -53,7 +53,7 @@ namespace nMath
 	}
 
 	template<class T>
-	T gcd(T lhs,T rhs)
+	T gcd(T lhs,T rhs) noexcept
 	{
 		while(rhs)
 		{
