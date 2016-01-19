@@ -66,6 +66,22 @@ namespace nAlgorithm
 		return func;
 	}
 
+	template<class InIter,class UnaryPred,class UnaryFunc>
+	void loop_until_none_of(const InIter begin,const InIter end,const UnaryPred pred,const UnaryFunc func)
+	{
+		bool again;
+		do
+		{
+			again=false;
+			const auto iter{find_if(begin,end,pred)};
+			if(iter!=end)
+			{
+				func(*iter);
+				again=true;
+			}
+		}while(again);
+	}
+
 	template<class InIter,class OutIter,class BinaryOp>
 	void multiply(InIter lbegin,const InIter lend,const InIter rbegin,const InIter rend,OutIter des,const BinaryOp op)
 	{

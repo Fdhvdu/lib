@@ -27,6 +27,9 @@ namespace nAlgorithm
 	template<class T,class UnaryFunc>
 	UnaryFunc for_each_val(T,T,UnaryFunc);
 
+	template<class InIter,class UnaryPred,class UnaryFunc>
+	void loop_until_none_of(InIter,InIter,UnaryPred,UnaryFunc);
+
 	template<class InIter,class OutIter,class BinaryOp>
 	void multiply(InIter,InIter,InIter,InIter,OutIter,BinaryOp);
 
