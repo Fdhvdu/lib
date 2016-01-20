@@ -25,7 +25,7 @@ namespace nThread
 	{
 		std::unique_lock<std::mutex> lock{insertMut_};
 		insert_.wait(lock,[&]{return size();});
-		const auto temp{list_.front()};
+		const auto temp{std::move(list_.front())};
 		list_.pop_front();
 		lock.unlock();
 		return temp;
