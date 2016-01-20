@@ -17,7 +17,7 @@ namespace nThread
 	{
 		std::unique_lock<std::mutex> lock{pushMut_};
 		push_.wait(lock,[&]{return size();});
-		const auto temp{queue_.front()};
+		const auto temp{std::move(queue_.front())};
 		queue_.pop();
 		lock.unlock();
 		return temp;

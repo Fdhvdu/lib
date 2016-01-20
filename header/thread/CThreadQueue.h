@@ -10,9 +10,12 @@ namespace nThread
 	template<class T>
 	class CThreadQueue
 	{
+	public:
+		typedef T value_type;
+	private:
 		std::condition_variable push_;
 		std::mutex pushMut_;
-		std::queue<T> queue_;
+		std::queue<value_type> queue_;
 	public:
 		template<class ... Args>
 		void emplace(Args &&...);
@@ -20,7 +23,7 @@ namespace nThread
 		{
 			return queue_.size();
 		}
-		T wait_and_pop();
+		value_type wait_and_pop();
 	};
 }
 
