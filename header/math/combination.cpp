@@ -3,6 +3,7 @@
 #include<functional>	//function
 #include<numeric>	//iota
 #include<type_traits>	//make_unsigned
+#include"math.h"
 
 namespace nMath
 {
