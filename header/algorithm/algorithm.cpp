@@ -69,17 +69,8 @@ namespace nAlgorithm
 	template<class InIter,class UnaryPred,class UnaryFunc>
 	void loop_until_none_of(const InIter begin,const InIter end,const UnaryPred pred,const UnaryFunc func)
 	{
-		bool again;
-		do
-		{
-			again=false;
-			const auto iter{find_if(begin,end,pred)};
-			if(iter!=end)
-			{
-				func(*iter);
-				again=true;
-			}
-		}while(again);
+		for(InIter iter;(iter=find_if(begin,end,pred))!=end;)
+			func(*iter);
 	}
 
 	template<class InIter,class OutIter,class BinaryOp>
