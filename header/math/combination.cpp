@@ -30,8 +30,7 @@ namespace nMath
 			}
 			product*=val;
 		}
-		for(const auto val:divisor)
-			product/=val;
+		accumulate(begin(divisor),end(divisor),product,[](const auto init,const auto val){return init/val;});
 		return product;
 	}
 
