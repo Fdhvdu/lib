@@ -14,7 +14,7 @@ namespace nThread
 
 	template<class T>
 	template<class UnaryPred>
-	void CThreadList<T>::remove_if(UnaryPred pred)
+	void CThreadList<T>::remove_if(const UnaryPred pred)
 	{
 		std::lock_guard<std::mutex> lock{insertMut_};
 		list_.remove_if(pred);
