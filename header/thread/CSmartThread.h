@@ -13,6 +13,7 @@ namespace nThread
 		explicit CSmartThread(Func &&,Args &&...);
 		CSmartThread(const CSmartThread &)=delete;
 		CSmartThread(CSmartThread &&) noexcept=default;
+		std::thread::id get_id() const noexcept;
 		CSmartThread& operator=(const CSmartThread &)=delete;
 		CSmartThread& operator=(CSmartThread &&) noexcept=default;
 		~CSmartThread();
