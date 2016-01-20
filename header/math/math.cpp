@@ -1,8 +1,5 @@
 #include"math.h"
-#include<algorithm>	//max
-#include<numeric>	//iota
 #include<stdexcept>	//runtime_error
-#include<vector>
 #include"../algorithm/algorithm.h"
 
 namespace nMath
@@ -13,34 +10,6 @@ namespace nMath
 		if(val<0)
 			return -1*val;
 		return val;
-	}
-
-	template<class T>
-	T C(const T n,const T k)
-	{
-		using namespace std;
-		//To speed up, I do not call factorial.
-		T start{max(n-k,k)};
-		vector<T> numerator(n-start),divisor(n-start);
-		iota(numerator.begin(),numerator.end(),start+1);
-		iota(divisor.begin(),divisor.end(),1);
-		T product{1};
-		for(auto &val:numerator)
-		{
-			for(auto &val2:numerator)
-			{
-				const T temp{gcd(val,val2)};
-				if(temp!=1)
-				{
-					val/=temp;
-					val2/=temp;
-				}
-			}
-			product*=val;
-		}
-		for(auto val:divisor)
-			product/=val;
-		return product;
 	}
 
 	template<class T>
