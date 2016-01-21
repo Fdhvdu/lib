@@ -1,7 +1,6 @@
 #ifndef CTASK
 #define CTASK
 #include<future>
-#include<utility>	//declval
 
 namespace nThread
 {

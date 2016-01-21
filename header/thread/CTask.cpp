@@ -1,5 +1,6 @@
 #include"CTask.h"
 #include<functional>	//bind
+#include<utility>	//forward
 
 namespace nThread
 {
