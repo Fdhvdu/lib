@@ -12,6 +12,7 @@ namespace nThread
 	{
 	public:
 		typedef T value_type;
+		typedef typename std::queue<value_type>::size_type size_type;
 	private:
 		std::condition_variable push_;
 		std::mutex pushMut_;
@@ -19,7 +20,7 @@ namespace nThread
 	public:
 		template<class ... Args>
 		void emplace(Args &&...);
-		inline std::size_t size() const noexcept
+		inline size_type size() const noexcept
 		{
 			return queue_.size();
 		}
