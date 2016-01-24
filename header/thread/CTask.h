@@ -8,7 +8,9 @@ namespace nThread
 	Ret make_function();
 
 	template<class Ret>
-	class CTask
+	class CTask	//combine std::packaged_task and std::future together
+		//actually, the behavior of this class acts like std::function
+		//but it provides wait
 	{
 		std::packaged_task<decltype(make_function<Ret>)> task_;
 		std::future<Ret> fut_;

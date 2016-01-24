@@ -8,7 +8,7 @@
 namespace nThread
 {
 	template<class T>
-	class CThreadList
+	class CThreadList	//a thread-safe std::list
 	{
 		std::condition_variable insert_;
 		std::mutex insertMut_;

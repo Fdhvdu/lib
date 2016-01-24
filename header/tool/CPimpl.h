@@ -5,7 +5,7 @@
 namespace nTool
 {
 	template<class T>
-	class CPimpl
+	class CPimpl	//a class to help you use pimpl easily
 	{
 		std::unique_ptr<T> p_;
 	public:

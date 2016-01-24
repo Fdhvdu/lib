@@ -8,7 +8,7 @@
 namespace nThread
 {
 	template<class T>
-	class CThreadQueue
+	class CThreadQueue	//a thread-safe std::queue
 	{
 	public:
 		typedef T value_type;

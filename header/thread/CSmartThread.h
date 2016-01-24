@@ -4,7 +4,7 @@
 
 namespace nThread
 {
-	class CSmartThread
+	class CSmartThread	//a thread which will automatically join itself in destructor
 	{
 		std::thread thr_;
 	public:

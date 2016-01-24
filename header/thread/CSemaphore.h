@@ -5,7 +5,7 @@
 
 namespace nThread
 {
-	class CSemaphore
+	class CSemaphore	//semaphore
 	{
 		class Impl;
 		nTool::CPimpl<Impl> impl_;
