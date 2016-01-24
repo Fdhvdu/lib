@@ -10,13 +10,13 @@ namespace nTool
 
 	template<class Func_t>
 	CScopeGuard<Func_t>::CScopeGuard(CScopeGuard &&rVal) noexcept
-		:func_{std::move(rVal.func_)},exec_(rVal.exec_)
+		:func_{std::move(rVal.func_)},exec_{rVal.exec_}
 	{
 		rVal.exec_=false;
 	}
 
 	template<class Func_t>
-	void CScopeGuard<Func_t>::clear()
+	void CScopeGuard<Func_t>::clear() noexcept
 	{
 		exec_=false;
 	}

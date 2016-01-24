@@ -5,7 +5,7 @@
 namespace nTool
 {
 	template<class Func_t>
-	class CScopeGuard
+	class CScopeGuard	//call function when exiting scope
 	{
 		std::function<Func_t> func_;
 		bool exec_;
@@ -14,7 +14,7 @@ namespace nTool
 		explicit CScopeGuard(Func &&,Args &&...);
 		CScopeGuard(const CScopeGuard &)=delete;
 		CScopeGuard(CScopeGuard &&) noexcept;
-		void clear();
+		void clear() noexcept;	//do not call func_
 		CScopeGuard& operator=(const CScopeGuard &)=delete;
 		~CScopeGuard();
 	};
