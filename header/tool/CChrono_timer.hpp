@@ -42,6 +42,16 @@ namespace nTool
 			end_=std::chrono::high_resolution_clock::now();
 		}
 	};
+
+	template<class Func,class ... Args>
+	CChrono_timer calc_time(const Func func,Args &&...args)
+	{
+		CChrono_timer timer;
+		timer.start();
+		func(std::forward<Args>(args)...);
+		timer.stop();
+		return timer;
+	}
 }
 
 #endif
