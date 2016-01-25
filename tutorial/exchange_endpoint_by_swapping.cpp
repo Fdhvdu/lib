@@ -3,8 +3,8 @@
 #include<utility>
 #include<string>
 #include<vector>
-#include"../header/algorithm/exchange_endpoint_by_swapping.h"
-#include"../header/tool/show.h"
+#include"../header/algorithm/exchange_endpoint_by_swapping.hpp"
+#include"../header/tool/show.hpp"
 
 int main()
 {

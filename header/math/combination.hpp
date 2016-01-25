@@ -1,8 +1,12 @@
-#include"combination.h"
+#ifndef COMBINATION
+#define COMBINATION
 #include<algorithm>
+#include<cstddef>
 #include<functional>	//function
+#include<iterator>
 #include<numeric>	//iota
 #include<type_traits>	//make_unsigned
+#include<vector>
 #include"math.h"
 
 namespace nMath
@@ -52,10 +56,13 @@ namespace nMath
 		}};
 		const auto dis{make_unsigned<ptrdiff_t>::type(distance(gbegin,gend))};
 		if(!dis||dis<take_count)
-			return {};
+			return{};
 		Vec vec(1);
 		vec.reserve(C(dis,static_cast<make_unsigned<ptrdiff_t>::type>(take_count)));
 		combination_(gbegin,prev(gend,take_count-1),vec,0);
 		return vec;
 	}
+	//require iterator_traits<InIter>::value_type copyable
 }
+
+#endif

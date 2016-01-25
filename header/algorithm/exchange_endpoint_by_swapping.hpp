@@ -1,7 +1,11 @@
-#include"exchange_endpoint_by_swapping.h"
+#ifndef EXCHANGE_ENDPOINT_BY_SWAPPING
+#define EXCHANGE_ENDPOINT_BY_SWAPPING
 #include<algorithm>
 #include<functional>
+#include<iterator>
+#include<type_traits>	//result_of
 #include<utility>
+#include<vector>
 
 namespace nAlgorithm
 {
@@ -47,7 +51,7 @@ namespace nAlgorithm
 			}
 		};
 		if(make_unsigned<ptrdiff_t>::type(distance(begin,end))<2)
-			return {};
+			return{};
 		Vec vec(1);
 		exchange_endpoint_by_swapping_(begin,prev(end),vec,0);
 		typename std::result_of<decltype(exchange_endpoint_by_swapping<BidIter,BinaryOp>)&(BidIter,BidIter,BinaryOp)>::type result;
@@ -60,4 +64,7 @@ namespace nAlgorithm
 		}
 		return result;
 	}
+	//vector<vector<return type of BinaryOp>>
 }
+
+#endif

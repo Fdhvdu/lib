@@ -1,4 +1,4 @@
-#include"../header/thread/CSmartThread.h"
+#include"../header/thread/CSmartThread.hpp"
 using namespace std;
 
 namespace nThread

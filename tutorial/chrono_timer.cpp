@@ -1,5 +1,5 @@
 #include<iostream>
-#include"../header/tool/CChrono_timer.h"
+#include"../header/tool/CChrono_timer.hpp"
 using namespace std;
 
 void print_timer(const nTool::CChrono_timer &timer)

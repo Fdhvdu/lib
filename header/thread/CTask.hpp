@@ -1,6 +1,8 @@
 #ifndef CTASK
 #define CTASK
+#include<functional>	//bind
 #include<future>
+#include<utility>	//forward
 
 namespace nThread
 {
@@ -17,7 +19,8 @@ namespace nThread
 	public:
 		CTask() noexcept=default;
 		template<class Func,class ... Args>
-		explicit CTask(Func &&,Args &&...);
+		explicit CTask(Func &&func,Args &&...args)
+			:task_{std::bind(std::forward<Func>(func),std::forward<Args>(args)...)},fut_{task_.get_future()}{}
 		CTask(const CTask &)=delete;
 		CTask(CTask &&) noexcept=default;
 		inline Ret get()
@@ -41,7 +44,5 @@ namespace nThread
 		CTask& operator=(CTask &&) noexcept=default;
 	};
 }
-
-#include"CTask.cpp"
 
 #endif

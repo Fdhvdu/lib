@@ -1,8 +1,8 @@
 #include<algorithm>
 #include<iterator>
 #include<vector>
-#include"../header/algorithm/algorithm.h"
-#include"../header/tool/show.h"
+#include"../header/algorithm/algorithm.hpp"
+#include"../header/tool/show.hpp"
 
 void multiply_tutorial()
 {

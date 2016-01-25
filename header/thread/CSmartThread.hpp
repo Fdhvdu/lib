@@ -1,6 +1,7 @@
 #ifndef CSMARTTHREAD
 #define CSMARTTHREAD
 #include<thread>
+#include<utility>	//forward
 
 namespace nThread
 {
@@ -10,7 +11,8 @@ namespace nThread
 	public:
 		CSmartThread() noexcept=default;
 		template<class Func,class ... Args>
-		explicit CSmartThread(Func &&,Args &&...);
+		explicit CSmartThread(Func &&func,Args &&...args)
+			:thr_{std::forward<Func>(func),std::forward<Args>(args)...}{}
 		CSmartThread(const CSmartThread &)=delete;
 		CSmartThread(CSmartThread &&) noexcept=default;
 		std::thread::id get_id() const noexcept;
@@ -19,7 +21,5 @@ namespace nThread
 		~CSmartThread();
 	};
 }
-
-#include"CSmartThread.cpp"
 
 #endif

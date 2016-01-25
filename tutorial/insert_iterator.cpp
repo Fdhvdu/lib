@@ -1,7 +1,7 @@
 #include<algorithm>
 #include<iterator>
 #include<vector>
-#include"../header/tool/CInsert_iterator.h"
+#include"../header/tool/CInsert_iterator.hpp"
 
 struct A
 {

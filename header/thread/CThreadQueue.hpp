@@ -4,6 +4,7 @@
 #include<cstddef>
 #include<queue>
 #include<mutex>
+#include<utility>	//forward, move
 
 namespace nThread
 {
@@ -19,15 +20,26 @@ namespace nThread
 		std::queue<value_type> queue_;
 	public:
 		template<class ... Args>
-		void emplace(Args &&...);
+		void emplace(Args &&...args)
+		{
+			std::lock_guard<std::mutex> lock{pushMut_};
+			queue_.emplace(std::forward<Args>(args)...);
+			push_.notify_all();
+		}
 		inline size_type size() const noexcept
 		{
 			return queue_.size();
 		}
-		value_type wait_and_pop();
+		value_type wait_and_pop()
+		{
+			std::unique_lock<std::mutex> lock{pushMut_};
+			push_.wait(lock,[&]{return size();});
+			const auto temp{std::move(queue_.front())};
+			queue_.pop();
+			lock.unlock();
+			return temp;
+		}
 	};
 }
-
-#include"CThreadQueue.cpp"
 
 #endif

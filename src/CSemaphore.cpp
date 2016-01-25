@@ -1,4 +1,4 @@
-#include"../header/thread/CSemaphore.h"
+#include"../header/thread/CSemaphore.hpp"
 #include<atomic>
 #include<condition_variable>
 #include<mutex>

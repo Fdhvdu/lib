@@ -1,7 +1,7 @@
 #include<iterator>
 #include<vector>
-#include"../header/math/combination.h"
-#include"../header/tool/show.h"
+#include"../header/math/combination.hpp"
+#include"../header/tool/show.hpp"
 
 int main()
 {

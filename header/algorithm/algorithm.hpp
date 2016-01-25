@@ -1,5 +1,9 @@
-#include"algorithm.h"
+#ifndef ALGORITHM
+#define ALGORITHM
 #include<algorithm>	//move
+#include<cstddef>
+#include<functional>
+#include<iterator>
 #include<type_traits>	//make_unsigned
 #include<utility>	//move
 #include"../thread/CSmartThread.h"
@@ -16,6 +20,24 @@ namespace nAlgorithm
 			++begin;
 		}
 		return true;
+	}
+
+	template<class T,class UnaryPred>
+	T find_if_val(T begin,const T end,const UnaryPred pred)
+	{
+		while(begin!=end)
+		{
+			if(pred(begin))
+				return begin;
+			++begin;
+		}
+		return end;
+	}
+
+	template<class T,class UnaryPred>
+	inline bool any_of_val(const T begin,const T end,UnaryPred pred)
+	{
+		return find_if_val(begin,end,pred)!=end;
 	}
 
 	template<class T,class UnaryPred>
@@ -41,18 +63,6 @@ namespace nAlgorithm
 			++begin;
 		}
 		return begin;
-	}
-
-	template<class T,class UnaryPred>
-	T find_if_val(T begin,const T end,const UnaryPred pred)
-	{
-		while(begin!=end)
-		{
-			if(pred(begin))
-				return begin;
-			++begin;
-		}
-		return end;
 	}
 
 	template<class T,class UnaryFunc>
@@ -95,8 +105,8 @@ namespace nAlgorithm
 		return begin;
 	}
 
-	template<class FwdIter,class BinaryPred>
-	FwdIter unique_without_sort(FwdIter begin,FwdIter end,const BinaryPred pred)
+	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
+	FwdIter unique_without_sort(FwdIter begin,FwdIter end,const BinaryPred pred=BinaryPred())
 	{
 		while(begin!=end)
 		{
@@ -106,8 +116,8 @@ namespace nAlgorithm
 		return end;
 	}
 
-	template<class FwdIter,class BinaryPred>
-	FwdIter unique_without_sort_thr(const FwdIter begin,const FwdIter end,const std::size_t N,const BinaryPred pred)
+	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
+	FwdIter unique_without_sort_thr(const FwdIter begin,const FwdIter end,const std::size_t N,const BinaryPred pred=BinaryPred())
 	{
 		using namespace std;
 		function<void(FwdIter,FwdIter,FwdIter &)> unique_without_sort_thr_{[&,N,pred](const FwdIter begin,const FwdIter end,FwdIter &divide){
@@ -133,4 +143,13 @@ namespace nAlgorithm
 		unique_without_sort_thr_(begin,end,retVal);
 		return retVal;
 	}
+
+	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
+	inline FwdIter unique_without_sort_thr(FwdIter begin,FwdIter end,BinaryPred pred=BinaryPred())
+	{
+		return unique_without_sort_thr(begin,end,std::distance(begin,end)/2,pred);
+	}
+	//Both of unique_without_sort and unique_without_sort_thr will reorder the input permutation.
 }
+
+#endif

@@ -3,7 +3,7 @@
 #include<iterator>
 #include<string>
 #include<vector>
-#include"../header/tool/show.h"
+#include"../header/tool/show.hpp"
 using namespace std;
 
 class CTest
