@@ -3,7 +3,7 @@
 #include<bitset>
 #include<cstddef>
 #include<stdexcept>	//runtime_error
-#include"../algorithm/algorithm.h"
+#include"../algorithm/algorithm.hpp"
 
 namespace nMath
 {

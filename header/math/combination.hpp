@@ -3,11 +3,11 @@
 #include<algorithm>
 #include<cstddef>
 #include<functional>	//function
-#include<iterator>
-#include<numeric>	//iota
+#include<iterator>	//begin, next
+#include<numeric>	//accumulate, iota
 #include<type_traits>	//make_unsigned
 #include<vector>
-#include"math.h"
+#include"math.hpp"
 
 namespace nMath
 {
@@ -51,7 +51,7 @@ namespace nMath
 					combination_(next(begin),next(end),vec,level+1);
 				++begin;
 				if(begin!=end)
-					vec.emplace_back(begin(vec.back()),next(begin(vec.back()),level));
+					vec.emplace_back(std::begin(vec.back()),next(std::begin(vec.back()),level));
 			}
 		}};
 		const auto dis{make_unsigned<ptrdiff_t>::type(distance(gbegin,gend))};

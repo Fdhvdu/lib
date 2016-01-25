@@ -6,7 +6,7 @@
 #include<iterator>
 #include<type_traits>	//make_unsigned
 #include<utility>	//move
-#include"../thread/CSmartThread.h"
+#include"../thread/CSmartThread.hpp"
 
 namespace nAlgorithm
 {

@@ -37,6 +37,4 @@ namespace nTool
 	}
 }
 
-#include"show.cpp"
-
 #endif

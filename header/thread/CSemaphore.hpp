@@ -1,7 +1,7 @@
 #ifndef CSEMAPHORE
 #define CSEMAPHORE
 #include<cstddef>
-#include"../tool/CPimpl.h"
+#include"../tool/CPimpl.hpp"
 
 namespace nThread
 {
