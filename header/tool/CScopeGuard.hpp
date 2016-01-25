@@ -20,7 +20,7 @@ namespace nTool
 		{
 			rVal.exec_=false;
 		}
-		void clear() noexcept;	//do not call func_
+		void clear() noexcept	//do not call func_
 		{
 			exec_=false;
 		}
