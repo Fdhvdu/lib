@@ -35,7 +35,7 @@ namespace nTool
 			(hold_->*ref_)(val);
 			return *this;
 		}
-		CInsert_iterator& operator=(value_type &&val)
+		CInsert_iterator& operator=(value_type &&rVal)
 		{
 			(hold_->*move_)(std::move(rVal));
 			return *this;
