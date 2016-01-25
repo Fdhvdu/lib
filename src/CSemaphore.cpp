@@ -34,7 +34,7 @@ namespace nThread
 	void CSemaphore::Impl::wait()
 	{
 		unique_lock<mutex> lock{mut_};
-		cv_.wait(lock,[&]{return count();});
+		cv_.wait(lock,[this]{return count();});
 		--count_;
 	}
 
