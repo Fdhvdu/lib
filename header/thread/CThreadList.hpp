@@ -35,7 +35,7 @@ namespace nThread
 		T wait_and_pop()
 		{
 			std::unique_lock<std::mutex> lock{insertMut_};
-			insert_.wait(lock,[&]{return size();});
+			insert_.wait(lock,[this]{return size();});
 			const auto temp{std::move(list_.front())};
 			list_.pop_front();
 			lock.unlock();

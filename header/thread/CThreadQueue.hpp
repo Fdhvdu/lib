@@ -33,7 +33,7 @@ namespace nThread
 		value_type wait_and_pop()
 		{
 			std::unique_lock<std::mutex> lock{pushMut_};
-			push_.wait(lock,[&]{return size();});
+			push_.wait(lock,[this]{return size();});
 			const auto temp{std::move(queue_.front())};
 			queue_.pop();
 			lock.unlock();
