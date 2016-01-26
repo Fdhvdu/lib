@@ -9,10 +9,11 @@ namespace nThread
 	template<class Ret>
 	Ret make_function();
 
+	//combine std::packaged_task and std::future together
+	//actually, the behavior of this class acts like std::function
+	//but it provides wait
 	template<class Ret>
-	class CTask	//combine std::packaged_task and std::future together
-		//actually, the behavior of this class acts like std::function
-		//but it provides wait
+	class CTask
 	{
 		std::packaged_task<decltype(make_function<Ret>)> task_;
 		std::future<Ret> fut_;
@@ -27,8 +28,10 @@ namespace nThread
 		{
 			return fut_.get();
 		}
-		inline bool valid() const noexcept	//return true after calling init; otherwise, return false
-											//for default constructor, it returns false
+		//1. return false for default constructor
+		//2. return true for variadic template constructor
+		//3. return same valid after move constructor and move assignment operator
+		inline bool valid() const noexcept	
 		{
 			return fut_.valid();
 		}
