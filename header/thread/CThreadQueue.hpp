@@ -12,8 +12,8 @@ namespace nThread
 	class CThreadQueue	//a thread-safe std::queue
 	{
 	public:
+		typedef typename std::queue<T>::size_type size_type;
 		typedef T value_type;
-		typedef typename std::queue<value_type>::size_type size_type;
 	private:
 		std::condition_variable push_;
 		std::mutex pushMut_;
@@ -24,7 +24,8 @@ namespace nThread
 		{
 			std::lock_guard<std::mutex> lock{pushMut_};
 			queue_.emplace(std::forward<Args>(args)...);
-			push_.notify_all();
+			if(1==size())
+				push_.notify_all();
 		}
 		inline size_type size() const noexcept
 		{
