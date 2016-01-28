@@ -13,6 +13,17 @@ namespace nThread
 	{
 		std::unordered_set<Key,Hash,KeyEqual,Allocator> set_;
 		std::mutex mut_;
+		template<class KeyFwdRef,class ... Args>
+		bool try_emplace_(KeyFwdRef &&key,Args &&...args)
+		{
+			std::lock_guard<std::mutex> lock{mut_};
+			if(!find(key))
+			{
+				set_.emplace(std::forward<KeyFwdRef>(key),std::forward<Args>(args)...);
+				return true;
+			}
+			return false;
+		}
 	public:
 		typedef typename std::unordered_set<Key,Hash,KeyEqual,Allocator>::size_type size_type;
 		template<class ... Args>
@@ -31,26 +42,14 @@ namespace nThread
 			return set_.find(key)!=set_.end();
 		}
 		template<class ... Args>
-		bool try_emplace(const Key &key,Args &&...args)
+		inline bool try_emplace(const Key &key,Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				set_.emplace(key,std::forward<Args>(args)...);
-				return true;
-			}
-			return false;
+			return try_emplace_(key,std::forward<Args>(args)...);
 		}
 		template<class ... Args>
-		bool try_emplace(Key &&key,Args &&...args)
+		inline bool try_emplace(Key &&key,Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				set_.emplace(std::move(key),std::forward<Args>(args)...);
-				return true;
-			}
-			return false;
+			return try_emplace_(std::move(key),std::forward<Args>(args)...);
 		}
 	};
 }

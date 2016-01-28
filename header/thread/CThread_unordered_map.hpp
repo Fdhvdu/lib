@@ -13,6 +13,34 @@ namespace nThread
 	{
 		std::unordered_map<Key,T,Hash,KeyEqual,Allocator> map_;
 		std::mutex mut_;
+		template<class KeyFwdRef>
+		T& subscript_(KeyFwdRef &&key)
+		{
+			std::lock_guard<std::mutex> lock{mut_};
+			return map_[std::forward<KeyFwdRef>(key)];
+		}
+		template<class KeyFwdRef,class ... Args>
+		bool try_emplace_(KeyFwdRef &&key,Args &&...args)
+		{
+			std::lock_guard<std::mutex> lock{mut_};
+			if(!find(key))
+			{
+				map_.emplace(std::forward<KeyFwdRef>(key),std::forward<Args>(args)...);
+				return true;
+			}
+			return false;
+		}
+		template<class KeyFwdRef,class Generator>
+		bool try_emplace_func_(KeyFwdRef &&key,const Generator gen)
+		{
+			std::lock_guard<std::mutex> lock{mut_};
+			if(!find(key))
+			{
+				map_.emplace(std::forward<KeyFwdRef>(key),gen());
+				return true;
+			}
+			return false;
+		}
 	public:
 		CThread_unordered_map()=default;
 		CThread_unordered_map(const CThread_unordered_map &)=delete;
@@ -35,59 +63,33 @@ namespace nThread
 			return map_.emplace(std::forward<Args>(args)...).second;
 		}
 		template<class ... Args>
-		bool try_emplace(const Key &key,Args &&...args)
+		inline bool try_emplace(const Key &key,Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				map_.emplace(key,std::forward<Args>(args)...);
-				return true;
-			}
-			return false;
+			return try_emplace_(key,std::forward<Args>(args)...);
 		}
 		template<class ... Args>
-		bool try_emplace(Key &&key,Args &&...args)
+		inline bool try_emplace(Key &&key,Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				map_.emplace(std::move(key),std::forward<Args>(args)...);
-				return true;
-			}
-			return false;
+			return try_emplace_(std::move(key),std::forward<Args>(args)...);
 		}
 		template<class Generator>
-		bool try_emplace_func(const Key &key,Generator &&gen)
+		inline bool try_emplace_func(const Key &key,const Generator gen)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				map_.emplace(key,std::forward<Generator>(gen)());
-				return true;
-			}
-			return false;
+			return try_emplace_func_(key,gen);
 		}
 		template<class Generator>
-		bool try_emplace_func(Key &&key,Generator &&gen)
+		inline bool try_emplace_func(Key &&key,const Generator gen)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				map_.emplace(std::move(key),std::forward<Generator>(gen)());
-				return true;
-			}
-			return false;
+			return try_emplace_func_(std::move(key),gen);
 		}
 		CThread_unordered_map& operator=(const CThread_unordered_map &)=delete;
-		T& operator[](const Key &key)
+		inline T& operator[](const Key &key)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
-			return map_[key];
+			return subscript_(key);
 		}
-		T& operator[](Key &&key)
+		inline T& operator[](Key &&key)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
-			return map_[std::move(key)];
+			return subscript_(std::move(key));
 		}
 	};
 }
