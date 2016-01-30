@@ -30,10 +30,16 @@ namespace nTool
 		show(begin,end,os,' ');
 	}
 
+	template<class Begin_and_end,class T>
+	inline void show(const Begin_and_end &t,std::ostream &os,const T &delim)
+	{
+		show(std::begin(t),std::end(t),os,delim);
+	}
+
 	template<class Begin_and_end>
 	inline void show(const Begin_and_end &t,std::ostream &os=std::cout)
 	{
-		show(std::begin(t),std::end(t),os);
+		show(t,os,' ');
 	}
 }
 
