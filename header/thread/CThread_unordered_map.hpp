@@ -30,8 +30,8 @@ namespace nThread
 			}
 			return false;
 		}
-		template<class KeyFwdRef,class Generator>
-		bool try_emplace_func_(KeyFwdRef &&key,const Generator gen)
+		template<class KeyFwdRef,class Gen>
+		bool try_emplace_func_(KeyFwdRef &&key,const Gen gen)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
 			if(!find(key))
@@ -72,13 +72,13 @@ namespace nThread
 		{
 			return try_emplace_(std::move(key),std::forward<Args>(args)...);
 		}
-		template<class Generator>
-		inline bool try_emplace_func(const Key &key,const Generator gen)
+		template<class Gen>
+		inline bool try_emplace_func(const Key &key,const Gen gen)
 		{
 			return try_emplace_func_(key,gen);
 		}
-		template<class Generator>
-		inline bool try_emplace_func(Key &&key,const Generator gen)
+		template<class Gen>
+		inline bool try_emplace_func(Key &&key,const Gen gen)
 		{
 			return try_emplace_func_(std::move(key),gen);
 		}
