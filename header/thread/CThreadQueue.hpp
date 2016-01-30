@@ -27,6 +27,11 @@ namespace nThread
 			if(1==size())
 				push_.notify_all();
 		}
+		template<class ... Args>
+		inline void init_emplace(Args &&...args)
+		{
+			queue_.emplace(std::forward<Args>(args)...);
+		}
 		inline size_type size() const noexcept
 		{
 			return queue_.size();
