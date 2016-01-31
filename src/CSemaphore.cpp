@@ -1,6 +1,7 @@
 #include"../header/thread/CSemaphore.hpp"
 #include<atomic>
 #include<condition_variable>
+#include<functional>
 #include<mutex>
 using namespace std;
 
@@ -34,7 +35,7 @@ namespace nThread
 	void CSemaphore::Impl::wait()
 	{
 		unique_lock<mutex> lock{mut_};
-		cv_.wait(lock,[this]{return count();});
+		cv_.wait(lock,bind(mem_fn(&CSemaphore::Impl::count),this));
 		--count_;
 	}
 
