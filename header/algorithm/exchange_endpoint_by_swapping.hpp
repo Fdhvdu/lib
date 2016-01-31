@@ -3,7 +3,7 @@
 #include<algorithm>
 #include<functional>
 #include<iterator>
-#include<type_traits>	//result_of
+#include<type_traits>	//make_unsigned, result_of
 #include<utility>
 #include<vector>
 
@@ -50,7 +50,7 @@ namespace nAlgorithm
 				}
 			}
 		};
-		if(make_unsigned<ptrdiff_t>::type(distance(begin,end))<2)
+		if(static_cast<make_unsigned<ptrdiff_t>::type>(distance(begin,end))<2)
 			return{};
 		Vec vec(1);
 		exchange_endpoint_by_swapping_(begin,prev(end),vec,0);

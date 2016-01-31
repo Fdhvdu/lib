@@ -98,7 +98,7 @@ namespace nAlgorithm
 	{
 		using namespace std;
 		function<void(FwdIter,FwdIter,FwdIter &)> unique_without_sort_thr_{[&,N,pred](const FwdIter begin,const FwdIter end,FwdIter &divide){
-			const size_t size{make_unsigned<ptrdiff_t>::type(distance(begin,end))};
+			const size_t size{static_cast<make_unsigned<ptrdiff_t>::type>(distance(begin,end))};
 			if(N&&N<size)
 			{
 				divide=end;
