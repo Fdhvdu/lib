@@ -27,7 +27,7 @@ namespace nAlgorithm
 						rhs{unique_without_sort_thr_,mid,end,ref(rhs_end)};
 				}
 				for_each(begin,lhs_end,[&,pred,mid](const typename iterator_traits<FwdIter>::value_type &val){
-					rhs_end=remove_if(mid,rhs_end,bind(pred,val,placeholders::_1));
+					rhs_end=remove_if(mid,rhs_end,bind(pred,ref(val),placeholders::_1));
 				});
 				divide=move(mid,rhs_end,lhs_end);
 			}

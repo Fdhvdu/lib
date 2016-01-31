@@ -2,7 +2,7 @@
 #define ALGORITHM
 #include<algorithm>	//find_if, remove_if
 #include<cstddef>	//ptrdiff_t
-#include<functional>	//bind, equal_to, placeholders
+#include<functional>	//bind, equal_to, placeholders, ref
 #include<iterator>	//iterator_traits, next
 
 namespace nAlgorithm
@@ -85,7 +85,7 @@ namespace nAlgorithm
 	{
 		while(begin!=end)
 		{
-			end=std::remove_if(std::next(begin),end,std::bind(pred,*begin,std::placeholders::_1));
+			end=std::remove_if(std::next(begin),end,std::bind(pred,std::ref(*begin),std::placeholders::_1));
 			++begin;
 		}
 		return end;
