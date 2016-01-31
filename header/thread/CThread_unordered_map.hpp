@@ -42,8 +42,6 @@ namespace nThread
 			return false;
 		}
 	public:
-		CThread_unordered_map()=default;
-		CThread_unordered_map(const CThread_unordered_map &)=delete;
 		inline T& at(const Key &key)
 		{
 			return map_.at(key);
@@ -82,7 +80,6 @@ namespace nThread
 		{
 			return try_emplace_gen_(std::move(key),gen);
 		}
-		CThread_unordered_map& operator=(const CThread_unordered_map &)=delete;
 		inline T& operator[](const Key &key)
 		{
 			return subscript_(key);
