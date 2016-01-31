@@ -2,7 +2,7 @@
 #define CTHREADFORWARD_LIST
 #include<condition_variable>
 #include<forward_list>
-#include<memory>
+#include<memory>	//allocator
 #include<mutex>
 #include<utility>	//forward, move
 
@@ -13,7 +13,6 @@ namespace nThread
 	{
 	public:
 		typedef Alloc allocator_type;
-		typedef typename std::forward_list<T,Alloc>::size_type size_type;
 		typedef T value_type;
 	private:
 		std::condition_variable insert_;
@@ -31,22 +30,22 @@ namespace nThread
 			fwd_list_.emplace_front(std::forward<Args>(args)...);
 			insert_.notify_all();
 		}
+		inline bool empty() const noexcept
+		{
+			return fwd_list_.empty();
+		}
 		template<class UnaryPred>
 		void remove_if(const UnaryPred pred)
 		{
 			std::lock_guard<std::mutex> lock{insertMut_};
 			fwd_list_.remove_if(pred);
 		}
-		inline size_type size() const noexcept
-		{
-			return list_.size();
-		}
 		T wait_and_pop()
 		{
 			std::unique_lock<std::mutex> lock{insertMut_};
-			insert_.wait(lock,[this]{return size();});
-			const auto temp{std::move(list_.front())};
-			list_.pop_front();
+			insert_.wait(lock,[this]{return !empty();});
+			const auto temp{std::move(fwd_list_.front())};
+			fwd_list_.pop_front();
 			lock.unlock();
 			return temp;
 		}
