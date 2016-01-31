@@ -2,7 +2,6 @@
 #define CTHREADQUEUE
 #include<condition_variable>
 #include<cstddef>
-#include<functional>	//bind
 #include<queue>
 #include<mutex>
 #include<utility>	//forward, move
@@ -40,7 +39,7 @@ namespace nThread
 		value_type wait_and_pop()
 		{
 			std::unique_lock<std::mutex> lock{pushMut_};
-			push_.wait(lock,std::bind(std::mem_fn(&CThreadQueue<value_type>::size),this));
+			push_.wait(lock,[this]{return size();});
 			const auto temp{std::move(queue_.front())};
 			queue_.pop();
 			lock.unlock();
