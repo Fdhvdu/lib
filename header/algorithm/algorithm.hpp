@@ -35,7 +35,7 @@ namespace nAlgorithm
 	}
 
 	template<class T,class UnaryPred>
-	inline bool any_of_val(const T begin,const T end,UnaryPred pred)
+	inline bool any_of_val(const T begin,const T end,const UnaryPred pred)
 	{
 		return find_if_val(begin,end,pred)!=end;
 	}
