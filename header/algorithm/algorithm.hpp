@@ -2,7 +2,7 @@
 #define ALGORITHM
 #include<algorithm>	//move
 #include<cstddef>
-#include<functional>
+#include<functional>	//bind, placeholders
 #include<iterator>
 #include<type_traits>	//make_unsigned
 #include<utility>	//move
@@ -53,18 +53,6 @@ namespace nAlgorithm
 		return accu;
 	}
 
-	template<class InIter,class T,class BinaryPred>
-	InIter find_if(InIter begin,const InIter end,const T &val,const BinaryPred pred)
-	{
-		while(begin!=end)
-		{
-			if(pred(*begin,val))
-				return begin;
-			++begin;
-		}
-		return begin;
-	}
-
 	template<class T,class UnaryFunc>
 	UnaryFunc for_each_val(T begin,const T end,const UnaryFunc func)
 	{
@@ -94,23 +82,12 @@ namespace nAlgorithm
 		}
 	}
 
-	template<class FwdIter,class T,class BinaryPred>
-	FwdIter remove_if(FwdIter begin,const FwdIter end,const T &val,const BinaryPred pred)
-	{
-		begin=find_if(begin,end,val,pred);
-		if(begin!=end)
-			for(auto temp{begin};++temp!=end;)
-				if(!pred(*temp,val))
-					*begin++=std::move(*temp);
-		return begin;
-	}
-
 	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
 	FwdIter unique_without_sort(FwdIter begin,FwdIter end,const BinaryPred pred=BinaryPred())
 	{
 		while(begin!=end)
 		{
-			end=remove_if(std::next(begin),end,*begin,pred);
+			end=std::remove_if(std::next(begin),end,std::bind(pred,*begin,std::placeholders::_1));
 			++begin;
 		}
 		return end;
@@ -132,7 +109,7 @@ namespace nAlgorithm
 						rhs{unique_without_sort_thr_,mid,end,ref(rhs_end)};
 				}
 				for_each(begin,lhs_end,[&,pred,mid](const typename iterator_traits<FwdIter>::value_type &val){
-					rhs_end=remove_if(mid,rhs_end,val,pred);
+					rhs_end=std::remove_if(mid,rhs_end,std::bind(pred,val,placeholders::_1));
 				});
 				divide=std::move(mid,rhs_end,lhs_end);
 			}
