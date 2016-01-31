@@ -23,9 +23,13 @@ namespace nThread
 		void emplace(Args &&...args)
 		{
 			std::lock_guard<std::mutex> lock{pushMut_};
-			queue_.emplace(std::forward<Args>(args)...);
-			if(1==size())
+			if(empty())
 				push_.notify_all();
+			queue_.emplace(std::forward<Args>(args)...);
+		}
+		inline bool empty() const noexcept
+		{
+			return queue_.empty();
 		}
 		template<class ... Args>
 		inline void init_emplace(Args &&...args)
