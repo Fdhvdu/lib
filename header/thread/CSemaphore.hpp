@@ -10,7 +10,7 @@ namespace nThread
 		class Impl;
 		nTool::CPimpl<Impl> impl_;
 	public:
-		CSemaphore(std::size_t);
+		explicit CSemaphore(std::size_t);
 		CSemaphore(const CSemaphore &)=delete;
 		std::size_t count() const noexcept;
 		void signal();
