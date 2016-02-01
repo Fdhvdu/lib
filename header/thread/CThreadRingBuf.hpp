@@ -1,16 +1,15 @@
 #ifndef CTHREADRINGBUF
 #define CTHREADRINGBUF
 #include<atomic>
-#include<condition_variable>
-#include<memory>	//allocator
-#include<mutex>
-#include<type_traits>	//make_unsigned
+#include<memory>	//allocator, make_unique, unique_ptr
 #include<utility>	//forward, move
+#include"CSemaphore.hpp"
 #include"../algorithm/algorithm.hpp"	//for_each_val
 
 namespace nThread
 {
 	//a fixed-sized and cannot overwrite when buffer is full
+	//T must meet the requirements of move constructor and move assignment operator
 	template<class T>
 	class CThreadRingBuf
 	{
@@ -23,51 +22,38 @@ namespace nThread
 		static allocator_type alloc_;
 		const pointer begin_;
 		std::unique_ptr<std::atomic<bool> []> complete_;
-		std::condition_variable cv_;
-		const pointer end_;
-		std::mutex read_mut_;
-		size_type read_subscript_;
+		std::atomic<size_type> read_subscript_;
+		CSemaphore sema_;
+		size_type size_;
+		std::atomic<size_type> use_construct_;
 		std::atomic<size_type> write_subscript_;
 		//can only be used when your write will not overwrite the data
 		template<class TFwdRef>
 		void write_(TFwdRef &&val)
 		{
+			sema_.signal();
 			const auto write{write_subscript_++};
-			{
-				std::lock_guard<std::mutex> lock{read_mut_};
-				cv_.notify_all();
-			}
-			if(write<size())
+			if(write<size()&&use_construct_++<size())
 				alloc_.construct(begin_+write,std::forward<TFwdRef>(val));
 			else
 				begin_[write%size()]=std::forward<TFwdRef>(val);
-			complete_[write%size()]=true;
+			complete_[write%size()].store(true,std::memory_order_release);
 		}
 	public:
 		explicit CThreadRingBuf(const size_type size)
-			:begin_{alloc_.allocate(size)},complete_{std::make_unique<std::atomic<bool>[]>(size)},end_{begin_+size},read_subscript_{0},write_subscript_{0}{}
+			:begin_{alloc_.allocate(size)},complete_{std::make_unique<std::atomic<bool>[]>(size)},sema_{0},size_{size},read_subscript_{0},use_construct_{0},write_subscript_{0}{}
 		value_type read()
 		{
-			size_type read;
-			{
-				std::unique_lock<std::mutex> lock{read_mut_};
-				cv_.wait(lock,[&]{
-					if(read_subscript_<write_subscript_)
-					{
-						read=((read_subscript_++)%size());
-						return true;
-					}
-					return false;
-				});
-			}
-			while(!complete_[read])
+			sema_.wait();
+			const auto read{(read_subscript_++)%size()};
+			while(!complete_[read].load(memory_order_acquire))
 				;
 			complete_[read]=false;
 			return std::move(begin_[read]);
 		}
 		inline size_type size() const noexcept
 		{
-			return end_-begin_;
+			return size_;
 		}
 		inline void write(const T &val)
 		{
@@ -79,7 +65,7 @@ namespace nThread
 		}
 		~CThreadRingBuf()
 		{
-			nAlgorithm::for_each_val(begin_,end_,[&](const auto p){alloc_.destroy(p);});
+			nAlgorithm::for_each_val(begin_,begin_+size(),[&](const auto p){alloc_.destroy(p);});
 			alloc_.deallocate(begin_,size());
 		}
 	};
