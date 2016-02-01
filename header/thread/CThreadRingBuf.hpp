@@ -46,7 +46,7 @@ namespace nThread
 		{
 			sema_.wait();
 			const auto read{(read_subscript_++)%size()};
-			while(!complete_[read].load(memory_order_acquire))
+			while(!complete_[read].load(std::memory_order_acquire))
 				;
 			complete_[read]=false;
 			return std::move(begin_[read]);
