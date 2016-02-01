@@ -1,5 +1,5 @@
-#ifndef CTHREADFORWARD_LIST
-#define CTHREADFORWARD_LIST
+#ifndef CTHREAD_FORWARD_LIST
+#define CTHREAD_FORWARD_LIST
 #include<condition_variable>
 #include<forward_list>
 #include<memory>	//allocator
@@ -9,7 +9,7 @@
 namespace nThread
 {
 	template<class T,class Alloc=std::allocator<T>>
-	class CThreadForward_list	//a thread-safe std::forward_list
+	class CThread_forward_list	//a thread-safe std::forward_list
 	{
 	public:
 		typedef Alloc allocator_type;
@@ -19,9 +19,9 @@ namespace nThread
 		std::mutex insertMut_;
 		std::forward_list<value_type,allocator_type> fwd_list_;
 	public:
-		CThreadForward_list()
-			:CThreadForward_list{allocator_type()}{}
-		explicit CThreadForward_list(const allocator_type &alloc)
+		CThread_forward_list()
+			:CThread_forward_list{allocator_type()}{}
+		explicit CThread_forward_list(const allocator_type &alloc)
 			:fwd_list_{alloc}{}
 		template<class ... Args>
 		void emplace_front(Args &&...args)
