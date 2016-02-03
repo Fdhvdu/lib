@@ -8,7 +8,7 @@ namespace nThread
 {
 	class CSemaphore::Impl
 	{
-		size_t count_;
+		atomic<size_t> count_;
 		condition_variable cv_;
 		mutex mut_;
 	public:
@@ -26,9 +26,11 @@ namespace nThread
 
 	void CSemaphore::Impl::signal()
 	{
-		lock_guard<mutex> lock{mut_};
-		++count_;
-		cv_.notify_one();
+		if(!count_++)
+		{
+			lock_guard<mutex> lock{mut_};
+			cv_.notify_all();
+		}
 	}
 
 	void CSemaphore::Impl::wait()
