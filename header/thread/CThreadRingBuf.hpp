@@ -1,6 +1,7 @@
 #ifndef CTHREADRINGBUF
 #define CTHREADRINGBUF
 #include<atomic>
+#include<cstddef>
 #include<memory>	//allocator, make_unique, unique_ptr
 #include<utility>	//forward, move
 #include"CSemaphore.hpp"
@@ -41,7 +42,7 @@ namespace nThread
 		}
 	public:
 		explicit CThreadRingBuf(const size_type size)
-			:begin_{alloc_.allocate(size)},complete_{std::make_unique<std::atomic<bool>[]>(size)},sema_{0},size_{size},read_subscript_{0},use_construct_{0},write_subscript_{0}{}
+			:begin_{alloc_.allocate(size)},complete_{std::make_unique<std::atomic<bool> []>(size)},sema_{0},size_{size},read_subscript_{0},use_construct_{0},write_subscript_{0}{}
 		inline std::size_t available() const noexcept
 		{
 			return sema_.count();
