@@ -3,7 +3,7 @@ using namespace std;
 
 namespace nThread
 {
-	thread::id CSmartThread::get_id() const noexcept
+	CSmartThread::id CSmartThread::get_id() const noexcept
 	{
 		return thr_.get_id();
 	}
