@@ -8,12 +8,12 @@ namespace nThread
 {
 	class CSemaphore::Impl
 	{
-		atomic<size_t> count_;
+		atomic<CSemaphore::size_type> count_;
 		condition_variable cv_;
 		mutex mut_;
 	public:
-		Impl(size_t);
-		inline size_t count() const noexcept
+		Impl(CSemaphore::size_type);
+		inline CSemaphore::size_type count() const noexcept
 		{
 			return count_;
 		}
@@ -21,7 +21,7 @@ namespace nThread
 		void wait();
 	};
 
-	CSemaphore::Impl::Impl(const size_t count)
+	CSemaphore::Impl::Impl(const CSemaphore::size_type count)
 		:count_{count}{}
 
 	void CSemaphore::Impl::signal()
@@ -40,10 +40,10 @@ namespace nThread
 		--count_;
 	}
 
-	CSemaphore::CSemaphore(const size_t count)
+	CSemaphore::CSemaphore(const CSemaphore::size_type count)
 		:impl_{count}{}
 
-	size_t CSemaphore::count() const noexcept
+	CSemaphore::size_type CSemaphore::count() const noexcept
 	{
 		return impl_.get().count();
 	}
@@ -62,7 +62,7 @@ namespace nThread
 
 	class CReaders_Writers_Problem::Impl
 	{
-		atomic<size_t> count_;
+		atomic<CSemaphore::size_type> count_;
 		CSemaphore use_,wait_,writing_;
 	public:
 		Impl();
