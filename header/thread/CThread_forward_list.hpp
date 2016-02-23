@@ -12,8 +12,8 @@ namespace nThread
 	class CThread_forward_list	//a thread-safe std::forward_list
 	{
 	public:
-		typedef Alloc allocator_type;
-		typedef T value_type;
+		using allocator_type=Alloc;
+		using value_type=T;
 	private:
 		std::condition_variable insert_;
 		std::mutex insertMut_;

@@ -9,7 +9,7 @@ namespace nThread
 	{
 		std::thread thr_;
 	public:
-		typedef std::thread::id id;
+		using id=std::thread::id;
 		CSmartThread() noexcept=default;
 		template<class Func,class ... Args>
 		explicit CSmartThread(Func &&func,Args &&...args)
