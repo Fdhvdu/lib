@@ -1,25 +1,31 @@
 #ifndef CID
 #define CID
 #include<atomic>
-#include<cstddef>
+#include<cstddef>	//size_t
 
 namespace nTool
 {
 	class CId
 	{
-		std::atomic<std::size_t> id_;
 	public:
-		CId(std::size_t init=0) noexcept;
+		using size_type=std::size_t;
+	private:
+		std::atomic<size_type> id_;
+	public:
+		//CId::CId() noexcept
+		//	:CId{0}{}
+		CId() noexcept;
+		explicit CId(size_type) noexcept;
 		CId(const CId &)=delete;
-		inline std::size_t get() const noexcept
+		inline size_type get() const noexcept
 		{
 			return id_;
 		}
-		inline std::size_t operator++()
+		inline size_type operator++() noexcept
 		{
 			return ++id_;
 		}
-		inline std::size_t operator++(int)
+		inline size_type operator++(const int) noexcept
 		{
 			return id_++;
 		}

@@ -2,6 +2,9 @@
 
 namespace nTool
 {
-	CId::CId(const std::size_t init) noexcept
+	CId::CId() noexcept
+		:CId{0}{}
+
+	CId::CId(const size_type init) noexcept
 		:id_{init}{}
 }
