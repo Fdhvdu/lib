@@ -26,7 +26,7 @@ namespace nTool
 		{
 			return *this;
 		}
-		inline CInsert_iterator& operator++(int) noexcept
+		inline CInsert_iterator& operator++(const int) noexcept
 		{
 			return *this;
 		}
@@ -35,9 +35,9 @@ namespace nTool
 			(hold_->*ref_)(val);
 			return *this;
 		}
-		CInsert_iterator& operator=(value_type &&rVal)
+		CInsert_iterator& operator=(value_type &&xval)
 		{
-			(hold_->*move_)(std::move(rVal));
+			(hold_->*move_)(std::move(xval));
 			return *this;
 		}
 	};
