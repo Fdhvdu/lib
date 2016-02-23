@@ -40,6 +40,9 @@ namespace nThread
 		--count_;
 	}
 
+	CSemaphore::CSemaphore()
+		:CSemaphore{0}{}
+
 	CSemaphore::CSemaphore(const CSemaphore::size_type count)
 		:impl_{count}{}
 

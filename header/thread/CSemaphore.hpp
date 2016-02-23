@@ -8,11 +8,14 @@ namespace nThread
 	class CSemaphore	//semaphore
 	{
 	public:
-		typedef std::size_t size_type;
+		using size_type=std::size_t;
 	private:
 		class Impl;
 		nTool::CPimpl<Impl> impl_;
 	public:
+		//CSemaphore::CSemaphore()
+		//	:CSemaphore{0}{}
+		CSemaphore();
 		explicit CSemaphore(size_type);
 		CSemaphore(const CSemaphore &)=delete;
 		size_type count() const noexcept;
