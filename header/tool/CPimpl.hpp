@@ -37,7 +37,7 @@ namespace nTool
 		{
 			return p_.operator bool();
 		}
-		~CPimpl(){};
+		~CPimpl(){}
 	};
 }
 
