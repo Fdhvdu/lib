@@ -25,7 +25,7 @@ namespace nThread
 			return false;
 		}
 	public:
-		typedef typename std::unordered_set<Key,Hash,KeyEqual,Allocator>::size_type size_type;
+		using size_type=typename std::unordered_set<Key,Hash,KeyEqual,Allocator>::size_type;
 		template<class ... Args>
 		bool emplace(Args &&...args)
 		{

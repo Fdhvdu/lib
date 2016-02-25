@@ -14,11 +14,11 @@ namespace nThread
 	class CThreadRingBuf
 	{
 	public:
-		typedef std::allocator<T> allocator_type;
-		typedef typename std::allocator<T>::size_type size_type;
-		typedef T value_type;
+		using allocator_type=std::allocator<T>;
+		using size_type=typename std::allocator<T>::size_type;
+		using value_type=T;
 	private:
-		typedef typename std::allocator<T>::pointer pointer;
+		using pointer=typename std::allocator<T>::pointer;
 		static allocator_type alloc_;
 		const pointer begin_;
 		std::unique_ptr<std::atomic<bool> []> complete_;
