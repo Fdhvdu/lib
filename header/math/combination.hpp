@@ -3,7 +3,7 @@
 #include<algorithm>
 #include<cstddef>	//size_t
 #include<functional>	//function
-#include<iterator>	//begin, end, next, prev
+#include<iterator>	//cbegin, cend, next, prev
 #include<numeric>	//accumulate, iota
 #include<type_traits>	//result_of_t
 #include<vector>
@@ -18,8 +18,8 @@ namespace nMath
 		//To speed up, I do not call factorial.
 		T start{max(n-k,k)};
 		vector<T> numerator(n-start),divisor(n-start);
-		iota(begin(numerator),end(numerator),start+1);
-		iota(begin(divisor),end(divisor),1);
+		iota(cbegin(numerator),cend(numerator),start+1);
+		iota(cbegin(divisor),cend(divisor),1);
 		T product{1};
 		for(auto &val:numerator)
 		{
@@ -34,7 +34,7 @@ namespace nMath
 			}
 			product*=val;
 		}
-		accumulate(begin(divisor),end(divisor),product,[](const auto init,const auto val){return init/val;});
+		accumulate(cbegin(divisor),cend(divisor),product,[](const auto init,const auto val){return init/val;});
 		return product;
 	}
 
@@ -52,7 +52,7 @@ namespace nMath
 					combination_(next(begin),next(end),vec,level+1);
 				++begin;
 				if(begin!=end)
-					vec.emplace_back(std::begin(vec.back()),next(std::begin(vec.back()),level));
+					vec.emplace_back(std::cbegin(vec.back()),next(std::cbegin(vec.back()),level));
 			}
 		}};
 		const auto dis{static_cast<size_t>(distance(gbegin,gend))};

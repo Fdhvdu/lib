@@ -2,7 +2,7 @@
 #define SHOW
 #include<algorithm>	//for_each
 #include<iostream>
-#include<iterator>
+#include<iterator>	//cbegin, cend, iterator_traits
 
 namespace nTool
 {
@@ -33,7 +33,7 @@ namespace nTool
 	template<class Begin_and_end,class T>
 	inline void show(const Begin_and_end &t,std::ostream &os,const T &delim)
 	{
-		show(std::begin(t),std::end(t),os,delim);
+		show(std::cbegin(t),std::cend(t),os,delim);
 	}
 
 	template<class Begin_and_end>

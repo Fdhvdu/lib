@@ -2,7 +2,7 @@
 #define EXCHANGE_ENDPOINT_BY_SWAPPING
 #include<algorithm>
 #include<functional>
-#include<iterator>
+#include<iterator>	//cbegin, cend
 #include<type_traits>	//result_of_t
 #include<utility>
 #include<vector>
@@ -46,7 +46,7 @@ namespace nAlgorithm
 				if(to_left!=begin)
 				{
 					if(copy)
-						vec.emplace_back(std::begin(vec.back()),next(std::begin(vec.back()),level));
+						vec.emplace_back(std::cbegin(vec.back()),next(std::cbegin(vec.back()),level));
 					to_left_(to_right,to_left,vec,level);
 				}
 			}
@@ -61,7 +61,7 @@ namespace nAlgorithm
 		{
 			result.emplace_back();
 			result.reserve(val.size());
-			transform(std::begin(val),std::end(val),back_inserter(result.back()),[op](const pair<const BidIter,const BidIter> &val){return op(*val.first,*val.second);});
+			transform(std::cbegin(val),std::cend(val),back_inserter(result.back()),[op](const pair<const BidIter,const BidIter> &val){return op(*val.first,*val.second);});
 		}
 		return result;
 	}
