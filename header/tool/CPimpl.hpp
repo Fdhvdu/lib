@@ -16,9 +16,10 @@ namespace nTool
 			:p_{std::make_unique<T>(val.get())}{}
 		CPimpl(CPimpl &&rVal) noexcept
 			:p_{std::move(rVal.p_)}{}
+		//as smart pointer, use () instead of {}
 		template<class ... Args>
 		CPimpl(Args &&...args)
-			:p_{std::make_unique<T>(std::forward<Args>(args)...)}{}
+			:p_(std::make_unique<T>(std::forward<Args>(args)...)){}
 		inline T& get() const noexcept
 		{
 			return *p_.get();
