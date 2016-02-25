@@ -45,7 +45,7 @@ namespace nTool
 	template<class T,class Hold,class RefFunc,class MoveFunc>
 	inline CInsert_iterator<T,Hold,RefFunc,MoveFunc> inserter(Hold &hold,const RefFunc ref,const MoveFunc move)
 	{
-		return CInsert_iterator<T,Hold,RefFunc,MoveFunc>(hold,ref,move);
+		return CInsert_iterator<T,Hold,RefFunc,MoveFunc>{hold,ref,move};
 	}
 
 	template<class T,class Hold,class RefFunc>
