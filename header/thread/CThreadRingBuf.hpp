@@ -44,7 +44,7 @@ namespace nThread
 			:begin_{alloc_.allocate(size)},complete_{std::make_unique<std::atomic<bool> []>(size)},sema_{0},size_{size},read_subscript_{0},use_construct_{0},write_subscript_{0}{}
 		inline size_type available() const noexcept
 		{
-			return sema_.count();
+			return static_cast<size_type>(sema_.count());
 		}
 		value_type read()
 		{

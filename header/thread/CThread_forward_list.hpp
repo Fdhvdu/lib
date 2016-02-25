@@ -41,7 +41,7 @@ namespace nThread
 			std::lock_guard<std::mutex> lock{insertMut_};
 			fwd_list_.remove_if(pred);
 		}
-		T wait_and_pop()
+		value_type wait_and_pop()
 		{
 			std::unique_lock<std::mutex> lock{insertMut_};
 			insert_.wait(lock,[this]{return !empty();});
