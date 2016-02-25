@@ -1,11 +1,11 @@
 #ifndef COMBINATION
 #define COMBINATION
 #include<algorithm>
-#include<cstddef>
+#include<cstddef>	//size_t
 #include<functional>	//function
-#include<iterator>	//begin, next
+#include<iterator>	//begin, end, next, prev
 #include<numeric>	//accumulate, iota
-#include<type_traits>	//make_unsigned
+#include<type_traits>	//result_of_t
 #include<vector>
 #include"math.hpp"
 
@@ -38,11 +38,12 @@ namespace nMath
 		return product;
 	}
 
+	//require iterator_traits<InIter>::value_type copyable
 	template<class InIter>
 	std::vector<std::vector<typename std::iterator_traits<InIter>::value_type>> combination(InIter gbegin,const InIter gend,const std::size_t take_count)
 	{
 		using namespace std;
-		typedef vector<vector<typename iterator_traits<InIter>::value_type>> Vec;
+		using Vec=result_of_t<decltype(combination<InIter>)&(InIter,InIter,size_t)>;
 		function<void(InIter,InIter,Vec &,size_t)> combination_{[&,gend](InIter begin,const InIter end,Vec &vec,const size_t level){
 			while(begin!=end)
 			{
@@ -54,15 +55,14 @@ namespace nMath
 					vec.emplace_back(std::begin(vec.back()),next(std::begin(vec.back()),level));
 			}
 		}};
-		const auto dis{make_unsigned<ptrdiff_t>::type(distance(gbegin,gend))};
+		const auto dis{static_cast<size_t>(distance(gbegin,gend))};
 		if(!dis||dis<take_count)
-			return{};
-		Vec vec(1);
-		vec.reserve(C(dis,static_cast<make_unsigned<ptrdiff_t>::type>(take_count)));
+			return {};
+		Vec vec(1);	//not {}
+		vec.reserve(C(dis,take_count));
 		combination_(gbegin,prev(gend,take_count-1),vec,0);
 		return vec;
 	}
-	//require iterator_traits<InIter>::value_type copyable
 }
 
 #endif
