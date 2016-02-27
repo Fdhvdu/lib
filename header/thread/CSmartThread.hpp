@@ -10,15 +10,15 @@ namespace nThread
 		std::thread thr_;
 	public:
 		using id=std::thread::id;
-		CSmartThread() noexcept=default;
+		CSmartThread()=default;
 		template<class Func,class ... Args>
 		explicit CSmartThread(Func &&func,Args &&...args)
 			:thr_{std::forward<Func>(func),std::forward<Args>(args)...}{}
 		CSmartThread(const CSmartThread &)=delete;
-		CSmartThread(CSmartThread &&) noexcept=default;
+		CSmartThread(CSmartThread &&)=default;
 		id get_id() const noexcept;
 		CSmartThread& operator=(const CSmartThread &)=delete;
-		CSmartThread& operator=(CSmartThread &&) noexcept=default;
+		CSmartThread& operator=(CSmartThread &&)=default;
 		~CSmartThread();
 	};
 }

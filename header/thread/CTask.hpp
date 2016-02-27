@@ -15,12 +15,12 @@ namespace nThread
 		std::packaged_task<Ret()> task_;
 		std::future<Ret> fut_;
 	public:
-		CTask() noexcept=default;
+		CTask()=default;
 		template<class Func,class ... Args>
 		explicit CTask(Func &&func,Args &&...args)
 			:task_{std::bind(std::forward<Func>(func),std::forward<Args>(args)...)},fut_{task_.get_future()}{}
 		CTask(const CTask &)=delete;
-		CTask(CTask &&) noexcept=default;
+		CTask(CTask &&)=default;
 		inline Ret get()
 		{
 			return fut_.get();
@@ -41,7 +41,7 @@ namespace nThread
 			task_();
 		}
 		CTask& operator=(const CTask &)=delete;
-		CTask& operator=(CTask &&) noexcept=default;
+		CTask& operator=(CTask &&)=default;
 	};
 }
 
