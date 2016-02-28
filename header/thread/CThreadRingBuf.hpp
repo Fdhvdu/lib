@@ -41,7 +41,7 @@ namespace nThread
 		}
 	public:
 		explicit CThreadRingBuf(const size_type size)
-			:begin_{alloc_.allocate(size)},complete_{std::make_unique<std::atomic<bool> []>(size)},sema_{0},size_{size},read_subscript_{0},use_construct_{0},write_subscript_{0}{}
+			:begin_{alloc_.allocate(size)},complete_{std::make_unique<std::atomic<bool> []>(size)},size_{size},read_subscript_{0},use_construct_{0},write_subscript_{0}{}
 		inline size_type available() const noexcept
 		{
 			return static_cast<size_type>(sema_.count());
