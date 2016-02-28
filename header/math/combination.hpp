@@ -34,7 +34,7 @@ namespace nMath
 			}
 			product*=val;
 		}
-		accumulate(cbegin(divisor),cend(divisor),product,[](const auto init,const auto val){return init/val;});
+		accumulate(cbegin(divisor),cend(divisor),product,[](const auto init,const auto val) noexcept{return init/val;});
 		return product;
 	}
 

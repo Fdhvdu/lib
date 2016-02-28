@@ -44,7 +44,7 @@ namespace nThread
 		value_type wait_and_pop()
 		{
 			std::unique_lock<std::mutex> lock{insertMut_};
-			insert_.wait(lock,[this]{return !empty();});
+			insert_.wait(lock,[this]() noexcept{return !empty();});
 			const auto temp{std::move(fwd_list_.front())};
 			fwd_list_.pop_front();
 			lock.unlock();

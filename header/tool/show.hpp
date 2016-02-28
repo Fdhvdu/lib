@@ -21,7 +21,7 @@ namespace nTool
 	template<class InIter,class T>
 	inline void show(InIter begin,InIter end,std::ostream &os,const T &delim)
 	{
-		show(begin,end,os,delim,[](const typename std::iterator_traits<InIter>::value_type &val)->auto&{return val;});
+		show(begin,end,os,delim,[](const typename std::iterator_traits<InIter>::value_type &val) noexcept->const auto&{return val;});
 	}
 
 	template<class InIter>
