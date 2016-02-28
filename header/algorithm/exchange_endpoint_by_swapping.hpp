@@ -57,7 +57,7 @@ namespace nAlgorithm
 		exchange_endpoint_by_swapping_(begin,prev(end),vec,0);
 		result_of_t<decltype(exchange_endpoint_by_swapping<BidIter,BinaryOp>)&(BidIter,BidIter,BinaryOp)> result;
 		result.reserve(vec.size());
-		for(auto &val:vec)
+		for(const auto &val:vec)
 		{
 			result.emplace_back();
 			result.reserve(val.size());
