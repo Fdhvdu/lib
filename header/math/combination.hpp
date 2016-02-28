@@ -16,14 +16,14 @@ namespace nMath
 	{
 		using namespace std;
 		//To speed up, I do not call factorial.
-		T start{max(n-k,k)};
+		const T start{max(n-k,k)};
 		vector<T> numerator(n-start),divisor(n-start);
-		iota(cbegin(numerator),cend(numerator),start+1);
-		iota(cbegin(divisor),cend(divisor),1);
+		iota(begin(numerator),end(numerator),start+1);
+		iota(begin(divisor),end(divisor),1);
 		T product{1};
 		for(auto &val:numerator)
 		{
-			for(auto &val2:numerator)
+			for(auto &val2:divisor)
 			{
 				const T temp{gcd(val,val2)};
 				if(temp!=1)
