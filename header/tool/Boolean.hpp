@@ -7,18 +7,19 @@ namespace nTool
 	{
 		bool bit_;
 	public:
-		constexpr Boolean() noexcept
+		Boolean() noexcept
 			:bit_{false}{}
-		constexpr Boolean(const bool bit) noexcept
+		Boolean(const bool bit) noexcept
 			:bit_{bit}{}
 		Boolean(const Boolean &)=default;
-		constexpr operator bool() const noexcept
+		inline operator bool() const noexcept
 		{
 			return bit_;
 		}
-		inline operator bool&() noexcept
+		Boolean& operator=(const bool b) noexcept
 		{
-			return bit_;
+			bit_=b;
+			return *this;
 		}
 		Boolean& operator=(const Boolean &)=default;
 	};
