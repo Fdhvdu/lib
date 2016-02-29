@@ -45,7 +45,7 @@ namespace nTool
 	};
 
 	template<class Func,class ... Args>
-	CChrono_timer calc_time(const Func func,Args &&...args)
+	CChrono_timer calc_time(Func &&func,Args &&...args)
 	{
 		CChrono_timer timer;
 		timer.start();
