@@ -49,7 +49,7 @@ namespace nTool
 	{
 		CChrono_timer timer;
 		timer.start();
-		func(std::forward<Args>(args)...);
+		std::forward<Func>(func)(std::forward<Args>(args)...);
 		timer.stop();
 		return timer;
 	}
