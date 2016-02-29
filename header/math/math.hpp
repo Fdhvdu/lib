@@ -49,13 +49,13 @@ namespace nMath
 	template<class T>
 	inline bool is_power_of_2(const T val) noexcept
 	{
-		return std::bitset<sizeof(T)*8>{val}.count()==1;
+		return std::bitset<sizeof(T)*8>(val).count()==1;	//use () instead of {}
 	}
 
 	template<class T>
 	std::size_t log_2(const T val)
 	{
-		const std::bitset<sizeof(T)*8> temp{val};
+		const std::bitset<sizeof(T)*8> temp(val);	//use () instead of {}
 		if(temp.count()==1)
 			return nAlgorithm::find_if_val<std::size_t>(0,temp.size(),[&](const auto i) noexcept{return temp[i];});
 		throw std::runtime_error{"The argument of log_2 is not a power of 2"};
