@@ -22,7 +22,7 @@ namespace nTool
 			:p_(std::make_unique<T>(std::forward<Args>(args)...)){}
 		inline T& get() const noexcept
 		{
-			return *p_.get();
+			return *p_;
 		}
 		CPimpl& operator=(const CPimpl &val)
 		{
