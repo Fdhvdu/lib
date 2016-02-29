@@ -64,9 +64,9 @@ namespace nThread
 		{
 			write_(val);
 		}
-		inline void write(T &&xval)
+		inline void write(T &&val)
 		{
-			write_(std::move(xval));
+			write_(std::move(val));
 		}
 		~CThreadRingBuf()
 		{
