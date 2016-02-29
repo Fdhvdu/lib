@@ -51,7 +51,7 @@ namespace nAlgorithm
 	}
 
 	template<class T,class UnaryFunc>
-	UnaryFunc for_each_val(T begin,const T end,const UnaryFunc func)
+	UnaryFunc for_each_val(T begin,const T end,UnaryFunc func)
 	{
 		while(begin!=end)
 		{
