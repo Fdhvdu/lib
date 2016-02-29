@@ -61,7 +61,7 @@ namespace nThread
 		impl_.get().wait();
 	}
 
-	CSemaphore::~CSemaphore(){}
+	CSemaphore::~CSemaphore()=default;
 
 	class CReaders_Writers_Problem::Impl
 	{
@@ -106,7 +106,7 @@ namespace nThread
 		wait_.signal();
 	}
 
-	CReaders_Writers_Problem::CReaders_Writers_Problem(){}
+	CReaders_Writers_Problem::CReaders_Writers_Problem()=default;
 
 	void CReaders_Writers_Problem::readBegin()
 	{
@@ -128,5 +128,5 @@ namespace nThread
 		impl_.get().writeEnd();
 	}
 
-	CReaders_Writers_Problem::~CReaders_Writers_Problem(){}
+	CReaders_Writers_Problem::~CReaders_Writers_Problem()=default;
 }
