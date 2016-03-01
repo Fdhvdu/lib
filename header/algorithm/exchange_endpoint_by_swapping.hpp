@@ -60,7 +60,7 @@ namespace nAlgorithm
 		for(const auto &val:vec)
 		{
 			result.emplace_back();
-			result.reserve(val.size());
+			result.back().reserve(val.size());
 			transform(std::cbegin(val),std::cend(val),back_inserter(result.back()),[op](const pair<const BidIter,const BidIter> &val){return op(*val.first,*val.second);});
 		}
 		return result;
