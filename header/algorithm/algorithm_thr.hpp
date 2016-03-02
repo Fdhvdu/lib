@@ -14,7 +14,7 @@ namespace nAlgorithm
 	FwdIter unique_without_sort_thr(const FwdIter begin,const FwdIter end,const std::size_t N,const BinaryPred pred=BinaryPred())
 	{
 		using namespace std;
-		function<FwdIter(FwdIter,FwdIter)> unique_without_sort_thr_{[&,N,pred](const FwdIter begin,const FwdIter end){
+		const function<FwdIter(FwdIter,FwdIter)> unique_without_sort_thr_{[&,N,pred](const FwdIter begin,const FwdIter end){
 			const auto size{static_cast<size_t>(distance(begin,end))};
 			if(N&&N<size)
 			{

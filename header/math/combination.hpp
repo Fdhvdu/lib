@@ -44,7 +44,7 @@ namespace nMath
 	{
 		using namespace std;
 		using Vec=result_of_t<decltype(combination<InIter>)&(InIter,InIter,size_t)>;
-		function<void(InIter,InIter,Vec &,size_t)> combination_{[&,gend](InIter begin,const InIter end,Vec &vec,const size_t level){
+		const function<void(InIter,InIter,Vec &,size_t)> combination_{[&,gend](InIter begin,const InIter end,Vec &vec,const size_t level){
 			while(begin!=end)
 			{
 				vec.back().emplace_back(*begin);
