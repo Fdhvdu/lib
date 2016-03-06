@@ -2,7 +2,6 @@
 #define EXCHANGE_ENDPOINT_BY_SWAPPING
 #include<algorithm>
 #include<functional>
-#include<deque>
 #include<iterator>	//cbegin, cend
 #include<type_traits>	//result_of_t
 #include<utility>
@@ -15,7 +14,7 @@ namespace nAlgorithm
 	std::vector<std::vector<std::result_of_t<BinaryOp(typename std::iterator_traits<BidIter>::value_type,typename std::iterator_traits<BidIter>::value_type)>>> exchange_endpoint_by_swapping(const BidIter begin,const BidIter end,const BinaryOp op)
 	{
 		using namespace std;
-		using Temp_Container=deque<vector<pair<const BidIter,const BidIter>>>;
+		using Temp_Container=vector<vector<pair<const BidIter,const BidIter>>>;
 		const auto dist{static_cast<size_t>(distance(begin,end))};
 		if(dist<2)
 			return {};
