@@ -10,7 +10,7 @@
 namespace nThread
 {
 	//a fixed-sized and cannot overwrite when buffer is full
-	//T must meet the requirements of move constructor and move assignment operator
+	//T must meet the requirements of MoveAssignable and MoveConstructible 
 	template<class T>
 	class CThreadRingBuf
 	{

@@ -8,6 +8,7 @@
 
 namespace nThread
 {
+	//T must meet the requirements of MoveAssignable and MoveConstructible 
 	template<class T,class Alloc=std::allocator<T>>
 	class CThread_forward_list	//a thread-safe std::forward_list
 	{

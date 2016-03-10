@@ -10,6 +10,7 @@
 namespace nAlgorithm
 {
 	//will reorder the permutation of [begin,end)
+	//dereferenced FwdIter must meet the requirements of MoveAssignable
 	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
 	FwdIter unique_without_sort_thr(const FwdIter begin,const FwdIter end,const std::size_t N,const BinaryPred pred=BinaryPred())
 	{
