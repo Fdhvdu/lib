@@ -19,7 +19,7 @@ namespace nAlgorithm
 		if(dist<2)
 			return {};
 		function<void(BidIter,BidIter,Temp_Container &,size_t)> exchange_endpoint_by_swapping_;
-		const auto reserve{[dist](Temp_Container::value_type &container){
+		const auto reserve{[dist](typename Temp_Container::value_type &container){
 			container.reserve(2*dist-3);
 		}};
 		const function<void(BidIter,BidIter,Temp_Container &,size_t)> to_right_{[&](BidIter to_right,const BidIter to_left,Temp_Container &container,const size_t level){
