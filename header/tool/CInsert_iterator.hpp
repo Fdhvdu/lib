@@ -2,22 +2,19 @@
 #define CINSERT_ITERATOR
 #include<iterator>
 #include<memory>	//addressof
-#include<utility>	//move
+#include<utility>	//declval, move
 
 namespace nTool
 {
-	template<class T,class Hold,class RefFunc,class MoveFunc>
+	template<class T,class Holder,class RefFunc_t,RefFunc_t RefFunc,class MoveFunc_t=RefFunc_t,MoveFunc_t MoveFunc=RefFunc>
 	class CInsert_iterator:public std::iterator<std::output_iterator_tag,void,void,void,void>
 	{
-		Hold *hold_;
-		MoveFunc move_;
-		RefFunc ref_;
+		Holder *hold_;
 	public:
-		typedef T value_type;
-		CInsert_iterator(Hold &hold,const RefFunc ref) noexcept
-			:CInsert_iterator{hold,ref,ref}{}
-		CInsert_iterator(Hold &hold,const RefFunc ref,const MoveFunc move) noexcept
-			:hold_{std::addressof(hold)},move_{move},ref_{ref}{}
+		using holder_type=Holder;
+		using value_type=T;
+		explicit CInsert_iterator(Holder &hold) noexcept
+			:hold_{std::addressof(hold)}{}
 		inline CInsert_iterator& operator*() noexcept
 		{
 			return *this;
@@ -30,28 +27,28 @@ namespace nTool
 		{
 			return *this;
 		}
-		CInsert_iterator& operator=(const value_type &val)
+		CInsert_iterator& operator=(const value_type &val) noexcept(noexcept((std::declval<Holder>().*RefFunc)(std::declval<value_type&>())))
 		{
-			(hold_->*ref_)(val);
+			(hold_->*RefFunc)(val);
 			return *this;
 		}
-		CInsert_iterator& operator=(value_type &&val)
+		CInsert_iterator& operator=(value_type &&val) noexcept(noexcept((std::declval<Holder>().*MoveFunc)(std::declval<value_type>())))
 		{
-			(hold_->*move_)(std::move(val));
+			(hold_->*MoveFunc)(std::move(val));
 			return *this;
 		}
 	};
 
-	template<class T,class Hold,class RefFunc,class MoveFunc>
-	inline CInsert_iterator<T,Hold,RefFunc,MoveFunc> inserter(Hold &hold,const RefFunc ref,const MoveFunc move)
+	template<class T,class RefFunc_t,RefFunc_t RefFunc,class MoveFunc_t,MoveFunc_t MoveFunc,class Holder>
+	inline CInsert_iterator<T,Holder,RefFunc_t,RefFunc,MoveFunc_t,MoveFunc> inserter(Holder &holder)
 	{
-		return CInsert_iterator<T,Hold,RefFunc,MoveFunc>{hold,ref,move};
+		return CInsert_iterator<T,Holder,RefFunc_t,RefFunc,MoveFunc_t,MoveFunc>{holder};
 	}
 
-	template<class T,class Hold,class RefFunc>
-	inline CInsert_iterator<T,Hold,RefFunc,RefFunc> inserter(Hold &hold,const RefFunc ref)
+	template<class T,class RefFunc_t,RefFunc_t RefFunc,class Holder>
+	inline CInsert_iterator<T,Holder,RefFunc_t,RefFunc> inserter(Holder &holder)
 	{
-		return inserter<T>(hold,ref,ref);
+		return CInsert_iterator<T,Holder,RefFunc_t,RefFunc>{holder};
 	}
 }
 

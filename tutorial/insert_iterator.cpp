@@ -1,76 +1,107 @@
 #include<algorithm>
+#include<iostream>
 #include<iterator>
 #include<vector>
 #include"../header/tool/CInsert_iterator.hpp"
+using namespace std;
 
 struct A
 {
-	void set(const int &){}
+	void set(const int &)
+	{
+		cout<<"const int &"<<endl;
+	}
 };
 
 struct B
 {
-	void set(const int &){}
-	void set(int &&){}
+	void set(const int &)
+	{
+		cout<<"const int &"<<endl;
+	}
+	void set(int &&)
+	{
+		cout<<"int &&"<<endl;
+	}
 };
 
 struct C
 {
 	template<class T>
-	void set(T &&){}
+	void set(T &&)
+	{
+		cout<<"T &&"<<endl;
+	}
 };
 
 template<class T>
 struct D
 {
-	void set(const T &){}
+	void set(const T &)
+	{
+		cout<<"const T &"<<endl;
+	}
 };
 
 template<class T>
 struct E
 {
-	void set(const T &){}
-	void set(T &&){}
+	void set(const T &)
+	{
+		cout<<"const T &"<<endl;
+	}
+	void set(T &&)
+	{
+		cout<<"T &&"<<endl;
+	}
 };
 
 template<class T>
 struct F
 {
 	template<class T2>
-	void set(T2 &&){}
+	void set(T2 &&)
+	{
+		cout<<"T2 &&"<<endl;
+	}
 };
-
-template<class T,class Iter,class Hold,class RefFunc_t,class MoveFunc_t>
-inline void test(const Iter begin,const Iter end,Hold &hold,const RefFunc_t ref,const MoveFunc_t mov)
-{
-	std::copy(begin,end,nTool::inserter<T>(hold,ref,mov));
-	//if Iter is move_iterator, nTool::inserter will call move assignment operator
-}
 
 int main()
 {
-	using namespace std;
-
 	A a;
 	B b;
 	C c;
 	D<int> d;
 	E<int> e;
 	F<double> f;
-	vector<int> vec;
+	vector<int> vec{1};
 
-	test<int>(begin(vec),end(vec),a,&A::set,&A::set);
-	test<int>(begin(vec),end(vec),b,
-			  static_cast<void(B::*)(const int &)>(&B::set),
-			  static_cast<void(B::*)(int &&)>(&B::set));
-	test<int>(begin(vec),end(vec),c,
-			  static_cast<void(C::*)(const int &)>(&C::set<const int &>),
-			  static_cast<void(C::*)(int &&)>(&C::set<int>));
-	test<int>(begin(vec),end(vec),d,&D<int>::set,&D<int>::set);
-	test<int>(begin(vec),end(vec),e,
-			  static_cast<void(E<int>::*)(const int &)>(&E<int>::set),
-			  static_cast<void(E<int>::*)(int &&)>(&E<int>::set));
-	test<int>(begin(vec),end(vec),f,
-			  static_cast<void(F<double>::*)(const int &)>(&F<double>::set<const int &>),
-			  static_cast<void(F<double>::*)(int &&)>(&F<double>::set<int>));
+	copy(begin(vec),end(vec),nTool::inserter<int,void(A::*)(const int &),&A::set>(a));
+
+	copy(begin(vec),end(vec),nTool::inserter<int,
+		 void(B::*)(const int &),&B::set,
+		 void(B::*)(int &&),&B::set>(b));
+
+	copy(make_move_iterator(begin(vec)),make_move_iterator(end(vec)),nTool::inserter<int,
+		 void(B::*)(const int &),&B::set,
+		 void(B::*)(int &&),&B::set>(b));
+
+	copy(begin(vec),end(vec),nTool::inserter<int,
+		 void(C::*)(const int &),&C::set<const int &>,
+		 void(C::*)(int &&),&C::set<int>>(c));
+
+	copy(begin(vec),end(vec),nTool::inserter<int,
+		 void(D<int>::*)(const int &),&D<int>::set>(d));
+
+	copy(begin(vec),end(vec),nTool::inserter<int,
+		 void(E<int>::*)(const int &),&E<int>::set,
+		 void(E<int>::*)(int &&),&E<int>::set>(e));
+
+	copy(make_move_iterator(begin(vec)),make_move_iterator(end(vec)),nTool::inserter<int,
+		 void(E<int>::*)(const int &),&E<int>::set,
+		 void(E<int>::*)(int &&),&E<int>::set>(e));
+
+	copy(begin(vec),end(vec),nTool::inserter<int,
+		 void(F<double>::*)(const int &),&F<double>::set<const int &>,
+		 void(F<double>::*)(int &&),&F<double>::set<int>>(f));
 }
