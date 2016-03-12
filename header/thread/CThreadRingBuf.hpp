@@ -3,7 +3,7 @@
 #include<atomic>
 #include<memory>	//allocator
 #include<vector>
-#include<utility>	//forward, move
+#include<utility>	//forward, move, move_if_noexcept
 #include"CSemaphore.hpp"
 #include"../algorithm/algorithm.hpp"	//for_each_val
 #include"../tool/CScopeGuard.hpp"
@@ -11,7 +11,6 @@
 namespace nThread
 {
 	//a fixed-sized and cannot overwrite when buffer is full
-	//T must meet the requirements of MoveAssignable and MoveConstructible 
 	template<class T>
 	class CThreadRingBuf
 	{
@@ -57,7 +56,7 @@ namespace nThread
 			while(!complete_[read].load(std::memory_order_acquire))
 				;
 			nTool::CScopeGuard sg{[&]{complete_[read].store(false,std::memory_order_release);}};
-			return std::move(begin_[read]);
+			return std::move_if_noexcept(begin_[read]);
 		}
 		inline size_type size() const noexcept
 		{
