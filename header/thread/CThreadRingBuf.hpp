@@ -6,6 +6,7 @@
 #include<utility>	//forward, move
 #include"CSemaphore.hpp"
 #include"../algorithm/algorithm.hpp"	//for_each_val
+#include"../tool/CScopeGuard.hpp"
 
 namespace nThread
 {
@@ -34,6 +35,8 @@ namespace nThread
 		{
 			sema_.signal();
 			const auto write{write_subscript_++};
+			while(complete_[write%size()].load(std::memory_order_acquire))
+				;
 			if(write<size()&&use_construct_++<size())
 				alloc_.construct(begin_+write,std::forward<TFwdRef>(val));
 			else
@@ -53,7 +56,7 @@ namespace nThread
 			const auto read{(read_subscript_++)%size()};
 			while(!complete_[read].load(std::memory_order_acquire))
 				;
-			complete_[read]=false;
+			nTool::CScopeGuard sg{[&]{complete_[read].store(false,std::memory_order_release);}};
 			return std::move(begin_[read]);
 		}
 		inline size_type size() const noexcept
