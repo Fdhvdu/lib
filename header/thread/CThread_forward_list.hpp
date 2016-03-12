@@ -4,11 +4,10 @@
 #include<forward_list>
 #include<memory>	//allocator
 #include<mutex>
-#include<utility>	//forward, move
+#include<utility>	//forward, move_if_noexcept
 
 namespace nThread
 {
-	//T must meet the requirements of MoveAssignable and MoveConstructible 
 	template<class T,class Alloc=std::allocator<T>>
 	class CThread_forward_list	//a thread-safe std::forward_list
 	{
@@ -46,7 +45,7 @@ namespace nThread
 		{
 			std::unique_lock<std::mutex> lock{insertMut_};
 			insert_.wait(lock,[this]() noexcept{return !empty();});
-			const auto temp{std::move(fwd_list_.front())};
+			const auto temp{std::move_if_noexcept(fwd_list_.front())};
 			fwd_list_.pop_front();
 			lock.unlock();
 			return temp;
