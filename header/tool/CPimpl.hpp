@@ -2,6 +2,7 @@
 #define CPIMPL
 #include<memory>	//make_unique, unique_ptr
 #include<utility>	//forward, move
+#include<type_traits>	//is_nothrow_assignable
 
 namespace nTool
 {
@@ -24,7 +25,7 @@ namespace nTool
 		{
 			return *p_;
 		}
-		CPimpl& operator=(const CPimpl &val)
+		CPimpl& operator=(const CPimpl &val) noexcept(std::is_nothrow_assignable<T,T&>::value)
 		{
 			get()=val.get();
 			return *this;
