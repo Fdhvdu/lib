@@ -2,9 +2,10 @@
 #define ALGORITHM_THR
 #include<algorithm>	//for_each, move, remove_if
 #include<cstddef>	//size_t
-#include<functional>	//bind, equal_to, function, placeholders, ref
+#include<functional>	//equal_to, function
 #include<future>	//async, launch
 #include<iterator>	//distance, iterator_traits, next
+#include<utility>	//forward
 #include"algorithm.hpp"
 
 namespace nAlgorithm
@@ -22,8 +23,10 @@ namespace nAlgorithm
 				const auto mid{next(begin,size/2)};
 				const auto lhs_end{async(launch::async,unique_without_sort_thr_,begin,mid).get()};
 				auto rhs_end{async(launch::async,unique_without_sort_thr_,mid,end).get()};
-				for_each(begin,lhs_end,[&,pred,mid](const typename iterator_traits<FwdIter>::value_type &val){
-					rhs_end=remove_if(mid,rhs_end,bind(pred,ref(val),placeholders::_1));
+				for_each(begin,lhs_end,[&,pred,mid](const auto &val){
+					rhs_end=remove_if(mid,rhs_end,[&,pred](auto &&val2){
+						return pred(val,forward<decltype(val2)>(val2));
+					});
 				});
 				return move(mid,rhs_end,lhs_end);
 			}
