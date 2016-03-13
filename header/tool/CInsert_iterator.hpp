@@ -13,7 +13,7 @@ namespace nTool
 	public:
 		using holder_type=Holder;
 		using value_type=T;
-		explicit CInsert_iterator(Holder &hold) noexcept
+		explicit CInsert_iterator(holder_type &hold) noexcept
 			:hold_{std::addressof(hold)}{}
 		inline CInsert_iterator& operator*() noexcept
 		{
@@ -27,12 +27,12 @@ namespace nTool
 		{
 			return *this;
 		}
-		CInsert_iterator& operator=(const value_type &val) noexcept(noexcept((std::declval<Holder>().*RefFunc)(std::declval<value_type&>())))
+		CInsert_iterator& operator=(const value_type &val) noexcept(noexcept((std::declval<holder_type>().*RefFunc)(std::declval<value_type&>())))
 		{
 			(hold_->*RefFunc)(val);
 			return *this;
 		}
-		CInsert_iterator& operator=(value_type &&val) noexcept(noexcept((std::declval<Holder>().*MoveFunc)(std::declval<value_type>())))
+		CInsert_iterator& operator=(value_type &&val) noexcept(noexcept((std::declval<holder_type>().*MoveFunc)(std::declval<value_type>())))
 		{
 			(hold_->*MoveFunc)(std::move(val));
 			return *this;
