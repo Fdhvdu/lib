@@ -25,7 +25,7 @@ namespace nThread
 		std::vector<std::atomic<bool>> complete_;
 		std::atomic<size_type> read_subscript_;
 		CSemaphore sema_;
-		size_type size_;
+		const size_type size_;
 		std::atomic<size_type> use_construct_;
 		std::atomic<size_type> write_subscript_;
 		//can only be used when your write will not overwrite the data
