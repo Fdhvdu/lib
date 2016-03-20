@@ -1,17 +1,18 @@
 #ifndef EXCHANGE_ENDPOINT_BY_SWAPPING
 #define EXCHANGE_ENDPOINT_BY_SWAPPING
-#include<algorithm>
-#include<functional>
-#include<iterator>	//cbegin, cend
+#include<algorithm>	//transform
+#include<cstddef>	//size_t
+#include<functional>	//function
+#include<iterator>	//advance, back_inserter, cbegin, cend, distance, iterator_traits, next, prev
 #include<type_traits>	//result_of_t
-#include<utility>
+#include<utility>	//forward
 #include<vector>
 
 namespace nAlgorithm
 {
 	//vector<vector<return type of BinaryOp>>
 	template<class BidIter,class BinaryOp>
-	std::vector<std::vector<std::result_of_t<BinaryOp(typename std::iterator_traits<BidIter>::value_type,typename std::iterator_traits<BidIter>::value_type)>>> exchange_endpoint_by_swapping(const BidIter begin,const BidIter end,const BinaryOp op)
+	std::vector<std::vector<std::result_of_t<BinaryOp(typename std::iterator_traits<BidIter>::value_type,typename std::iterator_traits<BidIter>::value_type)>>> exchange_endpoint_by_swapping(const BidIter begin,const BidIter end,BinaryOp &&op)
 	{
 		using namespace std;
 		using Temp_Container=vector<vector<pair<const BidIter,const BidIter>>>;
@@ -53,7 +54,7 @@ namespace nAlgorithm
 				{
 					if(copy)
 					{
-						container.emplace_back(std::cbegin(container.back()),next(std::cbegin(container.back()),level));
+						container.emplace_back(cbegin(container.back()),next(cbegin(container.back()),level));
 						reserve(container.back());
 					}
 					to_left_(to_right,to_left,container,level);
@@ -69,7 +70,7 @@ namespace nAlgorithm
 		{
 			result.emplace_back();
 			result.back().reserve(val.size());
-			transform(std::cbegin(val),std::cend(val),back_inserter(result.back()),[op](const pair<const BidIter,const BidIter> &val){return op(*val.first,*val.second);});
+			transform(cbegin(val),cend(val),back_inserter(result.back()),[&](const pair<const BidIter,const BidIter> &val){return forward<decltype(op)>(op)(*val.first,*val.second);});
 		}
 		return result;
 	}
