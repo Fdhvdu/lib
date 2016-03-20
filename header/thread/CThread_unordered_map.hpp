@@ -35,12 +35,12 @@ namespace nThread
 			return false;
 		}
 		template<class Key_typeFwdRef,class Gen>
-		bool try_emplace_gen_(Key_typeFwdRef &&key,const Gen gen)
+		bool try_emplace_gen_(Key_typeFwdRef &&key,Gen &&gen)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
 			if(!find(key))
 			{
-				map_.emplace(std::forward<Key_typeFwdRef>(key),gen());
+				map_.emplace(std::forward<Key_typeFwdRef>(key),std::forward<decltype(gen)>(gen)());
 				return true;
 			}
 			return false;
@@ -75,14 +75,14 @@ namespace nThread
 			return try_emplace_(std::move(key),std::forward<Args>(args)...);
 		}
 		template<class Gen>
-		inline bool try_emplace_gen(const key_type &key,const Gen gen)
+		inline bool try_emplace_gen(const key_type &key,Gen &&gen)
 		{
-			return try_emplace_gen_(key,gen);
+			return try_emplace_gen_(key,std::forward<decltype(gen)>(gen));
 		}
 		template<class Gen>
-		inline bool try_emplace_gen(key_type &&key,const Gen gen)
+		inline bool try_emplace_gen(key_type &&key,Gen &&gen)
 		{
-			return try_emplace_gen_(std::move(key),gen);
+			return try_emplace_gen_(std::move(key),std::forward<decltype(gen)>(gen));
 		}
 		inline mapped_type& operator[](const key_type &key)
 		{
