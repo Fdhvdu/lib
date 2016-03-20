@@ -26,9 +26,11 @@ namespace nThread
 		template<class ... Args>
 		void emplace_front(Args &&...args)
 		{
+			bool notify;
 			std::lock_guard<std::mutex> lock{insertMut_};
+			notify=fwd_list_.empty();
 			fwd_list_.emplace_front(std::forward<decltype(args)>(args)...);
-			if(fwd_list_.size()==1)
+			if(notify)
 				insert_.notify_all();
 		}
 		inline bool empty() const noexcept
