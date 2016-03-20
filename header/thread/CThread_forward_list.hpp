@@ -27,19 +27,19 @@ namespace nThread
 		void emplace_front(Args &&...args)
 		{
 			std::lock_guard<std::mutex> lock{insertMut_};
-			if(empty())
+			fwd_list_.emplace_front(std::forward<decltype(args)>(args)...);
+			if(fwd_list_.size()==1)
 				insert_.notify_all();
-			fwd_list_.emplace_front(std::forward<Args>(args)...);
 		}
 		inline bool empty() const noexcept
 		{
 			return fwd_list_.empty();
 		}
 		template<class UnaryPred>
-		void remove_if(const UnaryPred pred)
+		void remove_if(UnaryPred &&pred)
 		{
 			std::lock_guard<std::mutex> lock{insertMut_};
-			fwd_list_.remove_if(pred);
+			fwd_list_.remove_if(std::forward<decltype(pred)>(pred));
 		}
 		value_type wait_and_pop()
 		{
