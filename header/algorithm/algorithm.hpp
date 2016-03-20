@@ -4,6 +4,7 @@
 #include<cstddef>	//ptrdiff_t
 #include<functional>	//equal_to
 #include<iterator>	//iterator_traits, next
+#include<utility>	//move
 
 namespace nAlgorithm
 {
@@ -58,7 +59,7 @@ namespace nAlgorithm
 			func(begin);
 			++begin;
 		}
-		return func;
+		return std::move(func);
 	}
 
 	template<class InIter,class UnaryPred,class UnaryFunc>
