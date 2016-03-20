@@ -4,7 +4,7 @@
 #include<cstddef>	//ptrdiff_t
 #include<functional>	//equal_to
 #include<iterator>	//iterator_traits, next
-#include<utility>	//move
+#include<utility>	//forward, move
 
 namespace nAlgorithm
 {
@@ -70,12 +70,12 @@ namespace nAlgorithm
 	}
 
 	template<class InIter,class OutIter,class BinaryOp>
-	void multiply(InIter lbegin,const InIter lend,const InIter rbegin,const InIter rend,OutIter des,const BinaryOp op)
+	void multiply(InIter lbegin,const InIter lend,const InIter rbegin,const InIter rend,OutIter des,BinaryOp &&op)
 	{
 		while(lbegin!=lend)
 		{
 			for(auto begin{rbegin};begin!=rend;++begin,++des)
-				*des=op(*lbegin,*begin);
+				*des=std::forward<decltype(op)>(op)(*lbegin,*begin);
 			++lbegin;
 		}
 	}
