@@ -43,10 +43,14 @@ namespace nThread
 			std::lock_guard<std::mutex> lock{insertMut_};
 			fwd_list_.remove_if(std::forward<decltype(pred)>(pred));
 		}
+		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
 		value_type wait_and_pop()
 		{
 			std::unique_lock<std::mutex> lock{insertMut_};
 			insert_.wait(lock,[this]() noexcept{return !empty();});
+			//1. if move constructor is noexcept, it is exception safety
+			//2. if move constructor is not noexcept and copy constructor exists, it is exception safety
+			//3. if move constructor is not noexcept and copy constructor does not exist, it may not be exception safety
 			const auto temp{std::move_if_noexcept(fwd_list_.front())};
 			fwd_list_.pop_front();
 			lock.unlock();
