@@ -6,7 +6,6 @@
 
 namespace nThread
 {
-	//use std::shared_ptr to implement
 	template<class T>
 	class CAtomic_stack
 	{
@@ -18,15 +17,17 @@ namespace nThread
 			value_type data;
 			std::shared_ptr<Node> next;
 			template<class ... Args>
-			Node(const std::shared_ptr<Node> &next_,Args &&...args)
-				:data{std::forward<decltype(args)>(args)...},next{next_}{}
+			Node(std::shared_ptr<Node> &&next_,Args &&...args)
+				:data{std::forward<decltype(args)>(args)...},next{std::move(next_)}{}
 		};
 		std::shared_ptr<Node> begin_;
 	public:
+		CAtomic_stack()=default;
+		CAtomic_stack(const CAtomic_stack &)=delete;
 		template<class ... Args>
 		void emplace(Args &&...args)
 		{
-			std::shared_ptr<Node> node{std::make_shared<Node>(begin_,std::forward<decltype(args)>(args)...)};
+			const std::shared_ptr<Node> node{std::make_shared<Node>(std::atomic_load_explicit(&begin_,std::memory_order_relaxed),std::forward<decltype(args)>(args)...)};
 			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&node->next,node,std::memory_order_release,std::memory_order_relaxed))
 				;
 		}
@@ -45,6 +46,16 @@ namespace nThread
 			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&node,node->next,std::memory_order_acquire,std::memory_order_relaxed))
 				;
 			return std::move(node->data);
+		}
+		CAtomic_stack& operator=(const CAtomic_stack &)=delete;
+		~CAtomic_stack()
+		{
+			while(begin_)
+			{
+				std::shared_ptr<Node> p{std::move(begin_->next)};
+				begin_.reset();
+				begin_=std::move(p);
+			}
 		}
 	};
 }
