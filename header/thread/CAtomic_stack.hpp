@@ -16,9 +16,9 @@ namespace nThread
 		{
 			value_type data;
 			std::shared_ptr<Node> next;
-			template<class ... Args>
-			Node(std::shared_ptr<Node> &&next_,Args &&...args)
-				:data{std::forward<decltype(args)>(args)...},next{std::move(next_)}{}
+			template<class shared_ptrFwdRef,class ... Args>
+			Node(shared_ptrFwdRef &&next_,Args &&...args)
+				:data{std::forward<decltype(args)>(args)...},next{std::forward<decltype(next_)>(next_)}{}
 		};
 		std::shared_ptr<Node> begin_;
 	public:
@@ -30,6 +30,11 @@ namespace nThread
 			const std::shared_ptr<Node> node{std::make_shared<Node>(std::atomic_load_explicit(&begin_,std::memory_order_relaxed),std::forward<decltype(args)>(args)...)};
 			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&node->next,node,std::memory_order_release,std::memory_order_relaxed))
 				;
+		}
+		template<class ... Args>
+		inline void emplace_not_ts(Args &&...args)
+		{
+			begin_=std::make_shared<Node>(begin_,std::forward<decltype(args)>(args)...);
 		}
 		inline bool empty() const noexcept
 		{
