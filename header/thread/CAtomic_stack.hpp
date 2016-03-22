@@ -38,6 +38,7 @@ namespace nThread
 		{
 			return std::atomic_is_lock_free(&begin_);
 		}
+		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
 		value_type pop()
 		{
 			std::shared_ptr<Node> node{std::atomic_load_explicit(&begin_,std::memory_order_relaxed)};
