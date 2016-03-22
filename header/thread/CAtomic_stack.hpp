@@ -19,6 +19,15 @@ namespace nThread
 			template<class shared_ptrFwdRef,class ... Args>
 			Node(shared_ptrFwdRef &&next_,Args &&...args)
 				:data{std::forward<decltype(args)>(args)...},next{std::forward<decltype(next_)>(next_)}{}
+			~Node()
+			{
+				while(next.use_count()==1)
+				{
+					std::shared_ptr<Node> p{std::move(next->next)};
+					next.reset();
+					next=std::move(p);
+				}
+			}
 		};
 		std::shared_ptr<Node> begin_;
 	public:
@@ -53,15 +62,6 @@ namespace nThread
 			return std::move(node->data);
 		}
 		CAtomic_stack& operator=(const CAtomic_stack &)=delete;
-		~CAtomic_stack()
-		{
-			while(begin_)
-			{
-				std::shared_ptr<Node> p{std::move(begin_->next)};
-				begin_.reset();
-				begin_=std::move(p);
-			}
-		}
 	};
 }
 
