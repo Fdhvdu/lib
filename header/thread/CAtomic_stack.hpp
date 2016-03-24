@@ -1,7 +1,7 @@
 #ifndef CATOMIC_STACK
 #define CATOMIC_STACK
 #include<atomic>
-#include<memory>	//shared_ptr, make_shared
+#include<memory>	//shared_ptr
 #include<utility>	//forward, move
 
 namespace nThread
