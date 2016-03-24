@@ -44,7 +44,7 @@ namespace nThread
 			fwd_list_.remove_if(std::forward<decltype(pred)>(pred));
 		}
 		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
-		value_type wait_and_pop()
+		value_type wait_and_pop_front()
 		{
 			std::unique_lock<std::mutex> lock{insertMut_};
 			insert_.wait(lock,[this]() noexcept{return !empty();});
