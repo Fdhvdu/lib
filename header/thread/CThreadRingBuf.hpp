@@ -1,12 +1,12 @@
 #ifndef CTHREADRINGBUF
 #define CTHREADRINGBUF
-#include<atomic>
+#include<condition_variable>
 #include<memory>	//allocator
-#include<vector>
-#include<utility>	//forward, move, move_if_noexcept
-#include"CSemaphore.hpp"
+#include<mutex>
+#include<queue>
+#include<utility>	//forward, move, move_if_noexcept, pair
+#include"CAtomic_stack.hpp"
 #include"../algorithm/algorithm.hpp"	//for_each_val
-#include"../tool/CScopeGuard.hpp"
 
 namespace nThread
 {
@@ -22,57 +22,82 @@ namespace nThread
 		using pointer=typename std::allocator<T>::pointer;
 		static allocator_type alloc_;
 		const pointer begin_;
-		std::vector<std::atomic<bool>> complete_;
-		std::atomic<size_type> read_subscript_;
-		CSemaphore sema_;
 		const size_type size_;
-		std::atomic<size_type> use_construct_;
-		std::atomic<size_type> write_subscript_;
-		//can only be used when your write will not overwrite the data
-		template<class TFwdRef>
-		void write_(TFwdRef &&val)
-		{
-			sema_.signal();
-			const auto write{write_subscript_++};
-			while(complete_[write%size()].load(std::memory_order_acquire))
-				;
-			if(write<size()&&use_construct_++<size())
-				alloc_.construct(begin_+write,std::forward<TFwdRef>(val));
-			else
-				begin_[write%size()]=std::forward<TFwdRef>(val);
-			complete_[write%size()].store(true,std::memory_order_release);
-		}
+		std::mutex mut_;
+		std::queue<pointer> queue_;
+		std::condition_variable read_cv_;
+		CAtomic_stack<std::pair<bool,pointer>> stack_;
 	public:
 		explicit CThreadRingBuf(const size_type size)
-			:begin_{alloc_.allocate(size)},complete_(size),size_{size}{}
+			:begin_{alloc_.allocate(size)},size_{size}
+		{
+			nAlgorithm::for_each_val(begin_,begin_+size,[this](const auto p){
+				stack_.emplace_not_ts(false,p);
+			});
+		}
+		inline bool empty() const noexcept
+		{
+			return queue_.empty();
+		}
 		inline size_type available() const noexcept
 		{
-			return static_cast<size_type>(sema_.count());
+			return static_cast<size_type>(queue_.size());
 		}
+		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
 		value_type read()
 		{
-			sema_.wait();
-			const auto read{(read_subscript_++)%size()};
-			while(!complete_[read].load(std::memory_order_acquire))
-				;
-			nTool::CScopeGuard sg{[&]{complete_[read].store(false,std::memory_order_release);}};
-			return std::move_if_noexcept(begin_[read]);
+			std::unique_lock<std::mutex> lock{mut_};
+			read_cv_.wait(lock,[this]() noexcept{return available();});
+			const pointer p{queue_.front()};
+			//1. if move constructor is noexcept, it is exception safety
+			//2. if move constructor is not noexcept and copy constructor exists, it is exception safety
+			//3. if move constructor is not noexcept and copy constructor does not exist, it may not be exception safety
+			const auto temp{std::move_if_noexcept(*p)};
+			queue_.pop();
+			lock.unlock();
+			stack_.emplace(true,p);
+			return temp;
 		}
 		inline size_type size() const noexcept
 		{
 			return size_;
 		}
-		inline void write(const T &val)
+		//can only be used when your write will not overwrite the data
+		template<class ... Args>
+		void write(Args &&...args)
 		{
-			write_(val);
-		}
-		inline void write(T &&val)
-		{
-			write_(std::move(val));
+			std::pair<bool,pointer> p{stack_.pop()};
+			if(p.first)
+			{
+				alloc_.destroy(p.second);
+				p.first=false;
+			}
+			try
+			{
+				alloc_.construct(p.second,std::forward<decltype(args)>(args)...);
+			}catch(...)
+			{
+				stack_.emplace(p);
+				throw ;
+			}
+			std::lock_guard<std::mutex> lock{mut_};
+			queue_.emplace(p.second);
+			if(queue_.size()==1)
+				read_cv_.notify_all();
 		}
 		~CThreadRingBuf()
 		{
-			nAlgorithm::for_each_val(begin_,begin_+size(),[&](const auto p){alloc_.destroy(p);});
+			while(!stack_.empty())
+			{
+				const std::pair<bool,pointer> p{stack_.pop()};
+				if(p.first)
+					alloc_.destroy(p.second);
+			}
+			while(available())
+			{
+				alloc_.destroy(queue_.front());
+				queue_.pop();
+			}
 			alloc_.deallocate(begin_,size());
 		}
 	};
