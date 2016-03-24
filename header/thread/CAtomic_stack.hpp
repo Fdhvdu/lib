@@ -40,6 +40,8 @@ namespace nThread
 			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&node->next,node,std::memory_order_release,std::memory_order_relaxed))
 				;
 		}
+		//1. do not call emplace_not_ts with greater than or equal to 2 threads
+		//2. do not call CAtomic_stack::pop at same time
 		template<class ... Args>
 		inline void emplace_not_ts(Args &&...args)
 		{
