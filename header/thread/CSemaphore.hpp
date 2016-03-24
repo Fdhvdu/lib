@@ -5,12 +5,12 @@
 
 namespace nThread
 {
-	class CSemaphore	//semaphore
+	class CSemaphore
 	{
 	public:
 		using size_type=std::size_t;
 	private:
-		class Impl;
+		struct Impl;
 		nTool::CPimpl<Impl> impl_;
 	public:
 		//CSemaphore::CSemaphore()
@@ -19,25 +19,13 @@ namespace nThread
 		explicit CSemaphore(size_type);
 		CSemaphore(const CSemaphore &)=delete;
 		size_type count() const noexcept;
+		//1. make CSemaphore::count become 0
+		//2. will not signal any threads
+		void reset();
 		void signal();
 		void wait();
 		CSemaphore& operator=(const CSemaphore &)=delete;
 		~CSemaphore();
-	};
-
-	class CReaders_Writers_Problem	//no as powerful as std::shared_mutex
-	{
-		class Impl;
-		nTool::CPimpl<Impl> impl_;
-	public:
-		CReaders_Writers_Problem();
-		CReaders_Writers_Problem(const CReaders_Writers_Problem &)=delete;
-		void readBegin();
-		void readEnd();
-		void writeBegin();
-		void writeEnd();
-		CReaders_Writers_Problem& operator=(const CReaders_Writers_Problem &)=delete;
-		~CReaders_Writers_Problem();
 	};
 }
 
