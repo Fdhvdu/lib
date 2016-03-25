@@ -11,6 +11,7 @@ namespace nThread
 	class CAtomic_stack
 	{
 		struct only_CAtomic_stack_can_construct_CNode_t{};
+		//VC++ 14.0 cannot use static constexpr
 		//static constexpr only_CAtomic_stack_can_construct_CNode_t only_CAtomic_stack_can_construct_CNode{};
 		static only_CAtomic_stack_can_construct_CNode_t only_CAtomic_stack_can_construct_CNode;
 	public:
