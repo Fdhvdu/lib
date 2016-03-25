@@ -101,6 +101,7 @@ namespace nThread
 	//		std::shared_lock<std::shared_mutex> lock{remove_mut_};
 	//		while(!std::atomic_compare_exchange_weak_explicit(&begin_,&node->next,node,std::memory_order_release,std::memory_order_relaxed))
 	//			;
+	//		std::lock_guard<std::mutex> lock{wait_mut_};
 	//		cv_.notify_one();
 	//	}
 	//	//1. do not call emplace_not_ts with greater than or equal to 2 threads at same time
