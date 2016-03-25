@@ -66,22 +66,22 @@ namespace nThread
 		template<class ... Args>
 		void write(Args &&...args)
 		{
-			std::pair<bool,pointer> p{stack_.pop()};
-			if(p.first)
+			std::shared_ptr<typename CAtomic_stack<std::pair<bool,pointer>>::CNode> p{stack_.pop_shared_ptr()};
+			if(p->data.first)
 			{
-				alloc_.destroy(p.second);
-				p.first=false;
+				alloc_.destroy(p->data.second);
+				p->data.first=false;
 			}
 			try
 			{
-				alloc_.construct(p.second,std::forward<decltype(args)>(args)...);
+				alloc_.construct(p->data.second,std::forward<decltype(args)>(args)...);
 			}catch(...)
 			{
-				stack_.emplace(p);	//what will happen if it throws bad_alloc?
+				stack_.emplace_shared_ptr(std::move(p));
 				throw ;
 			}
 			std::lock_guard<std::mutex> lock{mut_};
-			queue_.emplace(p.second);
+			queue_.emplace(p->data.second);
 			if(queue_.size()==1)
 				read_cv_.notify_all();
 		}
