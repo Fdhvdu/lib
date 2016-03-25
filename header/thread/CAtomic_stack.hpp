@@ -25,7 +25,7 @@ namespace nThread
 			template<class ... Args>
 			CNode(only_CAtomic_stack_can_construct_CNode_t,Args &&...args) noexcept(std::is_nothrow_constructible<T,Args...>::value)
 				:data{std::forward<decltype(args)>(args)...}{}
-			template<class shared_ptrFwdRef,class ... Args,class=std::enable_if_t<std::is_same<std::remove_const_t<std::remove_reference_t<shared_ptrFwdRef>>,std::shared_ptr<CNode>>::value>>
+			template<class shared_ptrFwdRef,class ... Args,class=std::enable_if_t<std::is_same<std::remove_cv_t<std::remove_reference_t<shared_ptrFwdRef>>,std::shared_ptr<CNode>>::value>>
 			CNode(only_CAtomic_stack_can_construct_CNode_t,shared_ptrFwdRef &&next,Args &&...args) noexcept(std::is_nothrow_constructible<T,Args...>::value)
 				:data{std::forward<decltype(args)>(args)...},next_{std::forward<decltype(next)>(next)}{}
 			CNode(const CNode &)=delete;
