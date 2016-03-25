@@ -77,7 +77,7 @@ namespace nThread
 				alloc_.construct(p.second,std::forward<decltype(args)>(args)...);
 			}catch(...)
 			{
-				stack_.emplace(p);
+				stack_.emplace(p);	//what will happen if it throws bad_alloc?
 				throw ;
 			}
 			std::lock_guard<std::mutex> lock{mut_};
