@@ -195,7 +195,7 @@ namespace nThread
 	//		return temp;
 	//	}
 	//	CThread_forward_list& operator=(const CThread_forward_list &)=delete;
-	};
+	//};
 }
 
 #endif
