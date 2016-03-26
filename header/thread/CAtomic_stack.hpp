@@ -48,7 +48,10 @@ namespace nThread
 			friend void CAtomic_stack<T>::emplace_CNode(CNode &&) noexcept;
 			std::shared_ptr<Node> p_;
 		public:
-			template<class ... Args>
+			template<class Arg,class=std::enable_if_t<!std::is_base_of<std::remove_reference_t<Arg>,CNode>::value>>
+			CNode(Arg &&arg)
+				:p_{std::make_shared<Node>(std::forward<decltype(arg)>(arg))}{}
+			template<class ... Args,class=std::enable_if_t<(sizeof...(Args)!=1)>>
 			CNode(Args &&...args)
 				:p_{std::make_shared<Node>(std::forward<decltype(args)>(args)...)}{}
 			CNode(const CNode &)=delete;
