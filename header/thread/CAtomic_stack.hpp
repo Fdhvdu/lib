@@ -69,16 +69,16 @@ namespace nThread
 		{
 			emplace_shared_ptr_(std::make_shared<Node>(std::forward<decltype(args)>(args)...));
 		}
+		inline void emplace_CNode(CNode &&val) noexcept
+		{
+			emplace_shared_ptr_(std::move(val.p_));
+		}
 		//1. do not call emplace_not_ts with greater than or equal to 2 threads at same time
 		//2. do not call CAtomic_stack::pop at same time
 		template<class ... Args>
 		inline void emplace_not_ts(Args &&...args)
 		{
 			begin_=std::make_shared<Node>(begin_,std::forward<decltype(args)>(args)...);
-		}
-		inline void emplace_CNode(CNode &&val) noexcept
-		{
-			emplace_shared_ptr_(std::move(val.p_));
 		}
 		inline bool empty() const noexcept
 		{
