@@ -66,7 +66,7 @@ namespace nThread
 		template<class ... Args>
 		void write(Args &&...args)
 		{
-			CAtomic_stack<std::pair<bool,pointer>>::CProtected_Node node{CAtomic_stack<std::pair<bool,pointer>>::make_CProtected_Node()};
+			CAtomic_stack<std::pair<bool,pointer>>::CNode node{CAtomic_stack<std::pair<bool,pointer>>::make_CNode()};
 			std::pair<bool,pointer> p{stack_.pop()};
 			if(p.first)
 			{
@@ -79,7 +79,7 @@ namespace nThread
 			}catch(...)
 			{
 				node.get_data()=std::move(p);
-				stack_.emplace_CProtected_Node(std::move(node));
+				stack_.emplace_CNode(std::move(node));
 				throw ;
 			}
 			std::lock_guard<std::mutex> lock{mut_};
