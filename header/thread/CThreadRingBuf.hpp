@@ -46,6 +46,7 @@ namespace nThread
 		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
 		value_type read()
 		{
+			typename CAtomic_stack<std::pair<bool,pointer>>::CNode node;
 			std::unique_lock<std::mutex> lock{mut_};
 			read_cv_.wait(lock,[this]() noexcept{return available();});
 			const pointer p{queue_.front()};
@@ -55,7 +56,8 @@ namespace nThread
 			const auto temp{std::move_if_noexcept(*p)};
 			queue_.pop();
 			lock.unlock();
-			stack_.emplace(true,p);
+			node.get_data()=std::make_pair(true,std::move(p));
+			stack_.emplace_CNode(std::move(node));
 			return temp;
 		}
 		inline size_type size() const noexcept
