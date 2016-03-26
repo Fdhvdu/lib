@@ -7,4 +7,6 @@ VC++ 2015 and GCC 5.2.0.
 # About compilation errors
 If you get error C4996 when you compile [insert_iterator.cpp](tutorial/insert_iterator.cpp) by VC++ 2015, [see this](http://stackoverflow.com/questions/25046829/what-does-use-d-scl-secure-no-warnings-mean).
 # Future work
-use constexpr and noexcept
+constexpr<br>
+noexcept<br>
+CAtomic_quque (or CThread_queue)
