@@ -126,7 +126,7 @@ namespace nThread
 	//		std::shared_lock<std::shared_mutex> lock{remove_mut_};
 	//		emplace_front_(std::move(val.p_));
 	//	}
-	//	void emplace_CNode_front_notify(CNode &&val)
+	//	void emplace_CNode_front_and_notify(CNode &&val)
 	//	{
 	//		emplace_CNode_front(std::move(val));
 	//		std::lock_guard<std::mutex> lock{wait_mut_};
@@ -146,7 +146,7 @@ namespace nThread
 	//		begin_=std::make_shared<Node>(begin_,std::forward<decltype(args)>(args)...);
 	//	}
 	//	template<class ... Args>
-	//	void emplace_front_notify(Args &&...args)
+	//	void emplace_front_and_notify(Args &&...args)
 	//	{
 	//		emplace_front(std::forward<decltype(args)>(args)...));
 	//		std::lock_guard<std::mutex> lock{wait_mut_};

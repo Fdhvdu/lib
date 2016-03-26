@@ -44,7 +44,7 @@ namespace nThread
 			return static_cast<size_type>(queue_.size());
 		}
 		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
-		value_type read()
+		value_type wait_and_read()
 		{
 			typename CAtomic_stack<std::pair<bool,pointer>>::CNode node;
 			std::unique_lock<std::mutex> lock{mut_};
@@ -66,7 +66,7 @@ namespace nThread
 		}
 		//can only be used when your write will not overwrite the data
 		template<class ... Args>
-		void write(Args &&...args)
+		void write_and_notify(Args &&...args)
 		{
 			typename CAtomic_stack<std::pair<bool,pointer>>::CNode node;
 			std::pair<bool,pointer> p{stack_.pop()};
