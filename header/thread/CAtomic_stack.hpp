@@ -10,10 +10,9 @@ namespace nThread
 	template<class T>
 	class CAtomic_stack
 	{
-		struct only_CAtomic_stack_can_construct_CNode_t{};
+		struct only_CAtomic_stack_can_construct_CProtected_Node_t{};
 		//VC++ 14.0 cannot use static constexpr
-		//static constexpr only_CAtomic_stack_can_construct_CNode_t only_CAtomic_stack_can_construct_CNode{};
-		static const only_CAtomic_stack_can_construct_CNode_t only_CAtomic_stack_can_construct_CNode;
+		static const only_CAtomic_stack_can_construct_CProtected_Node_t only_CAtomic_stack_can_construct_CProtected_Node;
 	public:
 		using value_type=T;
 	private:
@@ -53,7 +52,7 @@ namespace nThread
 			std::shared_ptr<Node> p_;
 		public:
 			template<class ... Args>
-			explicit CProtected_Node(only_CAtomic_stack_can_construct_CNode_t,Args &&...args)
+			explicit CProtected_Node(only_CAtomic_stack_can_construct_CProtected_Node_t,Args &&...args)
 				:p_{std::make_shared<Node>(std::forward<decltype(args)>(args)...)}{}
 			CProtected_Node(const CProtected_Node &)=delete;
 			CProtected_Node(CProtected_Node &&)=default;
@@ -66,7 +65,7 @@ namespace nThread
 		template<class ... Args>
 		static CProtected_Node make_CProtected_Node(Args &&...args)
 		{
-			return CProtected_Node{only_CAtomic_stack_can_construct_CNode,std::forward<Args>(args)...};
+			return CProtected_Node{only_CAtomic_stack_can_construct_CProtected_Node,std::forward<Args>(args)...};
 		}
 		CAtomic_stack()=default;
 		CAtomic_stack(const CAtomic_stack &)=delete;
@@ -106,7 +105,7 @@ namespace nThread
 	};
 
 	template<class T>
-	const typename CAtomic_stack<T>::only_CAtomic_stack_can_construct_CNode_t CAtomic_stack<T>::only_CAtomic_stack_can_construct_CNode;
+	const typename CAtomic_stack<T>::only_CAtomic_stack_can_construct_CProtected_Node_t CAtomic_stack<T>::only_CAtomic_stack_can_construct_CProtected_Node;
 }
 
 #endif
