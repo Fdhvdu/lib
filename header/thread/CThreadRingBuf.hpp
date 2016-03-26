@@ -66,7 +66,7 @@ namespace nThread
 		template<class ... Args>
 		void write(Args &&...args)
 		{
-			CAtomic_stack<std::pair<bool,pointer>>::CNode node{CAtomic_stack<std::pair<bool,pointer>>::make_CNode()};
+			CAtomic_stack<std::pair<bool,pointer>>::CNode node;
 			std::pair<bool,pointer> p{stack_.pop()};
 			if(p.first)
 			{
