@@ -66,22 +66,24 @@ namespace nThread
 		template<class ... Args>
 		void write(Args &&...args)
 		{
-			std::shared_ptr<typename CAtomic_stack<std::pair<bool,pointer>>::CNode> p{stack_.pop_shared_ptr()};
-			if(p->data.first)
+			CAtomic_stack<std::pair<bool,pointer>>::CProtected_Node node{CAtomic_stack<std::pair<bool,pointer>>::make_CProtected_Node()};
+			std::pair<bool,pointer> p{stack_.pop()};
+			if(p.first)
 			{
-				alloc_.destroy(p->data.second);
-				p->data.first=false;
+				alloc_.destroy(p.second);
+				p.first=false;
 			}
 			try
 			{
-				alloc_.construct(p->data.second,std::forward<decltype(args)>(args)...);
+				alloc_.construct(p.second,std::forward<decltype(args)>(args)...);
 			}catch(...)
 			{
-				stack_.emplace_shared_ptr(std::move(p));
+				node.get_data()=std::move(p);
+				stack_.emplace_CProtected_Node(std::move(node));
 				throw ;
 			}
 			std::lock_guard<std::mutex> lock{mut_};
-			queue_.emplace(p->data.second);
+			queue_.emplace(p.second);
 			if(queue_.size()==1)
 				read_cv_.notify_all();
 		}
