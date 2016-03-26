@@ -98,8 +98,6 @@ namespace nThread
 	//	{
 	//		while(!std::atomic_compare_exchange_weak_explicit(&begin_,&val->next,val,std::memory_order_release,std::memory_order_relaxed))
 	//			;
-	//		std::lock_guard<std::mutex> lock{wait_mut_};
-	//		cv_.notify_one();
 	//	}
 	//public:
 	//	class CNode
@@ -123,10 +121,16 @@ namespace nThread
 	//	};
 	//	CThread_forward_list()=default;
 	//	CThread_forward_list(const CThread_forward_list &)=delete;
-	//	void emplace_CNode_front(CNode &&val) noexcept
+	//	void emplace_CNode_front(CNode &&val)
 	//	{
 	//		std::shared_lock<std::shared_mutex> lock{remove_mut_};
 	//		emplace_front_(std::move(val.p_));
+	//	}
+	//	void emplace_CNode_front_notify(CNode &&val)
+	//	{
+	//		emplace_CNode_front(std::move(val));
+	//		std::lock_guard<std::mutex> lock{wait_mut_};
+	//		cv_.notify_one();
 	//	}
 	//	template<class ... Args>
 	//	void emplace_front(Args &&...args)
@@ -140,6 +144,13 @@ namespace nThread
 	//	inline void emplace_front_not_ts(Args &&...args)
 	//	{
 	//		begin_=std::make_shared<Node>(begin_,std::forward<decltype(args)>(args)...);
+	//	}
+	//	template<class ... Args>
+	//	void emplace_front_notify(Args &&...args)
+	//	{
+	//		emplace_front(std::forward<decltype(args)>(args)...));
+	//		std::lock_guard<std::mutex> lock{wait_mut_};
+	//		cv_.notify_one();
 	//	}
 	//	inline bool empty() const noexcept
 	//	{
