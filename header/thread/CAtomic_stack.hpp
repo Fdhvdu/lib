@@ -4,7 +4,7 @@
 #include<memory>	//shared_ptr
 #include<utility>	//forward, move
 #include<type_traits>
-#include<iostream>
+
 namespace nThread
 {
 	template<class T>
