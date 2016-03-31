@@ -100,7 +100,7 @@ namespace nThread
 		void emplace_front(CNode &&val,Args &&...args)
 		{
 			Node::alloc.construct(val.p_->data,std::forward<decltype(args)>(args)...);
-			acquire_lock_and_emplace_front_(move(std::move(val.p_));
+			acquire_lock_and_emplace_front_(std::move(val.p_));
 		}
 		template<class ... Args>
 		void emplace_front_and_notify(Args &&...args)
