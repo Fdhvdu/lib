@@ -18,7 +18,7 @@ namespace nThread
 		struct Node
 		{
 			static allocator_type alloc;
-			typename std::allocator<value_type>::pointer data;
+			typename allocator_type::pointer data;
 			std::shared_ptr<Node> next;
 			Node()
 				:data{alloc.allocate(1)}{}
@@ -53,6 +53,11 @@ namespace nThread
 		std::shared_ptr<Node> begin_;
 		std::condition_variable cv_;
 		std::mutex wait_mut_;
+		void acquire_lock_to_emplace_front_(std::shared_ptr<Node> &&val)
+		{
+			std::lock_guard<std::mutex> lock{wait_mut_};
+			emplace_front_(std::move(val));
+		}
 		void emplace_front_(std::shared_ptr<Node> &&val) noexcept
 		{
 			val->next=std::atomic_load_explicit(&begin_,std::memory_order_relaxed);
@@ -74,7 +79,7 @@ namespace nThread
 	public:
 		class CNode
 		{
-			friend CThread_forward_list<T>;
+			friend CThread_forward_list<value_type>;
 			std::shared_ptr<Node> p_;
 		public:
 			CNode()
@@ -88,15 +93,14 @@ namespace nThread
 		template<class ... Args>
 		void emplace_front(Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{wait_mut_};
-			emplace_front_(std::make_shared<Node>(std::forward<decltype(args)>(args)...));
+			auto temp{std::make_shared<Node>(std::forward<decltype(args)>(args)...)};
+			acquire_lock_to_emplace_front_(std::move(temp));
 		}
 		template<class ... Args>
 		void emplace_front(CNode &&val,Args &&...args)
 		{
 			Node::alloc.construct(val.p_->data,std::forward<decltype(args)>(args)...);
-			std::lock_guard<std::mutex> lock{wait_mut_};
-			emplace_front_(std::move(val.p_));
+			acquire_lock_to_emplace_front_(move(std::move(val.p_));
 		}
 		template<class ... Args>
 		void emplace_front_and_notify(Args &&...args)
@@ -157,7 +161,7 @@ namespace nThread
 			//1. if move constructor is noexcept, it is exception safety
 			//2. if move constructor is not noexcept and copy constructor exists, it is exception safety
 			//3. if move constructor is not noexcept and copy constructor does not exist, it may not be exception safety
-			const auto temp{pop_front_()};
+			const auto temp{pop_front_()};	//is pop_front_ instead of pop_front
 			lock.unlock();
 			return temp;
 		}
