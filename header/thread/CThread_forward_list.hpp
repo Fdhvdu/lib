@@ -53,7 +53,7 @@ namespace nThread
 		std::shared_ptr<Node> begin_;
 		std::condition_variable cv_;
 		std::mutex wait_mut_;
-		void acquire_lock_to_emplace_front_(std::shared_ptr<Node> &&val)
+		void acquire_lock_and_emplace_front_(std::shared_ptr<Node> &&val)
 		{
 			std::lock_guard<std::mutex> lock{wait_mut_};
 			emplace_front_(std::move(val));
@@ -94,13 +94,13 @@ namespace nThread
 		void emplace_front(Args &&...args)
 		{
 			auto temp{std::make_shared<Node>(std::forward<decltype(args)>(args)...)};
-			acquire_lock_to_emplace_front_(std::move(temp));
+			acquire_lock_and_emplace_front_(std::move(temp));
 		}
 		template<class ... Args>
 		void emplace_front(CNode &&val,Args &&...args)
 		{
 			Node::alloc.construct(val.p_->data,std::forward<decltype(args)>(args)...);
-			acquire_lock_to_emplace_front_(move(std::move(val.p_));
+			acquire_lock_and_emplace_front_(move(std::move(val.p_));
 		}
 		template<class ... Args>
 		void emplace_front_and_notify(Args &&...args)
