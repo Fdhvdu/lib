@@ -4,6 +4,7 @@
 #include<memory>	//allocator
 #include<mutex>
 #include<queue>
+#include<type_traits>
 #include<utility>	//forward, move, move_if_noexcept, pair
 #include"CAtomic_stack.hpp"
 #include"../algorithm/algorithm.hpp"	//for_each_val
@@ -16,10 +17,10 @@ namespace nThread
 	{
 	public:
 		using allocator_type=std::allocator<T>;
-		using size_type=typename std::allocator<T>::size_type;
+		using size_type=typename allocator_type::size_type;
 		using value_type=T;
 	private:
-		using pointer=typename std::allocator<T>::pointer;
+		using pointer=typename allocator_type::pointer;
 		static allocator_type alloc_;
 		const pointer begin_;
 		const size_type size_;
@@ -27,6 +28,47 @@ namespace nThread
 		std::queue<pointer> queue_;
 		std::condition_variable read_cv_;
 		CAtomic_stack<std::pair<bool,pointer>> stack_;
+		pointer pop_and_destroy_() noexcept
+		{
+			std::pair<bool,pointer> p{stack_.pop()};
+			if(p.first)
+				alloc_.destroy(p.second);
+			return p.second;
+		}
+		template<class ... Args>
+		pointer write_(std::true_type,Args &&...args) noexcept
+		{
+			const pointer p{pop_and_destroy_()};
+			alloc_.construct(p,std::forward<decltype(args)>(args)...);
+			return p;
+		}
+		template<class ... Args>
+		pointer write_(std::false_type,Args &&...args)
+		{
+			typename CAtomic_stack<std::pair<bool,pointer>>::CNode node;
+			const pointer p{pop_and_destroy_()};
+			try
+			{
+				alloc_.construct(p,std::forward<decltype(args)>(args)...);
+			}catch(...)
+			{
+				stack_.emplace(std::move(node),false,p);
+				throw ;
+			}
+			return p;
+		}
+		void write_and_notify_queue_(const pointer p)
+		{
+			std::lock_guard<std::mutex> lock{mut_};
+			queue_.emplace(p);
+			if(queue_.size()==1)
+				read_cv_.notify_all();
+		}
+		void write_queue_(const pointer p)
+		{
+			std::lock_guard<std::mutex> lock{mut_};
+			queue_.emplace(p);
+		}
 	public:
 		explicit CThreadRingBuf(const size_type size)
 			:begin_{alloc_.allocate(size)},size_{size}
@@ -35,13 +77,29 @@ namespace nThread
 				stack_.emplace_not_ts(false,p);
 			});
 		}
+		inline size_type available() const noexcept
+		{
+			return static_cast<size_type>(queue_.size());
+		}
 		inline bool empty() const noexcept
 		{
 			return queue_.empty();
 		}
-		inline size_type available() const noexcept
+		inline size_type size() const noexcept
 		{
-			return static_cast<size_type>(queue_.size());
+			return size_;
+		}
+		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
+		value_type read()
+		{
+			typename CAtomic_stack<std::pair<bool,pointer>>::CNode node;
+			std::lock_guard<std::mutex> lock{mut_};
+			const pointer p{queue_.front()};
+			const auto temp{std::move_if_noexcept(*p)};
+			queue_.pop();
+			lock.unlock();
+			stack_.emplace(std::move(node),true,p);
+			return temp;
 		}
 		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
 		value_type wait_and_read()
@@ -50,44 +108,23 @@ namespace nThread
 			std::unique_lock<std::mutex> lock{mut_};
 			read_cv_.wait(lock,[this]() noexcept{return available();});
 			const pointer p{queue_.front()};
-			//1. if move constructor is noexcept, it is exception safety
-			//2. if move constructor is not noexcept and copy constructor exists, it is exception safety
-			//3. if move constructor is not noexcept and copy constructor does not exist, it may not be exception safety
 			const auto temp{std::move_if_noexcept(*p)};
 			queue_.pop();
 			lock.unlock();
-			node.get_data()=std::make_pair(true,std::move(p));
-			stack_.emplace_CNode(std::move(node));
+			stack_.emplace(std::move(node),true,p);
 			return temp;
-		}
-		inline size_type size() const noexcept
-		{
-			return size_;
 		}
 		//can only be used when your write will not overwrite the data
 		template<class ... Args>
-		void write_and_notify(Args &&...args)
+		inline void write(Args &&...args)
 		{
-			typename CAtomic_stack<std::pair<bool,pointer>>::CNode node;
-			std::pair<bool,pointer> p{stack_.pop()};
-			if(p.first)
-			{
-				alloc_.destroy(p.second);
-				p.first=false;
-			}
-			try
-			{
-				alloc_.construct(p.second,std::forward<decltype(args)>(args)...);
-			}catch(...)
-			{
-				node.get_data()=std::move(p);
-				stack_.emplace_CNode(std::move(node));
-				throw ;
-			}
-			std::lock_guard<std::mutex> lock{mut_};
-			queue_.emplace(p.second);
-			if(queue_.size()==1)
-				read_cv_.notify_all();
+			write_queue_(write_(std::is_nothrow_constructible<value_type,Args...>{},std::forward<decltype(args)>(args)...));
+		}
+		//can only be used when your write will not overwrite the data
+		template<class ... Args>
+		inline void write_and_notify(Args &&...args)
+		{
+			write_and_notify_queue_(write_(std::is_nothrow_constructible<value_type,Args...>{},std::forward<decltype(args)>(args)...));
 		}
 		~CThreadRingBuf()
 		{
