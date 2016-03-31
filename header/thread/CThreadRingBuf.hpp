@@ -57,16 +57,20 @@ namespace nThread
 			}
 			return p;
 		}
+		void acquire_lock_and_write_queue_(const pointer p)
+		{
+			std::lock_guard<std::mutex> lock{mut_};
+			write_queue_(p);
+		}
 		void write_and_notify_queue_(const pointer p)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
-			queue_.emplace(p);
+			write_queue_(p);
 			if(queue_.size()==1)
 				read_cv_.notify_all();
 		}
 		void write_queue_(const pointer p)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
 			queue_.emplace(p);
 		}
 	public:
@@ -118,13 +122,18 @@ namespace nThread
 		template<class ... Args>
 		inline void write(Args &&...args)
 		{
-			write_queue_(write_(std::is_nothrow_constructible<value_type,Args...>{},std::forward<decltype(args)>(args)...));
+			acquire_lock_and_write_queue_(write_(std::is_nothrow_constructible<value_type,Args...>{},std::forward<decltype(args)>(args)...));
 		}
 		//can only be used when your write will not overwrite the data
 		template<class ... Args>
 		inline void write_and_notify(Args &&...args)
 		{
 			write_and_notify_queue_(write_(std::is_nothrow_constructible<value_type,Args...>{},std::forward<decltype(args)>(args)...));
+		}
+		template<class ... Args>
+		inline void write_not_ts(Args &&...args)
+		{
+			write_queue_(write_(std::is_nothrow_constructible<value_type,Args...>{},std::forward<decltype(args)>(args)...));
 		}
 		~CThreadRingBuf()
 		{
