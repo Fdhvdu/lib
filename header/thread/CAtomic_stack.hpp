@@ -40,13 +40,7 @@ namespace nThread
 				alloc.destroy(data);
 				alloc.deallocate(data,1);
 				while(next.use_count()==1)
-				{
-					alloc.destroy(next->data);
-					alloc.deallocate(next->data,1);
-					std::shared_ptr<Node> p{std::move(next->next)};
-					next.reset();
-					next=std::move(p);
-				}
+					next=std::move(next->next);
 			}
 		};
 		std::shared_ptr<Node> begin_;
