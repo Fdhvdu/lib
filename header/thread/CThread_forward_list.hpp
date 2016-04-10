@@ -2,9 +2,10 @@
 #define CTHREAD_FORWARD_LIST
 #include<atomic>
 #include<condition_variable>
-#include<memory>	//allocator, shared_ptr
+#include<memory>	//shared_ptr
 #include<mutex>
 #include<utility>	//forward, move, swap
+#include"Node.hpp"
 
 namespace nThread
 {
@@ -12,47 +13,17 @@ namespace nThread
 	class CThread_forward_list
 	{
 	public:
-		using allocator_type=std::allocator<T>;
 		using value_type=T;
 	private:
-		struct Node
-		{
-			static allocator_type alloc;
-			typename allocator_type::pointer data;
-			std::shared_ptr<Node> next;
-			Node()
-				:data{alloc.allocate(1)}{}
-			template<class ... Args>
-			Node(Args &&...args)
-				:Node{}
-			{
-				alloc.construct(data,std::forward<decltype(args)>(args)...);
-			}
-			template<class shared_ptrFwdRef,class ... Args,class=std::enable_if_t<std::is_same<std::remove_cv_t<std::remove_reference_t<shared_ptrFwdRef>>,std::shared_ptr<Node>>::value>>
-			Node(shared_ptrFwdRef &&next_,Args &&...args)
-				:data{alloc.allocate(1)},next{std::forward<decltype(next_)>(next_)}
-			{
-				alloc.construct(data,std::forward<decltype(args)>(args)...);
-			}
-			Node(const Node &)=delete;
-			Node& operator=(const Node &)=delete;
-			~Node()
-			{
-				alloc.destroy(data);
-				alloc.deallocate(data,1);
-				while(next.use_count()==1)
-					next=std::move(next->next);
-			}
-		};
-		std::shared_ptr<Node> begin_;
+		std::shared_ptr<Node<value_type>> begin_;
 		std::condition_variable cv_;
 		std::mutex wait_mut_;
-		void acquire_lock_and_emplace_front_(std::shared_ptr<Node> &&val)
+		void acquire_lock_and_emplace_front_(std::shared_ptr<Node<value_type>> &&val)
 		{
 			std::lock_guard<std::mutex> lock{wait_mut_};
 			emplace_front_(std::move(val));
 		}
-		void emplace_front_(std::shared_ptr<Node> &&val) noexcept
+		void emplace_front_(std::shared_ptr<Node<value_type>> &&val) noexcept
 		{
 			val->next=std::atomic_load_explicit(&begin_,std::memory_order_relaxed);
 			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&val->next,val,std::memory_order_release,std::memory_order_relaxed))
@@ -65,7 +36,7 @@ namespace nThread
 		}
 		value_type pop_front_() noexcept
 		{
-			std::shared_ptr<Node> node{std::atomic_load_explicit(&begin_,std::memory_order_relaxed)};
+			std::shared_ptr<Node<value_type>> node{std::atomic_load_explicit(&begin_,std::memory_order_relaxed)};
 			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&node,node->next,std::memory_order_acquire,std::memory_order_relaxed))
 				;
 			return std::move(*node->data);
@@ -74,10 +45,10 @@ namespace nThread
 		class CNode
 		{
 			friend CThread_forward_list<value_type>;
-			std::shared_ptr<Node> p_;
+			std::shared_ptr<Node<value_type>> p_;
 		public:
 			CNode()
-				:p_{std::make_shared<Node>()}{}
+				:p_{std::make_shared<Node<value_type>>()}{}
 			CNode(const CNode &)=delete;
 			CNode(CNode &&)=default;
 			CNode& operator=(const CNode &)=delete;
@@ -87,13 +58,13 @@ namespace nThread
 		template<class ... Args>
 		void emplace_front(Args &&...args)
 		{
-			auto temp{std::make_shared<Node>(std::forward<decltype(args)>(args)...)};
+			auto temp{std::make_shared<Node<value_type>>(std::forward<decltype(args)>(args)...)};
 			acquire_lock_and_emplace_front_(std::move(temp));
 		}
 		template<class ... Args>
 		void emplace_front(CNode &&val,Args &&...args)
 		{
-			Node::alloc.construct(val.p_->data,std::forward<decltype(args)>(args)...);
+			Node<value_type>::alloc.construct(val.p_->data,std::forward<decltype(args)>(args)...);
 			acquire_lock_and_emplace_front_(std::move(val.p_));
 		}
 		template<class ... Args>
@@ -107,7 +78,7 @@ namespace nThread
 		template<class ... Args>
 		inline void emplace_front_not_ts(Args &&...args)
 		{
-			begin_=std::make_shared<Node>(begin_,std::forward<decltype(args)>(args)...);
+			begin_=std::make_shared<Node<value_type>>(begin_,std::forward<decltype(args)>(args)...);
 		}
 		inline bool empty() const noexcept
 		{
@@ -128,7 +99,7 @@ namespace nThread
 		void remove_if(const UnaryPred pred)
 		{
 			std::lock_guard<std::mutex> lock{wait_mut_};
-			for(std::shared_ptr<Node> bef{begin_},iter{bef};iter;)
+			for(std::shared_ptr<Node<value_type>> bef{begin_},iter{bef};iter;)
 				if(pred(*iter->data))
 					if(begin_==iter)
 					{
@@ -161,9 +132,6 @@ namespace nThread
 		}
 		CThread_forward_list& operator=(const CThread_forward_list &)=delete;
 	};
-
-	template<class T>
-	typename CThread_forward_list<T>::allocator_type CThread_forward_list<T>::Node::alloc;
 }
 
 #endif
