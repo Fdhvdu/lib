@@ -46,7 +46,7 @@ namespace nThread
 			emplace_shared_ptr_(std::move(val.p_));
 		}
 		//1. do not call emplace_not_ts with greater than or equal to 2 threads at same time
-		//2. do not call CAtomic_stack::pop at same time
+		//2. do not call CAtomic_stack::emplace and CAtomic_stack::pop at same time
 		template<class ... Args>
 		inline void emplace_not_ts(Args &&...args)
 		{
