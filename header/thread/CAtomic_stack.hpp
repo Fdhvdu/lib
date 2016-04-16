@@ -10,6 +10,8 @@ namespace nThread
 	template<class T>
 	class CAtomic_stack
 	{
+		template<class T>
+		friend void reverse_move(CAtomic_stack<T> &,CAtomic_stack<T> &) noexcept;
 	public:
 		using value_type=T;
 	private:
@@ -20,6 +22,13 @@ namespace nThread
 			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&val->next,val,std::memory_order_release,std::memory_order_relaxed))
 				;
 		}
+		std::shared_ptr<Node<value_type>> pop_() noexcept
+		{
+			std::shared_ptr<Node<value_type>> node{std::atomic_load_explicit(&begin_,std::memory_order_relaxed)};
+			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&node,node->next,std::memory_order_acquire,std::memory_order_relaxed))
+				;
+			return node;
+		}
 	public:
 		class CNode
 		{
@@ -27,7 +36,8 @@ namespace nThread
 			std::shared_ptr<Node<value_type>> p_;
 		public:
 			CNode()
-				:p_{std::make_shared<Node<value_type>>()}{}
+				:p_{std::make_shared<Node<value_type>>()}
+			{}
 			CNode(const CNode &)=delete;
 			CNode(CNode &&)=default;
 			CNode& operator=(const CNode &)=delete;
@@ -63,13 +73,17 @@ namespace nThread
 		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
 		inline value_type pop() noexcept
 		{
-			std::shared_ptr<Node<value_type>> node{std::atomic_load_explicit(&begin_,std::memory_order_relaxed)};
-			while(!std::atomic_compare_exchange_weak_explicit(&begin_,&node,node->next,std::memory_order_acquire,std::memory_order_relaxed))
-				;
-			return std::move(*node->data);
+			return std::move(*pop_()->data);
 		}
 		CAtomic_stack& operator=(const CAtomic_stack &)=delete;
 	};
+
+	template<class T>
+	void reverse_move(CAtomic_stack<T> &src,CAtomic_stack<T> &des) noexcept
+	{
+		while(!src.empty())
+			des.emplace_shared_ptr_(src.pop_());
+	}
 }
 
 #endif
