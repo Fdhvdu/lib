@@ -36,8 +36,7 @@ namespace nThread
 			std::shared_ptr<Node<value_type>> p_;
 		public:
 			CNode()
-				:p_{std::make_shared<Node<value_type>>()}
-			{}
+				:p_{std::make_shared<Node<value_type>>()}{}
 			CNode(const CNode &)=delete;
 			CNode(CNode &&)=default;
 			CNode& operator=(const CNode &)=delete;
