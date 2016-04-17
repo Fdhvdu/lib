@@ -11,7 +11,7 @@ namespace nThread
 	class CAtomic_stack
 	{
 		template<class T>
-		friend void reverse_move(CAtomic_stack<T> &,CAtomic_stack<T> &) noexcept;
+		friend void pop_and_emplace(CAtomic_stack<T> &,CAtomic_stack<T> &) noexcept;
 	public:
 		using value_type=T;
 	private:
@@ -78,7 +78,7 @@ namespace nThread
 	};
 
 	template<class T>
-	void reverse_move(CAtomic_stack<T> &src,CAtomic_stack<T> &des) noexcept
+	void pop_and_emplace(CAtomic_stack<T> &src,CAtomic_stack<T> &des) noexcept
 	{
 		while(!src.empty())
 			des.emplace_shared_ptr_(src.pop_());
