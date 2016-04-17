@@ -123,12 +123,7 @@ namespace nThread
 		{
 			std::unique_lock<std::mutex> lock{wait_mut_};
 			cv_.wait(lock,[this]() noexcept{return !empty();});
-			//1. if move constructor is noexcept, it is exception safety
-			//2. if move constructor is not noexcept and copy constructor exists, it is exception safety
-			//3. if move constructor is not noexcept and copy constructor does not exist, it may not be exception safety
-			const auto temp{pop_front_()};	//is pop_front_ instead of pop_front
-			lock.unlock();
-			return temp;
+			return pop_front_();	//is pop_front_ instead of pop_front
 		}
 		CThread_forward_list& operator=(const CThread_forward_list &)=delete;
 	};
