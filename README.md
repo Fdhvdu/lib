@@ -9,4 +9,3 @@ If you get error C4996 when you compile [insert_iterator.cpp](tutorial/insert_it
 # Future work
 constexpr<br>
 noexcept<br>
-CAtomic_quque (or CThread_queue)
