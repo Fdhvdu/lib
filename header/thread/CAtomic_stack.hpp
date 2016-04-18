@@ -32,7 +32,7 @@ namespace nThread
 	public:
 		class CNode
 		{
-			friend CAtomic_stack<T>;
+			friend CAtomic_stack<value_type>;
 			std::shared_ptr<Node<value_type>> p_;
 		public:
 			CNode()
@@ -49,7 +49,7 @@ namespace nThread
 			emplace_shared_ptr_(std::make_shared<Node<value_type>>(std::forward<decltype(args)>(args)...));
 		}
 		template<class ... Args>
-		void emplace(CNode &&val,Args &&...args) noexcept(std::is_nothrow_constructible<T,Args...>::value)
+		void emplace(CNode &&val,Args &&...args) noexcept(std::is_nothrow_constructible<value_type,Args...>::value)
 		{
 			Node<value_type>::alloc.construct(val.p_->data,std::forward<decltype(args)>(args)...);
 			emplace_shared_ptr_(std::move(val.p_));
