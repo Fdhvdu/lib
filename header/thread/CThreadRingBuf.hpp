@@ -6,8 +6,7 @@
 
 namespace nThread
 {
-	//1. fixed-sized
-	//2. cannot overwrite when buffer is full
+	//a fixed-sized ring buffer
 	template<class T>
 	class CThreadRingBuf
 	{
