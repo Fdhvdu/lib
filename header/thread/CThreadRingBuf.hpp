@@ -18,7 +18,7 @@ namespace nThread
 		CSemaphore sema_;
 	public:
 		explicit CThreadRingBuf(const size_type size)
-			:ring_buf_{size},sema_{size}{}
+			:ring_buf_{size}{}
 		CThreadRingBuf(const CThreadRingBuf &)=delete;
 		inline bool empty() const noexcept
 		{
