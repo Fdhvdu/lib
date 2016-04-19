@@ -53,7 +53,7 @@ namespace nThread
 		size_type fetch_add_read_()
 		{
 			size_type bef{read_.load()};
-			while(!read_.compare_exchange_weak(bef,(bef+1)%size()))
+			while(!read_.compare_exchange_weak(bef,(bef+1)%size(),std::memory_order_relaxed))
 				;
 			i_am_using_(bef);
 			if(!destroy_status_[bef])
@@ -63,18 +63,18 @@ namespace nThread
 		size_type fetch_add_write_() noexcept
 		{
 			size_type bef{write_.load()};
-			while(!write_.compare_exchange_weak(bef,(bef+1)%size()))
+			while(!write_.compare_exchange_weak(bef,(bef+1)%size(),std::memory_order_relaxed))
 				;
 			i_am_using_(bef);
 			return bef;
 		}
 		inline void i_am_not_using_(const size_type subscript) noexcept
 		{
-			using_status_[subscript].flag.clear();
+			using_status_[subscript].flag.clear(std::memory_order_acquire);
 		}
 		void i_am_using_(const size_type subscript) noexcept
 		{
-			while(using_status_[subscript].flag.test_and_set())
+			while(using_status_[subscript].flag.test_and_set(std::memory_order_release))
 				;
 		}
 	public:
@@ -84,6 +84,7 @@ namespace nThread
 		{
 			return read_==write_;
 		}
+		//do not call CAtomicRingBuf::read while there is no data can be read
 		inline value_type read()
 		{
 			const size_type subscript{fetch_add_read_()};
@@ -94,6 +95,7 @@ namespace nThread
 		{
 			return size_;
 		}
+		//can overwrite data
 		template<class ... Args>
 		void write(Args &&...args) noexcept(std::is_nothrow_constructible<value_type,Args...>::value)
 		{
