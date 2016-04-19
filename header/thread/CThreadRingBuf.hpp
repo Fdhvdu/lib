@@ -20,10 +20,6 @@ namespace nThread
 		explicit CThreadRingBuf(const size_type size)
 			:ring_buf_{size},sema_{size}{}
 		CThreadRingBuf(const CThreadRingBuf &)=delete;
-		inline size_type available() const noexcept
-		{
-			return ring_buf_.available();
-		}
 		inline bool empty() const noexcept
 		{
 			return ring_buf_.empty();
