@@ -29,12 +29,12 @@ namespace nThread
 		template<class ... Args>
 		bool emplace(Args &&...args)
 		{
-			std::unique_lock<std::mutex> lock{mut_};
+			std::lock_guard<std::mutex> lock{mut_};
 			return set_.emplace(std::forward<Args>(args)...).second;
 		}
 		size_type erase(const Key &key)
 		{
-			std::unique_lock<std::mutex> lock{mut_};
+			std::lock_guard<std::mutex> lock{mut_};
 			return set_.erase(key);
 		}
 		inline bool find(const Key &key) const
