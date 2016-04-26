@@ -1,5 +1,5 @@
-#ifndef CTHREAD_UNORDERED_SET
-#define CTHREAD_UNORDERED_SET
+#ifndef CLOCK_UNORDERED_SET
+#define CLOCK_UNORDERED_SET
 #include<functional>	//equal_to, hash
 #include<memory>	//allocator
 #include<mutex>
@@ -9,7 +9,7 @@
 namespace nThread
 {
 	template<class Key,class Hash=std::hash<Key>,class KeyEqual=std::equal_to<Key>,class Allocator=std::allocator<Key>>
-	class CThread_unordered_set
+	class CLock_unordered_set
 	{
 		std::unordered_set<Key,Hash,KeyEqual,Allocator> set_;
 		std::mutex mut_;
@@ -26,6 +26,8 @@ namespace nThread
 		}
 	public:
 		using size_type=typename std::unordered_set<Key,Hash,KeyEqual,Allocator>::size_type;
+		CLock_unordered_set()=default;
+		CLock_unordered_set(const CLock_unordered_set &)=delete;
 		template<class ... Args>
 		bool emplace(Args &&...args)
 		{
@@ -51,6 +53,7 @@ namespace nThread
 		{
 			return try_emplace_(std::move(key),std::forward<Args>(args)...);
 		}
+		CLock_unordered_set& operator=(const CLock_unordered_set &)=delete;
 	};
 }
 
