@@ -1,5 +1,5 @@
-#ifndef CTHREAD_FORWARD_LIST
-#define CTHREAD_FORWARD_LIST
+#ifndef CLOCK_FORWARD_LIST
+#define CLOCK_FORWARD_LIST
 #include<atomic>
 #include<memory>	//shared_ptr
 #include<mutex>
@@ -11,7 +11,7 @@
 namespace nThread
 {
 	template<class T>
-	class CThread_forward_list
+	class CLock_forward_list
 	{
 	public:
 		using value_type=T;
@@ -30,7 +30,7 @@ namespace nThread
 	public:
 		class CNode
 		{
-			friend CThread_forward_list<value_type>;
+			friend CLock_forward_list<value_type>;
 			shared_ptr p_;
 		public:
 			CNode()
@@ -39,8 +39,8 @@ namespace nThread
 			CNode(CNode &&)=default;
 			CNode& operator=(const CNode &)=delete;
 		};
-		CThread_forward_list()=default;
-		CThread_forward_list(const CThread_forward_list &)=delete;
+		CLock_forward_list()=default;
+		CLock_forward_list(const CLock_forward_list &)=delete;
 		template<class ... Args>
 		inline void emplace_front(Args &&...args)
 		{
@@ -52,7 +52,7 @@ namespace nThread
 			node_type::alloc.construct(val.p_->data,std::forward<decltype(args)>(args)...);
 			acquire_lock_and_emplace_front_(std::move(val.p_));
 		}
-		//do not call CAtomic_stack::emplace_front, emplace_front_not_ts, CAtomic_stack::pop_front, CAtomic_stack::remove or CAtomic_stack::remove_if at same time
+		//do not call CLock_forward_list::emplace_front, emplace_front_not_ts, CAtomic_stack::pop_front, CLock_forward_list::remove or CLock_forward_list::remove_if at same time
 		template<class ... Args>
 		inline void emplace_front_not_ts(Args &&...args)
 		{
@@ -72,7 +72,7 @@ namespace nThread
 		{
 			remove_if([&](const auto &val) noexcept{return val==remove_val;});
 		}
-		//will block CAtomic_stack::emplace_front and CAtomic_stack::pop_front
+		//will block CLock_forward_list::emplace_front and CLock_forward_list::pop_front
 		template<class UnaryPred>
 		void remove_if(const UnaryPred pred)
 		{
@@ -96,7 +96,7 @@ namespace nThread
 					iter=iter->next;
 				}
 		}
-		CThread_forward_list& operator=(const CThread_forward_list &)=delete;
+		CLock_forward_list& operator=(const CLock_forward_list &)=delete;
 	};
 }
 
