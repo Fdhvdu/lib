@@ -28,7 +28,7 @@ namespace nThread
 		template<class ... Args>
 		void emplace_not_ts(Args &&...args)
 		{
-			queue_.emplace(std::forward<decltype(args)>(args)...);
+			queue_.emplace_not_ts(std::forward<decltype(args)>(args)...);
 			sema_.signal();
 		}
 		inline bool empty() const noexcept
