@@ -20,9 +20,8 @@ namespace nThread
 		//have to guarantee the shared_ptr is unique
 		void emplace(shared_ptr &&val) noexcept
 		{
-			while(!val.unique())
+			while(!val.unique())	//prevent ABA problem
 				;
-			//you have to prevent ABA problem
 			val->next=std::atomic_load_explicit(&begin,std::memory_order_relaxed);
 			while(!std::atomic_compare_exchange_weak_explicit(&begin,&val->next,val,std::memory_order_release,std::memory_order_relaxed))
 				;
