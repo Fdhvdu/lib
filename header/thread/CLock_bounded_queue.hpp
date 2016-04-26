@@ -60,6 +60,14 @@ namespace nThread
 				throw ;
 			}
 		}
+		template<class ... Args>
+		void destroy_and_construct_(shared_ptr &node,Args &&...args) noexcept(std::is_nothrow_constructible<value_type,Args...>::value)
+		{
+			if(node->has_not_destroy)
+				Node::alloc.destroy(node->data);
+			construct_(node,std::is_nothrow_constructible<value_type,Args...>{},std::forward<decltype(args)>(args)...);
+			node->has_not_destroy=false;
+		}
 	public:
 		explicit CLock_bounded_queue(size_type size)
 			:size_{size}
@@ -72,11 +80,16 @@ namespace nThread
 		void emplace(Args &&...args)
 		{
 			shared_ptr node{stack_.pop()};
-			if(node->has_not_destroy)
-				Node::alloc.destroy(node->data);
-			construct_(node,std::is_nothrow_constructible<value_type,Args...>{},std::forward<decltype(args)>(args)...);
-			node->has_not_destroy=false;
+			destroy_and_construct_(node,std::forward<decltype(args)>(args)...);
 			queue_.emplace(std::move(node));
+		}
+		//do not call CLock_bounded_queue::emplace, emplace_not_ts or CLock_bounded_queue::pop at same time
+		template<class ... Args>
+		void emplace_not_ts(Args &&...args)
+		{
+			shared_ptr node{stack_.pop_not_ts()};
+			destroy_and_construct_(node,std::forward<decltype(args)>(args)...);
+			queue_.emplace_not_ts(std::move(node));
 		}
 		inline bool empty() const noexcept
 		{

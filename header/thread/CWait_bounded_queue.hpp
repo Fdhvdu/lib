@@ -24,6 +24,13 @@ namespace nThread
 			queue_.emplace(std::forward<decltype(args)>(args)...);
 			sema_.signal();
 		}
+		//do not call CWait_bounded_queue::emplace_and_notify, emplace_not_ts or CWait_bounded_queue::wait_and_pop at same time
+		template<class ... Args>
+		void emplace_not_ts(Args &&...args)
+		{
+			queue_.emplace(std::forward<decltype(args)>(args)...);
+			sema_.signal();
+		}
 		inline bool empty() const noexcept
 		{
 			return queue_.empty();
