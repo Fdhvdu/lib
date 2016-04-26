@@ -25,7 +25,7 @@ namespace nThread
 			std::lock_guard<std::mutex> lock{mut};
 			emplace_(std::move(val));
 		}
-		//do not call Lock_queue::emplace, emplace_not_ts or Lock_queue::pop at same time
+		//do not call Lock_queue::emplace, emplace_not_ts, Lock_queue::pop or Lock_queue::pop_not_ts at same time
 		inline void emplace_not_ts(shared_ptr &&val) noexcept
 		{
 			emplace_(std::move(val));
@@ -36,14 +36,16 @@ namespace nThread
 		}
 		shared_ptr pop()
 		{
-			shared_ptr node;
-			{
-				std::lock_guard<std::mutex> lock{mut};
-				node=begin;
-				begin=std::move(begin->next);
-				if(empty())
-					end.reset();
-			}
+			std::lock_guard<std::mutex> lock{mut};
+			return pop_not_ts();
+		}
+		//do not call Lock_queue::emplace, Lock_queue::emplace_not_ts, Lock_queue::pop or pop_not_ts at same time
+		shared_ptr pop_not_ts() noexcept
+		{
+			const shared_ptr node{std::move(begin)};
+			begin=node->next;
+			if(empty())
+				end.reset();
 			return node;
 		}
 		Lock_queue& operator=(const Lock_queue &)=delete;

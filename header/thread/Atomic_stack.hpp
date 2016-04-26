@@ -27,7 +27,7 @@ namespace nThread
 			while(!std::atomic_compare_exchange_weak_explicit(&begin,&val->next,val,std::memory_order_release,std::memory_order_relaxed))
 				;
 		}
-		//do not call Atomic_stack::emplace, emplace_not_ts or Atomic_stack::pop at same time
+		//do not call Atomic_stack::emplace, emplace_not_ts, Atomic_stack::pop or Atomic_stack::pop_not_ts at same time
 		void emplace_not_ts(shared_ptr &&val) noexcept
 		{
 			//yes, don't need to prevent ABA problem
@@ -47,6 +47,13 @@ namespace nThread
 			shared_ptr node{std::atomic_load_explicit(&begin,std::memory_order_relaxed)};
 			while(!std::atomic_compare_exchange_weak_explicit(&begin,&node,node->next,std::memory_order_acquire,std::memory_order_relaxed))
 				;
+			return node;
+		}
+		//do not call Atomic_stack::emplace, Atomic_stack::emplace_not_ts, Atomic_stack::pop or pop_not_ts at same time
+		shared_ptr pop_not_ts() noexcept
+		{
+			const shared_ptr node{std::move(begin)};
+			begin=std::move(node->next);
 			return node;
 		}
 		Atomic_stack& operator=(const Atomic_stack &)=delete;
