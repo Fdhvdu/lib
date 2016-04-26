@@ -1,5 +1,5 @@
-#ifndef CTHREAD_UNORDERED_MAP
-#define CTHREAD_UNORDERED_MAP
+#ifndef CLOCK_UNORDERED_MAP
+#define CLOCK_UNORDERED_MAP
 #include<functional>	//equal_to, hash
 #include<memory>	//allocator
 #include<mutex>
@@ -9,7 +9,7 @@
 namespace nThread
 {
 	template<class Key,class T,class Hash=std::hash<Key>,class KeyEqual=std::equal_to<Key>,class Allocator=std::allocator<std::pair<const Key,T>>>
-	class CThread_unordered_map
+	class CLock_unordered_map
 	{
 	public:
 		using key_type=Key;
@@ -46,6 +46,8 @@ namespace nThread
 			return false;
 		}
 	public:
+		CLock_unordered_map()=default;
+		CLock_unordered_map(const CLock_unordered_map &)=delete;
 		inline mapped_type& at(const key_type &key)
 		{
 			return map_.at(key);
@@ -84,6 +86,7 @@ namespace nThread
 		{
 			return try_emplace_gen_(std::move(key),std::forward<decltype(gen)>(gen));
 		}
+		CLock_unordered_map& operator=(const CLock_unordered_map &)=delete;
 		inline mapped_type& operator[](const key_type &key)
 		{
 			return subscript_(key);
