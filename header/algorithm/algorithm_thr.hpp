@@ -21,8 +21,12 @@ namespace nAlgorithm
 			if(N&&N<size)
 			{
 				const auto mid{next(begin,size/2)};
-				const auto lhs_end{async(launch::async,unique_without_sort_thr_,begin,mid).get()};
-				auto rhs_end{async(launch::async,unique_without_sort_thr_,mid,end).get()};
+				FwdIter lhs_end,rhs_end;
+				{
+					future<FwdIter> fut{async(launch::async,unique_without_sort_thr_,begin,mid)};
+					rhs_end=async(launch::async,unique_without_sort_thr_,mid,end);
+					lhs_end=fut.get();
+				}
 				for_each(begin,lhs_end,[&,pred,mid](const auto &val){
 					rhs_end=remove_if(mid,rhs_end,[&,pred](auto &&val2){
 						return pred(val,forward<decltype(val2)>(val2));
