@@ -18,7 +18,9 @@ namespace nThread
 		CTask()=default;
 		template<class Func,class ... Args>
 		explicit CTask(Func &&func,Args &&...args)
-			:task_{std::bind(std::forward<Func>(func),std::forward<Args>(args)...)},fut_{task_.get_future()}{}
+			:task_{[&]() noexcept(noexcept(std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...))){
+				std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...);
+			}},fut_{task_.get_future()}{}
 		CTask(const CTask &)=delete;
 		CTask(CTask &&)=default;
 		inline Ret get()
