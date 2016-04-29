@@ -8,31 +8,33 @@ namespace nThread
 {
 	struct CSemaphore::Impl
 	{
-		atomic<CSemaphore::size_type> count_;
-		condition_variable cv_;
-		mutex mut_;
+		atomic<CSemaphore::size_type> count;
+		condition_variable cv;
+		atomic_flag only_one_notify;
+		mutex mut;
 		Impl(CSemaphore::size_type);
 		void signal();
 		void wait();
 	};
 
-	CSemaphore::Impl::Impl(const CSemaphore::size_type count)
-		:count_{count}{}
+	CSemaphore::Impl::Impl(const CSemaphore::size_type count_)
+		:count{count_},only_one_notify{ATOMIC_FLAG_INIT}{}
 
 	void CSemaphore::Impl::signal()
 	{
-		if(!count_++)
+		if(!count++&&!only_one_notify.test_and_set(std::memory_order_acquire))
 		{
-			lock_guard<mutex> lock{mut_};
-			cv_.notify_all();
+			lock_guard<mutex> lock{mut};
+			cv.notify_all();
+			only_one_notify.clear(std::memory_order_release);
 		}
 	}
 
 	void CSemaphore::Impl::wait()
 	{
-		unique_lock<mutex> lock{mut_};
-		cv_.wait(lock,[this]() noexcept{return count_.operator CSemaphore::size_type();});
-		--count_;
+		unique_lock<mutex> lock{mut};
+		cv.wait(lock,[this]() noexcept{return count.operator CSemaphore::size_type();});
+		--count;
 	}
 
 	CSemaphore::CSemaphore()
@@ -43,12 +45,12 @@ namespace nThread
 
 	CSemaphore::size_type CSemaphore::count() const noexcept
 	{
-		return impl_.get().count_;
+		return impl_.get().count;
 	}
 
 	void CSemaphore::reset()
 	{
-		impl_.get().count_=0;
+		impl_.get().count=0;
 	}
 
 	void CSemaphore::signal()
