@@ -1,12 +1,11 @@
 #ifndef CLOCK_FORWARD_LIST
 #define CLOCK_FORWARD_LIST
-#include<atomic>
 #include<memory>	//shared_ptr
 #include<mutex>
 //#include<shared_mutex>
 #include<utility>	//forward, move, swap
 #include"Atomic_stack.hpp"
-#include"Default_node.hpp"
+#include"../tool/CAlloc_obj.hpp"
 
 namespace nThread
 {
@@ -16,12 +15,11 @@ namespace nThread
 	public:
 		using value_type=T;
 	private:
-		using node_type=typename Atomic_stack<value_type>::node_type;
-		using shared_ptr=typename Atomic_stack<value_type>::shared_ptr;
+		using element_type=typename Atomic_stack<value_type>::element_type;
 		Atomic_stack<value_type> stack_;
 		std::mutex mut_;
 		//std::shared_mutex mut_;
-		void acquire_lock_and_emplace_front_(shared_ptr &&val)
+		void acquire_lock_and_emplace_front_(std::shared_ptr<element_type> &&val)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
 			//std::shared_lock<std::shared_mutex> lock{mut_};
@@ -31,10 +29,10 @@ namespace nThread
 		class CNode
 		{
 			friend CLock_forward_list<value_type>;
-			shared_ptr p_;
+			std::shared_ptr<element_type> p_;
 		public:
 			CNode()
-				:p_{std::make_shared<node_type>()}{}
+				:p_{std::make_shared<element_type>()}{}
 			CNode(const CNode &)=delete;
 			CNode(CNode &&)=default;
 			CNode& operator=(const CNode &)=delete;
@@ -44,19 +42,19 @@ namespace nThread
 		template<class ... Args>
 		inline void emplace_front(Args &&...args)
 		{
-			acquire_lock_and_emplace_front_(std::make_shared<node_type>(std::forward<decltype(args)>(args)...));
+			acquire_lock_and_emplace_front_(std::make_shared<element_type>(std::forward<decltype(args)>(args)...));
 		}
 		template<class ... Args>
 		void emplace_front(CNode &&val,Args &&...args)
 		{
-			node_type::alloc.construct(val.p_->data,std::forward<decltype(args)>(args)...);
+			val.p_->data.construct(std::forward<decltype(args)>(args)...);
 			acquire_lock_and_emplace_front_(std::move(val.p_));
 		}
 		//do not call CLock_forward_list::emplace_front, emplace_front_not_ts, CAtomic_stack::pop_front, CLock_forward_list::remove or CLock_forward_list::remove_if at same time
 		template<class ... Args>
 		inline void emplace_front_not_ts(Args &&...args)
 		{
-			stack_.emplace_not_ts(std::make_shared<node_type>(std::forward<decltype(args)>(args)...));
+			stack_.emplace_not_ts(std::make_shared<element_type>(std::forward<decltype(args)>(args)...));
 		}
 		inline bool empty() const noexcept
 		{
@@ -66,7 +64,7 @@ namespace nThread
 		{
 			std::lock_guard<std::mutex> lock{mut_};
 			//std::shared_lock<std::shared_mutex> lock{mut_};
-			return *stack_.pop()->data;
+			return std::move(stack_.pop()->data.get());
 		}
 		inline void remove(const value_type &remove_val)
 		{
@@ -78,8 +76,8 @@ namespace nThread
 		{
 			std::lock_guard<std::mutex> lock{mut_};
 			//std::lock_guard<std::shared_mutex> lock{mut_};
-			for(shared_ptr bef{stack_.begin},iter{bef};iter;)
-				if(pred(*iter->data))
+			for(std::shared_ptr<element_type> bef{stack_.begin},iter{bef};iter;)
+				if(pred(iter->data.get()))
 					if(stack_.begin==iter)
 					{
 						iter=iter->next;
