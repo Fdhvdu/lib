@@ -1,7 +1,7 @@
 #ifndef CSCOPEGUARD
 #define CSCOPEGUARD
 #include<functional>
-#include<utility>	//forward, move
+#include<utility>	//forward
 
 namespace nTool
 {
@@ -9,11 +9,9 @@ namespace nTool
 	{
 		const std::function<void()> func_;
 	public:
-		template<class Func,class ... Args>
-		explicit CScopeGuard(Func &&func,Args &&...args)
-			:func_{[&]() noexcept(noexcept(std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...))){
-				std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...);
-			}}{}
+		template<class Func>
+		CScopeGuard(Func &&func)
+			:func_{std::forward<decltype(func)>(func)}{}
 		CScopeGuard(const CScopeGuard &)=delete;
 		CScopeGuard& operator=(const CScopeGuard &)=delete;
 		~CScopeGuard();
