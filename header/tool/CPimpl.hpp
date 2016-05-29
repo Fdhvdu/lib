@@ -25,6 +25,10 @@ namespace nTool
 		{
 			return *p_;
 		}
+		explicit operator bool() const noexcept
+		{
+			return p_.operator bool();
+		}
 		CPimpl& operator=(const CPimpl &val) noexcept(std::is_nothrow_assignable<T,T&>::value)
 		{
 			get()=val.get();
@@ -34,10 +38,6 @@ namespace nTool
 		{
 			p_=std::move(rVal.p_);
 			return *this;
-		}
-		explicit operator bool() const noexcept
-		{
-			return p_.operator bool();
 		}
 		~CPimpl(){}
 	};
