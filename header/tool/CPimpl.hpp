@@ -25,7 +25,7 @@ namespace nTool
 		{
 			return *p_;
 		}
-		explicit operator bool() const noexcept
+		inline explicit operator bool() const noexcept
 		{
 			return p_.operator bool();
 		}
