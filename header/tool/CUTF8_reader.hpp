@@ -1,11 +1,10 @@
 #ifndef CUTF8_READER
 #define CUTF8_READER
-#include<bitset>
 #include<cstddef>
 #include<memory>	//addressof
 #include<stdexcept>	//runtime_error
 #include<type_traits>	//make_unsigned
-#include<iostream>//
+
 namespace nTool
 {
 	//String_type is std::basic_string
@@ -46,25 +45,6 @@ namespace nTool
 		inline String_type str() const
 		{
 			return hold_->substr(i_,size_);
-		}
-		unsigned long unicode() const
-		{
-			std::bitset<21> bit;
-			for(std::size_t i{size_};i--;)
-			{
-				char c{hold_->operator[](i_+i)};
-				char bit_size;
-				if(i)
-					bit_size=6;
-				else
-					bit_size=4;
-				for(char j{0};j!=bit_size;++j)
-				{
-					bit[(size_-i-1)*6+j]=c&1;
-					c>>=1;
-				}
-			}
-			return bit.to_ulong();
 		}
 		inline explicit operator bool() const noexcept
 		{
