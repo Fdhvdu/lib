@@ -223,7 +223,7 @@ namespace nTool
 			0x20a9==unicode;
 	}
 
-	template<class T,typename=std::enable_if_t<std::is_integral<T>::value>>
+	template<class T>
 	bool is_narrow(const T unicode) noexcept
 	{
 		return
