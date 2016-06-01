@@ -13,8 +13,6 @@ namespace nTool
 	//wstring_convert<codecvt_utf8<char32_t>,char32_t> utf8_to_utf32;
 	//u32string utf32_string{utf8_to_utf32.from_bytes(utf8_string)};
 	//is_ambiguous(u32string[0]);	//because utf8_string contain only one character, check u32string[0] is enough
-	//or
-	//is_ambiguous(wstring_convert<codecvt_utf8<char32_t>,char32_t>{}.from_bytes(utf8_string)[0]);
 	//
 	//and is_ambiguous return false
 	//but is_wide return true
