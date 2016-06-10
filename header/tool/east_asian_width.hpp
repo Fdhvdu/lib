@@ -210,7 +210,6 @@ namespace nTool
 			0x3000==unicode;
 	}
 
-	//do not contain halfwidth
 	template<class T>
 	bool is_halfwidth(const T unicode) noexcept
 	{
@@ -224,6 +223,7 @@ namespace nTool
 			0x20a9==unicode;
 	}
 
+	//do not contain halfwidth
 	template<class T>
 	bool is_narrow(const T unicode) noexcept
 	{
