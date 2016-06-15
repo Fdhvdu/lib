@@ -17,11 +17,6 @@ namespace nTool
 	//and is_ambiguous return false
 	//but is_wide return true
 
-	//although the parameter of is_ambiguous is unsigned long
-	//but actually, only 21 bits are used
-	//according to C++ standard, int (and unsigend int) is merely guarantee at least 16 bits
-	//so I use long as parameter
-	
 	template<class T>
 	bool is_ambiguous(const T unicode) noexcept
 	{
