@@ -9,7 +9,7 @@ namespace nTool
 	
 	//if you are using UTF-8, you have to convert UTF-8 character to Unicode (UTF-32) to use these functions
 	//for example,
-	//string utf8_string{u8"\u6C34"};	//contain only one character (using UTF-8 encoding)
+	//string utf8_string{"\u6C34"};	//contain only one character (using UTF-8 encoding)
 	//wstring_convert<codecvt_utf8<char32_t>,char32_t> utf8_to_utf32;
 	//u32string utf32_string{utf8_to_utf32.from_bytes(utf8_string)};
 	//is_ambiguous(u32string[0]);	//because utf8_string contain only one character, check u32string[0] is enough
