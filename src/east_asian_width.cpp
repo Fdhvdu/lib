@@ -1,6 +1,5 @@
 #include"../header/tool/east_asian_width.hpp"
 #include<fstream>
-#include<iostream>
 using namespace std;
 
 namespace
@@ -16,12 +15,11 @@ namespace
 				east_asian_width_property[i]=c;
 			return east_asian_width_property;
 		}
-		cerr<<"east_asian_width_property does not exist"<<endl;
-		return {};
+		throw runtime_error{"east_asian_width_property does not exist"};
 	}
 }
 
 namespace nTool
 {
-	unordered_map<unsigned long,char> east_asian_width_property{read_east_asian_width_property()};
+	const unordered_map<unsigned long,char> east_asian_width_property{read_east_asian_width_property()};
 }

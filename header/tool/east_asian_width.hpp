@@ -27,44 +27,44 @@ namespace nTool
 	//4 is fullwidth, F
 	//5 is wide, W
 	//3. the maximum range of east_asian_width_property is [0,0x10ffff]
-	extern std::unordered_map<unsigned long,char> east_asian_width_property;
+	extern const std::unordered_map<unsigned long,char> east_asian_width_property;
 
 	template<class T>
 	inline bool is_ambiguous(const T unicode) noexcept
 	{
-		return east_asian_width_property[unicode]==1;
+		return east_asian_width_property.at(unicode)==1;
 	}
 
 	template<class T>
 	inline bool is_fullwidth(const T unicode) noexcept
 	{
-		return east_asian_width_property[unicode]==4;
+		return east_asian_width_property.at(unicode)==4;
 	}
 
 	template<class T>
 	inline bool is_halfwidth(const T unicode) noexcept
 	{
-		return east_asian_width_property[unicode]==2;
+		return east_asian_width_property.at(unicode)==2;
 	}
 
 	//do not contain halfwidth
 	template<class T>
 	inline bool is_narrow(const T unicode) noexcept
 	{
-		return east_asian_width_property[unicode]==3;
+		return east_asian_width_property.at(unicode)==3;
 	}
 
 	template<class T>
 	inline bool is_neutral(const T unicode) noexcept
 	{
-		return east_asian_width_property[unicode]==0;
+		return east_asian_width_property.at(unicode)==0;
 	}
 	
 	//do not contain fullwidth
 	template<class T>
 	inline bool is_wide(const T unicode) noexcept
 	{
-		return east_asian_width_property[unicode]==5;
+		return east_asian_width_property.at(unicode)==5;
 	}
 }
 
