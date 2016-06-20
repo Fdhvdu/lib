@@ -13,10 +13,10 @@ namespace nAlgorithm
 	//will reorder the permutation of [begin,end)
 	//dereferenced FwdIter must meet the requirements of MoveAssignable
 	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
-	FwdIter unique_without_sort_thr(const FwdIter begin,const FwdIter end,const std::size_t N,const BinaryPred pred=BinaryPred())
+	FwdIter unique_without_sort_thr(const FwdIter begin,const FwdIter end,const std::size_t N,BinaryPred &&pred=BinaryPred())
 	{
 		using namespace std;
-		const function<FwdIter(FwdIter,FwdIter)> unique_without_sort_thr_{[&,N,pred](const FwdIter begin,const FwdIter end){
+		const function<FwdIter(FwdIter,FwdIter)> unique_without_sort_thr_{[&,N](const FwdIter begin,const FwdIter end){
 			const auto size{static_cast<size_t>(distance(begin,end))};
 			if(N&&N<size)
 			{
@@ -27,8 +27,8 @@ namespace nAlgorithm
 					rhs_end=async(launch::async,unique_without_sort_thr_,mid,end);
 					lhs_end=fut.get();
 				}
-				for_each(begin,lhs_end,[&,pred,mid](const auto &val){
-					rhs_end=remove_if(mid,rhs_end,[&,pred](auto &&val2){
+				for_each(begin,lhs_end,[&,mid](const auto &val){
+					rhs_end=remove_if(mid,rhs_end,[&](auto &&val2){
 						return pred(val,forward<decltype(val2)>(val2));
 					});
 				});

@@ -3,17 +3,18 @@
 #include<algorithm>	//for_each
 #include<iostream>
 #include<iterator>	//cbegin, cend, iterator_traits
+#include<utility>	//forward
 
 namespace nTool
 {
 	template<class InIter,class T,class UnaryOp>
-	void show(InIter begin,InIter end,std::ostream &os,const T &delim,const UnaryOp op)
+	void show(InIter begin,InIter end,std::ostream &os,const T &delim,UnaryOp &&op)
 	{
 		using namespace std;
 		if(begin!=end)
 		{
-			os<<op(*begin);
-			for_each(++begin,end,[&,op](const typename iterator_traits<InIter>::value_type &val){os<<delim<<op(val);});
+			os<<std::forward<decltype(op)>(op)(*begin);
+			for_each(++begin,end,[&](const typename iterator_traits<InIter>::value_type &val){os<<delim<<std::forward<decltype(op)>(op)(val);});
 			os<<endl;
 		}
 	}

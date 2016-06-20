@@ -9,7 +9,7 @@
 namespace nAlgorithm
 {
 	template<class T,class UnaryPred>
-	bool all_of_val(T begin,const T end,const UnaryPred pred)
+	bool all_of_val(T begin,const T end,UnaryPred &&pred)
 	{
 		while(begin!=end)
 		{
@@ -21,7 +21,7 @@ namespace nAlgorithm
 	}
 
 	template<class T,class UnaryPred>
-	T find_if_val(T begin,const T end,const UnaryPred pred)
+	T find_if_val(T begin,const T end,UnaryPred &&pred)
 	{
 		while(begin!=end)
 		{
@@ -33,13 +33,13 @@ namespace nAlgorithm
 	}
 
 	template<class T,class UnaryPred>
-	inline bool any_of_val(const T begin,const T end,const UnaryPred pred)
+	inline bool any_of_val(const T begin,const T end,UnaryPred &&pred)
 	{
-		return find_if_val(begin,end,pred)!=end;
+		return find_if_val(begin,end,std::forward<decltype(pred)>(pred))!=end;
 	}
 
 	template<class T,class UnaryPred>
-	std::ptrdiff_t count_if_val(T begin,const T end,const UnaryPred pred)
+	std::ptrdiff_t count_if_val(T begin,const T end,UnaryPred &&pred)
 	{
 		std::ptrdiff_t accu{0};
 		while(begin!=end)
@@ -52,7 +52,7 @@ namespace nAlgorithm
 	}
 
 	template<class T,class UnaryFunc>
-	UnaryFunc for_each_val(T begin,const T end,UnaryFunc func)
+	UnaryFunc for_each_val(T begin,const T end,UnaryFunc &&func)
 	{
 		while(begin!=end)
 		{
@@ -63,9 +63,9 @@ namespace nAlgorithm
 	}
 
 	template<class InIter,class UnaryPred,class UnaryFunc>
-	void loop_until_none_of(const InIter begin,const InIter end,const UnaryPred pred,const UnaryFunc func)
+	void loop_until_none_of(const InIter begin,const InIter end,UnaryPred &&pred,UnaryFunc &&func)
 	{
-		for(InIter iter;(iter=std::find_if(begin,end,pred))!=end;)
+		for(InIter iter;(iter=std::find_if(begin,end,std::forward<decltype(pred)>(pred)))!=end;)
 			func(*iter);
 	}
 
@@ -82,7 +82,7 @@ namespace nAlgorithm
 
 	//unique_without_sort will reorder the input permutation.
 	template<class FwdIter,class BinaryPred=std::equal_to<typename std::iterator_traits<FwdIter>::value_type>>
-	FwdIter unique_without_sort(FwdIter begin,FwdIter end,const BinaryPred pred=BinaryPred())
+	FwdIter unique_without_sort(FwdIter begin,FwdIter end,BinaryPred &&pred=BinaryPred())
 	{
 		while(begin!=end)
 		{
