@@ -16,7 +16,7 @@ namespace nTool
 		std::size_t size_;
 		void calc_size_()
 		{
-			const auto uc{std::make_unsigned_t<String_type::value_type>(hold_->operator[](i_))};
+			const auto uc{std::make_unsigned_t<typename String_type::value_type>(hold_->operator[](i_))};
 			if((127<uc&&uc<192)||(247<uc))
 				throw std::runtime_error{"not standard UTF8"};
 			if(uc<128)
