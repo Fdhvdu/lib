@@ -1,7 +1,6 @@
 #ifndef CUTF8_READER
 #define CUTF8_READER
 #include<cstddef>
-#include<memory>	//addressof
 #include<stdexcept>	//runtime_error
 #include<type_traits>	//make_unsigned
 
@@ -11,12 +10,12 @@ namespace nTool
 	template<class String_type>
 	class CUTF8_reader
 	{
-		const String_type *hold_;
+		const String_type &hold_;
 		std::size_t i_;
 		std::size_t size_;
 		void calc_size_()
 		{
-			const auto uc{std::make_unsigned_t<typename String_type::value_type>(hold_->operator[](i_))};
+			const auto uc{std::make_unsigned_t<typename String_type::value_type>(hold_[i_])};
 			if((127<uc&&uc<192)||(247<uc))
 				throw std::runtime_error{"not standard UTF8"};
 			if(uc<128)
@@ -33,7 +32,7 @@ namespace nTool
 		}
 	public:
 		explicit CUTF8_reader(const String_type &hold)
-			:hold_{std::addressof(hold)},i_{0},size_{0}
+			:hold_{hold},i_{0},size_{0}
 		{
 			calc_size_();
 		}
@@ -44,11 +43,11 @@ namespace nTool
 		}
 		inline String_type str() const
 		{
-			return hold_->substr(i_,size_);
+			return hold_.substr(i_,size_);
 		}
 		inline explicit operator bool() const noexcept
 		{
-			return i_!=hold_->size();
+			return i_!=hold_.size();
 		}
 		inline operator String_type() const
 		{
