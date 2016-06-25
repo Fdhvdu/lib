@@ -41,9 +41,13 @@ namespace nTool
 			i_+=size_;
 			calc_size_();
 		}
+		inline std::size_t size() const noexcept
+		{
+			return size_;
+		}
 		inline String_type str() const
 		{
-			return hold_.substr(i_,size_);
+			return hold_.substr(i_,size());
 		}
 		inline explicit operator bool() const noexcept
 		{
