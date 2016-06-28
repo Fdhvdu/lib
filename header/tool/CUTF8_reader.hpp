@@ -32,7 +32,7 @@ namespace nTool
 		}
 	public:
 		explicit CUTF8_reader(const String_type &hold)
-			:hold_{hold},i_{0},size_{0}
+			:hold_{hold},i_{0}
 		{
 			calc_size_();
 		}
