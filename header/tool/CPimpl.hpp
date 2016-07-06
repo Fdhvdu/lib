@@ -20,7 +20,7 @@ namespace nTool
 		//as smart pointer, use () instead of {}
 		template<class ... Args>
 		CPimpl(Args &&...args)
-			:p_(std::make_unique<T>(std::forward<Args>(args)...)){}
+			:p_(std::make_unique<T>(std::forward<decltype(args)>(args)...)){}
 		inline T& get() const noexcept
 		{
 			return *p_;

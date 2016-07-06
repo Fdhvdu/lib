@@ -21,7 +21,7 @@ namespace nThread
 		mapped_type& subscript_(Key_typeFwdRef &&key)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
-			return map_[std::forward<Key_typeFwdRef>(key)];
+			return map_[std::forward<decltype(key)>(key)];
 		}
 		template<class Key_typeFwdRef,class ... Args>
 		bool try_emplace_(Key_typeFwdRef &&key,Args &&...args)
@@ -29,7 +29,7 @@ namespace nThread
 			std::lock_guard<std::mutex> lock{mut_};
 			if(!find(key))
 			{
-				map_.emplace(std::forward<Key_typeFwdRef>(key),std::forward<Args>(args)...);
+				map_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
 				return true;
 			}
 			return false;
@@ -40,7 +40,7 @@ namespace nThread
 			std::lock_guard<std::mutex> lock{mut_};
 			if(!find(key))
 			{
-				map_.emplace(std::forward<Key_typeFwdRef>(key),std::forward<decltype(gen)>(gen)());
+				map_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen)());
 				return true;
 			}
 			return false;
@@ -64,17 +64,17 @@ namespace nThread
 		bool emplace(Args &&...args)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
-			return map_.emplace(std::forward<Args>(args)...).second;
+			return map_.emplace(std::forward<decltype(args)>(args)...).second;
 		}
 		template<class ... Args>
 		inline bool try_emplace(const key_type &key,Args &&...args)
 		{
-			return try_emplace_(key,std::forward<Args>(args)...);
+			return try_emplace_(key,std::forward<decltype(args)>(args)...);
 		}
 		template<class ... Args>
 		inline bool try_emplace(key_type &&key,Args &&...args)
 		{
-			return try_emplace_(std::move(key),std::forward<Args>(args)...);
+			return try_emplace_(std::move(key),std::forward<decltype(args)>(args)...);
 		}
 		template<class Gen>
 		inline bool try_emplace_gen(const key_type &key,Gen &&gen)
