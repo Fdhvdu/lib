@@ -1,7 +1,16 @@
 # Contents
+[Naming Convention](https://github.com/Fdhvdu/lib/blob/master/README.md#naming-convention)<br>
 [Compiler](https://github.com/Fdhvdu/lib/blob/master/README.md#compiler)<br>
 [About compilation errors](https://github.com/Fdhvdu/lib/blob/master/README.md#about-compilation-errors)<br>
 [Future work](https://github.com/Fdhvdu/lib/blob/master/README.md#future-work)
+# Naming Convention
+Macros are all written in capital letter.<br>
+For those which do not use capital letter in the begining (such as [algorithm.hpp](header/algorithm/algorithm.hpp)), it contains only functions.<br>
+For those which have `I` in the begining (such as [IThreadPoolItemBase.hpp](https://github.com/Fdhvdu/ThreadPool/blob/master/header/IThreadPoolItemBase.hpp)), it means they are `struct` and have pure functions.<br>
+For those which have `C` in the begining (such as [CAtomic_stack.hpp](header/thread/CAtomic_stack.hpp)), it means they are `Class`.<br>
+For those which do not have `I` or `C` and begin with capital letter (such as [Atomic_flag.hpp](header/thread/Atomic_flag.hpp)), it means they are `struct`. (One exception is [Boolean](header/tool/Boolean.hpp), this may be modified in the future.)<br>
+The old naming convention is CamelCase. (See [QuantumCircuit](https://github.com/Fdhvdu/QuantumCircuit/tree/master/header) and [ThreadPool](https://github.com/Fdhvdu/ThreadPool/tree/master/header))<br>
+The new naming convention uses underscores to separate words.
 # Compiler
 VC++ 14.2<br>
 or any compiler which supports C++14<br>
