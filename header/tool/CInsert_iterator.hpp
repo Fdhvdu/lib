@@ -6,7 +6,7 @@
 
 namespace nTool
 {
-	template<class T,class Holder,class RefFunc_t,RefFunc_t RefFunc,class MoveFunc_t=RefFunc_t,MoveFunc_t MoveFunc=RefFunc>
+	template<class T,class Holder,class RefFunc,RefFunc ref_func,class MoveFunc=RefFunc,MoveFunc move_func=ref_func>
 	class CInsert_iterator:public std::iterator<std::output_iterator_tag,void,void,void,void>
 	{
 		Holder *hold_;
@@ -27,28 +27,28 @@ namespace nTool
 		{
 			return *this;
 		}
-		CInsert_iterator& operator=(const value_type &val) noexcept(noexcept((std::declval<holder_type>().*RefFunc)(std::declval<value_type&>())))
+		CInsert_iterator& operator=(const value_type &val) noexcept(noexcept((std::declval<holder_type>().*ref_func)(std::declval<value_type&>())))
 		{
-			(hold_->*RefFunc)(val);
+			(hold_->*ref_func)(val);
 			return *this;
 		}
-		CInsert_iterator& operator=(value_type &&val) noexcept(noexcept((std::declval<holder_type>().*MoveFunc)(std::declval<value_type>())))
+		CInsert_iterator& operator=(value_type &&val) noexcept(noexcept((std::declval<holder_type>().*move_func)(std::declval<value_type>())))
 		{
-			(hold_->*MoveFunc)(std::move(val));
+			(hold_->*move_func)(std::move(val));
 			return *this;
 		}
 	};
 
-	template<class T,class RefFunc_t,RefFunc_t RefFunc,class MoveFunc_t,MoveFunc_t MoveFunc,class Holder>
-	inline CInsert_iterator<T,Holder,RefFunc_t,RefFunc,MoveFunc_t,MoveFunc> inserter(Holder &holder) noexcept
+	template<class T,class RefFunc,RefFunc ref_func,class MoveFunc,MoveFunc move_func,class Holder>
+	inline CInsert_iterator<T,Holder,RefFunc,ref_func,MoveFunc,move_func> inserter(Holder &holder) noexcept
 	{
-		return CInsert_iterator<T,Holder,RefFunc_t,RefFunc,MoveFunc_t,MoveFunc>{holder};
+		return CInsert_iterator<T,Holder,RefFunc,ref_func,MoveFunc,move_func>{holder};
 	}
 
-	template<class T,class RefFunc_t,RefFunc_t RefFunc,class Holder>
-	inline CInsert_iterator<T,Holder,RefFunc_t,RefFunc> inserter(Holder &holder) noexcept
+	template<class T,class RefFunc,RefFunc ref_func,class Holder>
+	inline CInsert_iterator<T,Holder,RefFunc,ref_func> inserter(Holder &holder) noexcept
 	{
-		return CInsert_iterator<T,Holder,RefFunc_t,RefFunc>{holder};
+		return CInsert_iterator<T,Holder,RefFunc,ref_func>{holder};
 	}
 }
 
