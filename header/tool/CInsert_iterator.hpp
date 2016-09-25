@@ -40,13 +40,13 @@ namespace nTool
 	};
 
 	template<class T,class RefFunc_t,RefFunc_t RefFunc,class MoveFunc_t,MoveFunc_t MoveFunc,class Holder>
-	inline CInsert_iterator<T,Holder,RefFunc_t,RefFunc,MoveFunc_t,MoveFunc> inserter(Holder &holder)
+	inline CInsert_iterator<T,Holder,RefFunc_t,RefFunc,MoveFunc_t,MoveFunc> inserter(Holder &holder) noexcept
 	{
 		return CInsert_iterator<T,Holder,RefFunc_t,RefFunc,MoveFunc_t,MoveFunc>{holder};
 	}
 
 	template<class T,class RefFunc_t,RefFunc_t RefFunc,class Holder>
-	inline CInsert_iterator<T,Holder,RefFunc_t,RefFunc> inserter(Holder &holder)
+	inline CInsert_iterator<T,Holder,RefFunc_t,RefFunc> inserter(Holder &holder) noexcept
 	{
 		return CInsert_iterator<T,Holder,RefFunc_t,RefFunc>{holder};
 	}
