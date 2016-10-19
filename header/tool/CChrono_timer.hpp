@@ -7,8 +7,8 @@ namespace nTool
 {
 	class CChrono_timer
 	{
-		std::chrono::high_resolution_clock::time_point begin_;
-		std::chrono::high_resolution_clock::time_point end_;
+		std::chrono::steady_clock::time_point begin_;
+		std::chrono::steady_clock::time_point end_;
 	public:
 		inline std::chrono::hours::rep duration_hours() const
 		{
@@ -36,11 +36,11 @@ namespace nTool
 		}
 		inline void start() noexcept
 		{
-			begin_=std::chrono::high_resolution_clock::now();
+			begin_=std::chrono::steady_clock::now();
 		}
 		inline void stop() noexcept
 		{
-			end_=std::chrono::high_resolution_clock::now();
+			end_=std::chrono::steady_clock::now();
 		}
 	};
 
