@@ -11,11 +11,11 @@ namespace nTool
 	{
 	public:
 		using allocator_type=Alloc;
-		using const_reference=const T&;
-		using pointer=typename std::allocator_traits<Alloc>::pointer;
-		using reference=T&;
-		using size_type=typename std::allocator_traits<Alloc>::size_type;
 		using value_type=T;
+		using reference=value_type&;
+		using const_reference=const reference;
+		using pointer=typename std::allocator_traits<Alloc>::pointer;
+		using size_type=typename std::allocator_traits<Alloc>::size_type;
 	private:
 		static allocator_type alloc_;
 		pointer data_;
