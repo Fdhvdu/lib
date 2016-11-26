@@ -13,7 +13,7 @@ namespace nTool
 		using allocator_type=Alloc;
 		using value_type=T;
 		using reference=value_type&;
-		using const_reference=const reference;
+		using const_reference=const value_type&;
 		using pointer=typename std::allocator_traits<Alloc>::pointer;
 		using size_type=typename std::allocator_traits<Alloc>::size_type;
 	private:
