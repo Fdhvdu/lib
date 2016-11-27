@@ -40,6 +40,15 @@ namespace nThread
 			std::lock_guard<std::mutex> lock{mut};
 			return pop_not_ts();
 		}
+		std::shared_ptr<element_type> pop_if_exist()
+		{
+			if(empty())
+				return std::shared_ptr<element_type>{};
+			std::lock_guard<std::mutex> lock{mut};
+			if(empty())
+				return std::shared_ptr<element_type>{};
+			return pop_not_ts();
+		}
 		//do not call Lock_queue::emplace, Lock_queue::emplace_not_ts, Lock_queue::pop or pop_not_ts at same time
 		std::shared_ptr<element_type> pop_not_ts() noexcept
 		{

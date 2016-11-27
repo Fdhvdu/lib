@@ -1,5 +1,6 @@
 #ifndef CWAIT_BOUNDED_QUEUE
 #define CWAIT_BOUNDED_QUEUE
+#include<utility>
 #include"CLock_bounded_queue.hpp"
 #include"CSemaphore.hpp"
 
@@ -13,11 +14,15 @@ namespace nThread
 		using value_type=T;
 	private:
 		CLock_bounded_queue<value_type> queue_;
-		CSemaphore sema_;
+		CSemaphore_with_sub sema_;
 	public:
 		explicit CWait_bounded_queue(const size_type size)
 			:queue_{size}{}
 		CWait_bounded_queue(const CWait_bounded_queue &)=delete;
+		inline size_type bounded_size() const noexcept
+		{
+			return queue_.bounded_size();
+		}
 		template<class ... Args>
 		void emplace_and_notify(Args &&...args)
 		{
@@ -35,9 +40,14 @@ namespace nThread
 		{
 			return queue_.empty();
 		}
-		inline size_type size() const noexcept
+		bool pop_if_exist(value_type &val)
 		{
-			return queue_.size();
+			if(sema_.sub_if_greater_than_0())
+			{
+				val=queue_.pop();
+				return true;
+			}
+			return false;
 		}
 		value_type wait_and_pop()
 		{

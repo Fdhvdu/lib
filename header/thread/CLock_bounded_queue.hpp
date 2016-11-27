@@ -1,8 +1,8 @@
 #ifndef CLOCK_BOUNDED_QUEUE
 #define CLOCK_BOUNDED_QUEUE
 #include<memory>	//allocator, pointer
-#include<utility>	//forward, move
 #include<type_traits>
+#include<utility>	//forward, move
 #include"Atomic_stack.hpp"
 #include"Lock_queue.hpp"
 #include"../tool/CAlloc_obj.hpp"
@@ -18,9 +18,9 @@ namespace nThread
 		using value_type=T;
 	private:
 		using element_type=typename Atomic_stack<value_type>::element_type;
+		const size_type bounded_size_;
 		Atomic_stack<value_type> stack_;
 		Lock_queue<value_type> queue_;
-		const size_type size_;
 		template<class ... Args>
 		inline void construct_(std::shared_ptr<element_type> &node,std::true_type,Args &&...args) noexcept
 		{
@@ -47,12 +47,16 @@ namespace nThread
 		}
 	public:
 		explicit CLock_bounded_queue(size_type size)
-			:size_{size}
+			:bounded_size_{size}
 		{
 			while(size--)
 				stack_.emplace_not_ts(std::make_shared<typename Atomic_stack<value_type>::element_type>());
 		}
 		CLock_bounded_queue(const CLock_bounded_queue &)=delete;
+		inline size_type bounded_size() const noexcept
+		{
+			return bounded_size_;
+		}
 		template<class ... Args>
 		void emplace(Args &&...args)
 		{
@@ -72,15 +76,22 @@ namespace nThread
 		{
 			return queue_.empty();
 		}
-		inline size_type size() const noexcept
-		{
-			return size_;
-		}
 		value_type pop()
 		{
 			std::shared_ptr<element_type> node{queue_.pop()};
 			const nTool::CScopeGuard sg{[&,this]() noexcept{stack_.emplace(std::move(node));}};
 			return std::move(node->data.get());
+		}
+		bool pop_if_exist(value_type &val)
+		{
+			std::shared_ptr<element_type> node{queue_.pop_if_exist()};
+			if(node)
+			{
+				val=std::move(node->data.get());
+				stack_.emplace(std::move(node));
+				return true;
+			}
+			return false;
 		}
 		CLock_bounded_queue& operator=(const CLock_bounded_queue &)=delete;
 	};
