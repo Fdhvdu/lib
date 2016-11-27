@@ -1,85 +1,12 @@
 #ifndef CATOMIC_STACK
 #define CATOMIC_STACK
-#include<memory>	//shared_ptr
-#include<utility>	//forward, move
-#include<type_traits>
+#include"CBasic_ts_container.hpp"
 #include"Atomic_stack.hpp"
 
 namespace nThread
 {
 	template<class T,class UsePopIfExist=Do_not_use_pop_if_exist>
-	class CAtomic_stack
-	{
-	public:
-		using value_type=T;
-	private:
-		using underlying_type=Atomic_stack<value_type,UsePopIfExist>;
-		using element_type=typename underlying_type::element_type;
-		underlying_type stack_;
-	public:
-		class CNode
-		{
-			friend CAtomic_stack<value_type>;
-			using element_type=typename Atomic_stack<value_type,UsePopIfExist>::element_type;
-			std::shared_ptr<element_type> p_;
-		public:
-			CNode()
-				:p_{std::make_shared<element_type>()}{}
-			CNode(const CNode &)=delete;
-			CNode(CNode &&)=default;
-			CNode& operator=(const CNode &)=delete;
-		};
-		CAtomic_stack()=default;
-		CAtomic_stack(const CAtomic_stack &)=delete;
-		template<class ... Args>
-		inline void emplace(Args &&...args)
-		{
-			stack_.emplace(std::make_shared<element_type>(std::forward<decltype(args)>(args)...));
-		}
-		template<class ... Args>
-		void emplace(CNode &&val,Args &&...args) noexcept(std::is_nothrow_constructible<value_type,Args...>::value)
-		{
-			val.p_->data.construct(std::forward<decltype(args)>(args)...);
-			stack_.emplace(std::move(val.p_));
-		}
-		//do not call CAtomic_stack::emplace, emplace_not_ts, CAtomic_stack::pop, CAtomic_stack::pop_if_exist or CAtomic_stack::pop_not_ts at same time
-		template<class ... Args>
-		inline void emplace_not_ts(Args &&...args)
-		{
-			stack_.emplace_not_ts(std::make_shared<element_type>(std::forward<decltype(args)>(args)...));
-		}
-		inline bool empty() const noexcept
-		{
-			return stack_.empty();
-		}
-		inline bool is_lock_free() const noexcept
-		{
-			return stack_.is_lock_free();
-		}
-		//if constructor or assignment operator you use here is not noexcept, it may not be exception safety
-		inline value_type pop() noexcept
-		{
-			return std::move(stack_.pop()->data.get());
-		}
-		//return true if it has an element; otherwise, return false
-		bool pop_if_exist(value_type &val) noexcept(std::is_nothrow_move_assignable<value_type>::value)
-		{
-			std::shared_ptr<element_type> temp{stack_.pop_if_exist()};
-			if(temp)
-			{
-				val=std::move(temp->data.get());
-				return true;
-			}
-			return false;
-		}
-		//1. do not call CAtomic_stack::emplace, CAtomic_stack::emplace_not_ts, CAtomic_stack::pop, CAtomic_stack::pop_if_exist or pop_not_ts at same time
-		//2. if constructor or assignment operator you use here is not noexcept, it may not be exception safety
-		inline value_type pop_not_ts() noexcept
-		{
-			return std::move(stack_.pop_not_ts()->data.get());
-		}
-		CAtomic_stack& operator=(const CAtomic_stack &)=delete;
-	};
+	using CAtomic_stack=CBasic_ts_container<Atomic_stack<T,UsePopIfExist>>;
 }
 
 #endif
