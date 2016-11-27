@@ -4,7 +4,6 @@
 #include<utility>	//forward, move
 #include<type_traits>
 #include"Atomic_stack.hpp"
-#include"../tool/CAlloc_obj.hpp"
 
 namespace nThread
 {
