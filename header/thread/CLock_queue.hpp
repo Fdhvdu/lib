@@ -58,9 +58,8 @@ namespace nThread
 			return std::move(queue_.pop()->data.get());
 		}
 		//return true if it has an element; otherwise, return false
-		bool pop_if_exist(value_type &val) noexcept(std::is_nothrow_move_assignable<value_type>::value)
+		bool pop_if_exist(value_type &val)
 		{
-			using is_enable=std::enable_if_t<underlying_type::USE_POP_IF_EXIST>;
 			std::shared_ptr<element_type> temp{queue_.pop_if_exist()};
 			if(temp)
 			{
