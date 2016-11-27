@@ -60,9 +60,9 @@ namespace nThread
 			return pop_();
 		}
 		//return std::shared_ptr<element_type>{} if empty() return true; otherwise, call pop()
-		template<class=std::enable_if_t<USE_POP_IF_EXIST>>
 		std::shared_ptr<element_type> pop_if_exist() noexcept
 		{
+			using is_enable=std::enable_if_t<USE_POP_IF_EXIST>;
 			if(count_.sub_if_greater_than_0())
 				return pop_();
 			return std::shared_ptr<element_type>{};
@@ -75,17 +75,14 @@ namespace nThread
 			begin=std::move(node->next);
 			return node;
 		}
-		template<class=std::enable_if_t<USE_POP_IF_EXIST>>
 		inline size_type size() const noexcept
 		{
+			using is_enable=std::enable_if_t<USE_POP_IF_EXIST>;
 			return count_.size();
 		}
 		Atomic_stack& operator=(const Atomic_stack &)=delete;
 	private:
-		struct Check_type
-		{
-			std::enable_if_t<std::is_same<UsePopIfExist,Use_pop_if_exist>::value||std::is_same<UsePopIfExist,Do_not_use_pop_if_exist>::value> UsePopIfExist_is_correct;
-		};
+		using check_UsePopIfExist_type=std::enable_if_t<std::is_same<UsePopIfExist,Use_pop_if_exist>::value||std::is_same<UsePopIfExist,Do_not_use_pop_if_exist>::value>;
 		class Count
 		{
 			std::atomic<size_type> count_;

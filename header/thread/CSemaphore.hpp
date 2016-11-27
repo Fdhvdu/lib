@@ -43,10 +43,7 @@ namespace nThread
 			USE_SUB_IF_GREATER_THAN_0=std::is_same<UseSubIfGreaterThan0,Use_sub_if_greater_than_0>::value
 		};
 	private:
-		struct Check_type
-		{
-			std::enable_if_t<std::is_same<UseSubIfGreaterThan0,Use_sub_if_greater_than_0>::value||std::is_same<UseSubIfGreaterThan0,Do_not_use_sub_if_greater_than_0>::value> UseSubIfGreaterThan0_is_correct;
-		};
+		using check_UseSubIfGreaterThan0_type=std::enable_if_t<std::is_same<UseSubIfGreaterThan0,Use_sub_if_greater_than_0>::value||std::is_same<UseSubIfGreaterThan0,Do_not_use_sub_if_greater_than_0>::value>;
 		struct Wait
 		{
 			static void wait(nImpl::CSemaphore &sema)
@@ -86,9 +83,9 @@ namespace nThread
 		//1. count() minus 1 if count() is greater than 0
 		//2. do not wait
 		//3. return true if count() is greater than 0 before minus; otherwise, return false
-		template<class=std::enable_if_t<USE_SUB_IF_GREATER_THAN_0>>
 		inline bool sub_if_greater_than_0() noexcept
 		{
+			using is_enable=std::enable_if_t<USE_SUB_IF_GREATER_THAN_0>;
 			return sema_.sub_if_greater_than_0();
 		}
 		//waiting until notifying if count() is 0; otherwise, count() minus 1

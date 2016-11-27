@@ -14,15 +14,18 @@ namespace nThread
 	public:
 		using value_type=T;
 	private:
-		Atomic_stack<value_type,UsePopIfExist> stack_;
+		using underlying_type=Atomic_stack<value_type,UsePopIfExist>;
+		using element_type=typename underlying_type::element_type;
+		underlying_type stack_;
 	public:
 		class CNode
 		{
 			friend CAtomic_stack<value_type>;
-			std::shared_ptr<typename Atomic_stack<value_type>::element_type> p_;
+			using element_type=typename Atomic_stack<value_type,UsePopIfExist>::element_type;
+			std::shared_ptr<element_type> p_;
 		public:
 			CNode()
-				:p_{std::make_shared<Atomic_stack<value_type>::element_type>()}{}
+				:p_{std::make_shared<element_type>()}{}
 			CNode(const CNode &)=delete;
 			CNode(CNode &&)=default;
 			CNode& operator=(const CNode &)=delete;
@@ -32,7 +35,7 @@ namespace nThread
 		template<class ... Args>
 		inline void emplace(Args &&...args)
 		{
-			stack_.emplace(std::make_shared<Atomic_stack<value_type>::element_type>(std::forward<decltype(args)>(args)...));
+			stack_.emplace(std::make_shared<element_type>(std::forward<decltype(args)>(args)...));
 		}
 		template<class ... Args>
 		void emplace(CNode &&val,Args &&...args) noexcept(std::is_nothrow_constructible<value_type,Args...>::value)
@@ -44,7 +47,7 @@ namespace nThread
 		template<class ... Args>
 		inline void emplace_not_ts(Args &&...args)
 		{
-			stack_.emplace_not_ts(std::make_shared<Atomic_stack<value_type>::element_type>(std::forward<decltype(args)>(args)...));
+			stack_.emplace_not_ts(std::make_shared<element_type>(std::forward<decltype(args)>(args)...));
 		}
 		inline bool empty() const noexcept
 		{
@@ -60,10 +63,10 @@ namespace nThread
 			return std::move(stack_.pop()->data.get());
 		}
 		//return true if it has an element; otherwise, return false
-		template<class=std::enable_if_t<Atomic_stack<value_type,UsePopIfExist>::USE_POP_IF_EXIST>>
 		bool pop_if_exist(value_type &val) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 		{
-			std::shared_ptr<typename Atomic_stack<value_type,UsePopIfExist>::element_type> temp{stack_.pop_if_exist()};
+			using is_enable=std::enable_if_t<underlying_type::USE_POP_IF_EXIST>;
+			std::shared_ptr<element_type> temp{stack_.pop_if_exist()};
 			if(temp)
 			{
 				val=std::move(temp->data.get());
