@@ -43,7 +43,7 @@ namespace nTool
 		}
 		CUnique_obj& operator=(const CUnique_obj &val) noexcept(std::is_nothrow_copy_assignable<element_type>::value)
 		{
-			*p=*val;
+			*p_=*val;
 			return *this;
 		}
 		CUnique_obj& operator=(CUnique_obj &&rVal) noexcept
