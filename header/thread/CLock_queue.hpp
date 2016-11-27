@@ -42,7 +42,7 @@ namespace nThread
 			val.p_->data.construct(std::forward<decltype(args)>(args)...);
 			queue_.emplace(std::move(val.p_));
 		}
-		//do not call CAtomic_stack::emplace, emplace_not_ts or CAtomic_stack::pop at same time
+		//do not call CLock_queue::emplace, emplace_not_ts, CLock_queue::pop, CLock_queue::pop_if_exist or CLock_queue::pop_not_ts at same time
 		template<class ... Args>
 		inline void emplace_not_ts(Args &&...args)
 		{
@@ -67,6 +67,12 @@ namespace nThread
 				return true;
 			}
 			return false;
+		}
+		//1. do not call CLock_queue::emplace, CLock_queue::emplace_not_ts, CLock_queue::pop, CLock_queue::pop_if_exist or pop_not_ts at same time
+		//2. if constructor or assignment operator you use here is not noexcept, it may not be exception safety
+		inline value_type pop_not_ts() noexcept
+		{
+			return std::move(queue_.pop_not_ts()->data.get());
 		}
 		CLock_queue& operator=(const CLock_queue &)=delete;
 	};

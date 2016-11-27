@@ -42,7 +42,7 @@ namespace nThread
 			val.p_->data.construct(std::forward<decltype(args)>(args)...);
 			stack_.emplace(std::move(val.p_));
 		}
-		//do not call CAtomic_stack::emplace, emplace_not_ts or CAtomic_stack::pop at same time
+		//do not call CAtomic_stack::emplace, emplace_not_ts, CAtomic_stack::pop, CAtomic_stack::pop_if_exist or CAtomic_stack::pop_not_ts at same time
 		template<class ... Args>
 		inline void emplace_not_ts(Args &&...args)
 		{
@@ -64,7 +64,6 @@ namespace nThread
 		//return true if it has an element; otherwise, return false
 		bool pop_if_exist(value_type &val) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 		{
-			using is_enable=std::enable_if_t<underlying_type::USE_POP_IF_EXIST>;
 			std::shared_ptr<element_type> temp{stack_.pop_if_exist()};
 			if(temp)
 			{
@@ -72,6 +71,12 @@ namespace nThread
 				return true;
 			}
 			return false;
+		}
+		//1. do not call CAtomic_stack::emplace, CAtomic_stack::emplace_not_ts, CAtomic_stack::pop, CAtomic_stack::pop_if_exist or pop_not_ts at same time
+		//2. if constructor or assignment operator you use here is not noexcept, it may not be exception safety
+		inline value_type pop_not_ts() noexcept
+		{
+			return std::move(stack_.pop_not_ts()->data.get());
 		}
 		CAtomic_stack& operator=(const CAtomic_stack &)=delete;
 	};
