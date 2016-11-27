@@ -8,13 +8,13 @@
 
 namespace nThread
 {
-	template<class T>
+	template<class T,class UsePopIfExist=Do_not_use_pop_if_exist>
 	class CAtomic_stack
 	{
 	public:
 		using value_type=T;
 	private:
-		Atomic_stack<value_type> stack_;
+		Atomic_stack<value_type,UsePopIfExist> stack_;
 	public:
 		class CNode
 		{
@@ -58,6 +58,18 @@ namespace nThread
 		inline value_type pop() noexcept
 		{
 			return std::move(stack_.pop()->data.get());
+		}
+		//return true if it has an element; otherwise, return false
+		template<class=std::enable_if_t<Atomic_stack<value_type,UsePopIfExist>::USE_POP_IF_EXIST>>
+		bool pop_if_exist(value_type &val) noexcept(std::is_nothrow_move_assignable<value_type>::value)
+		{
+			std::shared_ptr<typename Atomic_stack<value_type,UsePopIfExist>::element_type> temp{stack_.pop_if_exist()};
+			if(temp)
+			{
+				val=std::move(temp->data.get());
+				return true;
+			}
+			return false;
 		}
 		CAtomic_stack& operator=(const CAtomic_stack &)=delete;
 	};
