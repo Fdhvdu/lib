@@ -1,5 +1,6 @@
 #ifndef CWAIT_BOUNDED_QUEUE
 #define CWAIT_BOUNDED_QUEUE
+#include<mutex>
 #include<utility>
 #include"CLock_bounded_queue.hpp"
 #include"CSemaphore.hpp"
@@ -14,7 +15,7 @@ namespace nThread
 		using value_type=T;
 	private:
 		CLock_bounded_queue<value_type> queue_;
-		CSemaphore_with_sub sema_;
+		CBasic_semaphore<Use_sub_if_greater_than_0,std::mutex> sema_;
 	public:
 		explicit CWait_bounded_queue(const size_type size)
 			:queue_{size}{}
