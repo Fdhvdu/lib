@@ -8,22 +8,23 @@
 
 namespace nThread
 {
-	template<class T,class Alloc=std::allocator<T>>
+	template<class T,class Mutex=std::mutex,class Alloc=std::allocator<T>>
 	struct Lock_queue
 	{
 		using allocator_type=Alloc;
 		using element_type=Node<nTool::CAlloc_obj<T,Alloc>>;
+		using mutex_type=Mutex;
 		using size_type=typename nTool::CAlloc_obj<T,Alloc>::size_type;
 		using value_type=T;
 		std::shared_ptr<element_type> begin;
 		std::shared_ptr<element_type> end;
-		std::mutex mut;
+		mutex_type mut;
 		Lock_queue()=default;
 		Lock_queue(const Lock_queue &)=delete;
 		void emplace(std::shared_ptr<element_type> &&val)
 		{
 			val->next.reset();
-			std::lock_guard<std::mutex> lock{mut};
+			std::lock_guard<mutex_type> lock{mut};
 			emplace_(std::move(val));
 		}
 		//do not call Lock_queue::emplace, emplace_not_ts, Lock_queue::pop or Lock_queue::pop_not_ts at same time
@@ -37,14 +38,14 @@ namespace nThread
 		}
 		std::shared_ptr<element_type> pop()
 		{
-			std::lock_guard<std::mutex> lock{mut};
+			std::lock_guard<mutex_type> lock{mut};
 			return pop_not_ts();
 		}
 		std::shared_ptr<element_type> pop_if_exist()
 		{
 			if(empty())
 				return std::shared_ptr<element_type>{};
-			std::lock_guard<std::mutex> lock{mut};
+			std::lock_guard<mutex_type> lock{mut};
 			if(empty())
 				return std::shared_ptr<element_type>{};
 			return pop_not_ts();
