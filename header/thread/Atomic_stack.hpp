@@ -13,17 +13,14 @@ namespace nThread
 	struct Do_not_use_pop_if_exist{};
 
 	//for UsePopIfExist, only Use_pop_if_exist and Do_not_use_pop_if_exist are allowed
-	template<class T,class UsePopIfExist=Do_not_use_pop_if_exist,class Alloc=std::allocator<T>>
+	template<class T,class PopIfExist=Do_not_use_pop_if_exist,class Alloc=std::allocator<T>>
 	struct Atomic_stack
 	{
 		using allocator_type=typename nTool::CAlloc_obj<T,Alloc>::allocator_type;
 		using element_type=Node<nTool::CAlloc_obj<T,Alloc>>;
 		using size_type=typename nTool::CAlloc_obj<T,Alloc>::size_type;
 		using value_type=typename nTool::CAlloc_obj<T,Alloc>::value_type;
-		enum Policy:bool
-		{
-			USE_POP_IF_EXIST=std::is_same<UsePopIfExist,Use_pop_if_exist>::value
-		};
+		static constexpr bool POP_IF_EXIST{std::is_same<PopIfExist,Use_pop_if_exist>::value};
 		std::shared_ptr<element_type> begin;
 		Atomic_stack()=default;
 		Atomic_stack(const Atomic_stack &)=delete;
@@ -62,7 +59,7 @@ namespace nThread
 		//return std::shared_ptr<element_type>{} if empty() return true; otherwise, call pop()
 		std::shared_ptr<element_type> pop_if_exist() noexcept
 		{
-			using is_enable=std::enable_if_t<USE_POP_IF_EXIST>;
+			using is_enable=std::enable_if_t<POP_IF_EXIST>;
 			if(count_.sub_if_greater_than_0())
 				return pop_();
 			return std::shared_ptr<element_type>{};
@@ -77,12 +74,12 @@ namespace nThread
 		}
 		inline size_type size() const noexcept
 		{
-			using is_enable=std::enable_if_t<USE_POP_IF_EXIST>;
+			using is_enable=std::enable_if_t<POP_IF_EXIST>;
 			return count_.size();
 		}
 		Atomic_stack& operator=(const Atomic_stack &)=delete;
 	private:
-		using check_UsePopIfExist_type=std::enable_if_t<std::is_same<UsePopIfExist,Use_pop_if_exist>::value||std::is_same<UsePopIfExist,Do_not_use_pop_if_exist>::value>;
+		using check_UsePopIfExist_type=std::enable_if_t<std::is_same<PopIfExist,Use_pop_if_exist>::value||std::is_same<PopIfExist,Do_not_use_pop_if_exist>::value>;
 		class Count
 		{
 			std::atomic<size_type> count_;
@@ -119,7 +116,7 @@ namespace nThread
 			inline void add() noexcept{}
 			inline void sub() noexcept{}
 		};
-		std::conditional_t<USE_POP_IF_EXIST,Count,Empty> count_;
+		std::conditional_t<POP_IF_EXIST,Count,Empty> count_;
 		std::shared_ptr<element_type> pop_() noexcept
 		{
 			using namespace std;
