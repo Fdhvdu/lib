@@ -69,7 +69,7 @@ namespace nThread
 		}
 		//will block CLock_forward_list::emplace_front and CLock_forward_list::pop_front
 		template<class UnaryPred>
-		void remove_if(const UnaryPred pred)
+		void remove_if(UnaryPred &&pred)
 		{
 			std::lock_guard<std::shared_mutex> lock{mut_};
 			for(std::shared_ptr<element_type> bef{stack_.begin},iter{bef};iter;)
