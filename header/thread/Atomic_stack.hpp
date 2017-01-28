@@ -121,7 +121,7 @@ namespace nThread
 		{
 			using namespace std;
 			shared_ptr<element_type> node{atomic_load_explicit(&begin,memory_order_relaxed)};
-			while(!atomic_compare_exchange_weak_explicit(&begin,&node,node->next,memory_order_acquire,memory_order_relaxed))
+			while(!atomic_compare_exchange_weak_explicit(&begin,&node,atomic_load(&node->next),memory_order_acquire,memory_order_relaxed))
 				;
 			return node;
 		}
