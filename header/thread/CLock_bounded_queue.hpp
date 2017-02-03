@@ -65,7 +65,7 @@ namespace nThread
 			destroy_and_construct_(node,std::forward<decltype(args)>(args)...);
 			queue_.emplace(std::move(node));
 		}
-		//do not call CLock_bounded_queue::emplace, emplace_not_ts or CLock_bounded_queue::pop at same time
+		//do not call other member functions (including const member functions) at same time
 		template<class ... Args>
 		void emplace_not_ts(Args &&...args)
 		{
