@@ -48,7 +48,7 @@ namespace nThread
 			val.p_->data.construct(std::forward<decltype(args)>(args)...);
 			acquire_lock_and_emplace_front_(std::move(val.p_));
 		}
-		//do not call CLock_forward_list::emplace_front, emplace_front_not_ts, CAtomic_stack::pop_front, CLock_forward_list::remove or CLock_forward_list::remove_if at same time
+		//do not call CLock_forward_list::emplace_front, emplace_front_not_ts, CLock_forward_list::pop_front, CLock_forward_list::remove or CLock_forward_list::remove_if at same time
 		template<class ... Args>
 		inline void emplace_front_not_ts(Args &&...args)
 		{
