@@ -8,24 +8,22 @@
 
 namespace nThread
 {
-	template<class Key,class Hash=std::hash<Key>,class KeyEqual=std::equal_to<Key>,class Allocator=std::allocator<Key>>
+	template<class Key,class Hash=std::hash<Key>,class KeyEqual=std::equal_to<Key>,class Alloc=std::allocator<Key>>
 	class CLock_unordered_set
 	{
-		std::unordered_set<Key,Hash,KeyEqual,Allocator> set_;
+		std::unordered_set<Key,Hash,KeyEqual,Alloc> set_;
 		std::mutex mut_;
 		template<class KeyFwdRef,class ... Args>
 		bool try_emplace_(KeyFwdRef &&key,Args &&...args)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				set_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
-				return true;
-			}
-			return false;
+			if(find(key))
+				return false;
+			set_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
+			return true;
 		}
 	public:
-		using size_type=typename std::unordered_set<Key,Hash,KeyEqual,Allocator>::size_type;
+		using size_type=typename std::unordered_set<Key,Hash,KeyEqual,Alloc>::size_type;
 		CLock_unordered_set()=default;
 		CLock_unordered_set(const CLock_unordered_set &)=delete;
 		template<class ... Args>
