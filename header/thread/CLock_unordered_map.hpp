@@ -8,14 +8,14 @@
 
 namespace nThread
 {
-	template<class Key,class T,class Hash=std::hash<Key>,class KeyEqual=std::equal_to<Key>,class Allocator=std::allocator<std::pair<const Key,T>>>
+	template<class Key,class T,class Hash=std::hash<Key>,class KeyEqual=std::equal_to<Key>,class Alloc=std::allocator<std::pair<const Key,T>>>
 	class CLock_unordered_map
 	{
 	public:
 		using key_type=Key;
 		using mapped_type=T;
 	private:
-		std::unordered_map<key_type,mapped_type,Hash,KeyEqual,Allocator> map_;
+		std::unordered_map<key_type,mapped_type,Hash,KeyEqual,Alloc> map_;
 		std::mutex mut_;
 		template<class Key_typeFwdRef>
 		mapped_type& subscript_(Key_typeFwdRef &&key)
@@ -27,23 +27,19 @@ namespace nThread
 		bool try_emplace_(Key_typeFwdRef &&key,Args &&...args)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				map_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
-				return true;
-			}
-			return false;
+			if(find(key))
+				return false;
+			map_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
+			return true;
 		}
 		template<class Key_typeFwdRef,class Gen>
 		bool try_emplace_gen_(Key_typeFwdRef &&key,Gen &&gen)
 		{
 			std::lock_guard<std::mutex> lock{mut_};
-			if(!find(key))
-			{
-				map_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen)());
-				return true;
-			}
-			return false;
+			if(find(key))
+				return false;
+			map_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen)());
+			return true;
 		}
 	public:
 		CLock_unordered_map()=default;
