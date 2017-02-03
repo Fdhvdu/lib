@@ -41,7 +41,7 @@ namespace nThread
 			val.p_->data.construct(std::forward<decltype(args)>(args)...);
 			container_.emplace(std::move(val.p_));
 		}
-		//do not call CBasic_ts_container::emplace, emplace_not_ts, CBasic_ts_container::pop, CBasic_ts_container::pop_if_exist or CBasic_ts_container::pop_not_ts at same time
+		//do not call other member functions (including const member functions) at same time
 		template<class ... Args>
 		inline void emplace_not_ts(Args &&...args)
 		{
