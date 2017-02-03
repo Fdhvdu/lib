@@ -1,7 +1,6 @@
 #ifndef LOCK_QUEUE
 #define LOCK_QUEUE
 #include<memory>	//allocator, shared_ptr
-#include<mutex>
 #include<utility>	//move
 #include"Node.hpp"
 #include"../tool/CAlloc_obj.hpp"
