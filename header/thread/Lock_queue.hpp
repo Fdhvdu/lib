@@ -8,7 +8,7 @@
 
 namespace nThread
 {
-	template<class T,class Mutex=std::mutex,class Alloc=std::allocator<T>>
+	template<class T,class Mutex,class Alloc=std::allocator<T>>
 	struct Lock_queue
 	{
 		using allocator_type=Alloc;
@@ -34,7 +34,7 @@ namespace nThread
 		}
 		inline bool empty() const noexcept
 		{
-			return !begin.operator bool();
+			return !std::atomic_load(&begin).operator bool();
 		}
 		std::shared_ptr<element_type> pop()
 		{
@@ -65,7 +65,7 @@ namespace nThread
 		{
 			if(empty())
 			{
-				begin=val;
+				std::atomic_store(&begin,val);
 				end=std::move(val);
 			}
 			else
