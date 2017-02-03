@@ -30,6 +30,14 @@ namespace nThread
 		};
 		CBasic_ts_container()=default;
 		CBasic_ts_container(const CBasic_ts_container &)=delete;
+		inline underlying_type& container() noexcept
+		{
+			return container_;
+		}
+		inline const underlying_type& container() const noexcept
+		{
+			return container_;
+		}
 		template<class ... Args>
 		inline void emplace(Args &&...args)
 		{
