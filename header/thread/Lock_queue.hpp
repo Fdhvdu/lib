@@ -34,7 +34,7 @@ namespace nThread
 		}
 		inline bool empty() const noexcept
 		{
-			return !std::atomic_load(&begin).operator bool();
+			return !std::atomic_load_explicit(&begin,std::memory_order_acquire).operator bool();
 		}
 		std::shared_ptr<element_type> pop()
 		{
@@ -65,7 +65,7 @@ namespace nThread
 		{
 			if(empty())
 			{
-				std::atomic_store(&begin,val);
+				std::atomic_store_explicit(&begin,val,std::memory_order_release);
 				end=std::move(val);
 			}
 			else
