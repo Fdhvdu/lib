@@ -35,7 +35,7 @@ namespace nThread
 				;
 			count_.add();
 		}
-		//do not call Atomic_stack::emplace, emplace_not_ts, Atomic_stack::pop or Atomic_stack::pop_not_ts at same time
+		//do not call other member functions (including const member functions) at same time
 		void emplace_not_ts(std::shared_ptr<element_type> &&val) noexcept
 		{
 			//yes, don't need to prevent ABA problem
@@ -45,7 +45,7 @@ namespace nThread
 		}
 		inline bool empty() const noexcept
 		{
-			return !begin.operator bool();
+			return !std::atomic_load_explicit(&begin,std::memory_order_acquire);
 		}
 		inline bool is_lock_free() const noexcept
 		{
