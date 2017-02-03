@@ -113,8 +113,8 @@ namespace nThread
 		};
 		struct Empty
 		{
-			inline void add() noexcept{}
-			inline void sub() noexcept{}
+			inline void add() const noexcept{}
+			inline void sub() const noexcept{}
 		};
 		std::conditional_t<POP_IF_EXIST,Count,Empty> count_;
 		std::shared_ptr<element_type> pop_() noexcept
