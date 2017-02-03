@@ -1,6 +1,7 @@
 #ifndef CLOCK_BOUNDED_QUEUE
 #define CLOCK_BOUNDED_QUEUE
 #include<memory>	//allocator, pointer
+#include<mutex>
 #include<type_traits>
 #include<utility>	//forward, move
 #include"Atomic_stack.hpp"
@@ -20,7 +21,7 @@ namespace nThread
 		using element_type=typename Atomic_stack<value_type>::element_type;
 		const size_type bounded_size_;
 		Atomic_stack<value_type> stack_;
-		Lock_queue<value_type> queue_;
+		Lock_queue<value_type,std::mutex> queue_;
 		template<class ... Args>
 		inline void construct_(std::shared_ptr<element_type> &node,std::true_type,Args &&...args) noexcept
 		{
