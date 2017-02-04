@@ -24,7 +24,7 @@ namespace nThread
 		std::shared_ptr<element_type> end;
 		mutex_type mut;
 		Lock_queue()
-			:end{make_shared<element_type>()}
+			:end{std::make_shared<element_type>()}
 		{
 			begin=end;
 		}
@@ -42,7 +42,6 @@ namespace nThread
 		}
 		inline bool empty() const noexcept
 		{
-			using is_enable=std::enable_if_t<POP_IF_EXIST>;
 			return !std::atomic_load_explicit(&begin,std::memory_order_acquire)->next;
 		}
 		std::shared_ptr<element_type> pop()
