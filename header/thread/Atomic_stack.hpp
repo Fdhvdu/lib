@@ -9,11 +9,10 @@
 
 namespace nThread
 {
-	struct Use_pop_if_exist{};
-	struct Do_not_use_pop_if_exist{};
+	struct Use_pop_if_exist;
+	struct Do_not_use_pop_if_exist;
 
-	//for UsePopIfExist, only Use_pop_if_exist and Do_not_use_pop_if_exist are allowed
-	template<class T,class PopIfExist=Do_not_use_pop_if_exist,class Alloc=std::allocator<T>>
+	template<class T,class PopIfExist,class Alloc=std::allocator<T>>
 	struct Atomic_stack
 	{
 		using allocator_type=typename nTool::CAlloc_obj<T,Alloc>::allocator_type;
