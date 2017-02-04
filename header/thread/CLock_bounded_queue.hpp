@@ -11,7 +11,10 @@
 
 namespace nThread
 {
-	template<class T>
+	struct Use_pop_if_exist;
+	struct Do_not_use_pop_if_exist;
+
+	template<class T,class PopIfExist>
 	class CLock_bounded_queue
 	{
 	public:
@@ -21,7 +24,7 @@ namespace nThread
 		using element_type=typename Atomic_stack<value_type>::element_type;
 		const size_type bounded_size_;
 		Atomic_stack<value_type> stack_;
-		Lock_queue<value_type,std::mutex> queue_;
+		Lock_queue<value_type,PopIfExist,std::mutex> queue_;
 		template<class ... Args>
 		inline void construct_(std::shared_ptr<element_type> &node,std::true_type,Args &&...args) noexcept
 		{
