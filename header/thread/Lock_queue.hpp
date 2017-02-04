@@ -19,9 +19,9 @@ namespace nThread
 		std::shared_ptr<element_type> end;
 		mutex_type mut;
 		Lock_queue()
-			:begin{make_shared<element_type>()},end{make_shared<element_type>()}
+			:end{make_shared<element_type>()}
 		{
-			begin->next=end;
+			begin=end;
 		}
 		Lock_queue(const Lock_queue &)=delete;
 		void emplace(std::shared_ptr<element_type> &&val)
@@ -37,7 +37,7 @@ namespace nThread
 		}
 		inline bool empty() const noexcept
 		{
-			return !std::atomic_load_explicit(&begin->next,std::memory_order_acquire)->next;
+			return !std::atomic_load_explicit(&begin,std::memory_order_acquire)->next;
 		}
 		std::shared_ptr<element_type> pop()
 		{
@@ -56,8 +56,8 @@ namespace nThread
 		//do not call other member functions (including const member functions) at same time
 		std::shared_ptr<element_type> pop_not_ts() noexcept
 		{
-			const std::shared_ptr<element_type> node{std::move(begin->next)};
-			begin->next=node->next;
+			const std::shared_ptr<element_type> node{std::move(begin)};
+			begin=node->next;
 			return node;
 		}
 		Lock_queue& operator=(const Lock_queue &)=delete;
@@ -70,8 +70,8 @@ namespace nThread
 		}
 		std::shared_ptr<element_type> pop_() noexcept
 		{
-			const std::shared_ptr<element_type> node{begin->next};
-			std::atomic_store_explicit(&begin->next,node->next,std::memory_order_release);
+			const std::shared_ptr<element_type> node{begin};
+			std::atomic_store_explicit(&begin,node->next,std::memory_order_release);
 			return node;
 		}
 	};
