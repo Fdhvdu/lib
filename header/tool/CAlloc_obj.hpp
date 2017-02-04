@@ -23,8 +23,12 @@ namespace nTool
 	public:
 		CAlloc_obj()
 			:data_{alloc_.allocate(1)},has_not_destroy_{false}{}
-		CAlloc_obj(const CAlloc_obj &)=default;
-		CAlloc_obj(CAlloc_obj &&)=default;
+		CAlloc_obj(const CAlloc_obj &)=delete;
+		CAlloc_obj(CAlloc_obj &&val) noexcept
+			:data_{val.data_},has_not_destroy_{val.has_not_destroy_}
+		{
+			val.data_=nullptr;
+		}
 		template<class ... Args>
 		CAlloc_obj(Args &&...args)
 			:CAlloc_obj{}
@@ -54,13 +58,21 @@ namespace nTool
 		{
 			return has_not_destroy_;
 		}
-		CAlloc_obj& operator=(const CAlloc_obj &)=default;
-		CAlloc_obj& operator=(CAlloc_obj &&)=default;
+		CAlloc_obj& operator=(const CAlloc_obj &)=delete;
+		CAlloc_obj& operator=(CAlloc_obj &&val) noexcept
+		{
+			std::swap(data_,val.data_);
+			std::swap(has_not_destroy_,val.has_not_destroy_);
+			return *this;
+		}
 		~CAlloc_obj()
 		{
-			if(has_not_destroy())
-				destroy();
-			alloc_.deallocate(data_,1);
+			if(data_)
+			{
+				if(has_not_destroy())
+					destroy();
+				alloc_.deallocate(data_,1);
+			}
 		}
 	};
 
