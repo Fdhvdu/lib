@@ -18,12 +18,12 @@ namespace nThread
 	class CLock_bounded_queue
 	{
 	public:
-		using size_type=typename Atomic_stack<T>::size_type;
+		using size_type=typename Atomic_stack<T,PopIfExist>::size_type;
 		using value_type=T;
 	private:
-		using element_type=typename Atomic_stack<value_type>::element_type;
+		using element_type=typename Atomic_stack<value_type,PopIfExist>::element_type;
 		const size_type bounded_size_;
-		Atomic_stack<value_type> stack_;
+		Atomic_stack<value_type,PopIfExist> stack_;
 		Lock_queue<value_type,PopIfExist,std::mutex> queue_;
 		template<class ... Args>
 		inline void construct_(std::shared_ptr<element_type> &node,std::true_type,Args &&...args) noexcept
@@ -54,7 +54,7 @@ namespace nThread
 			:bounded_size_{size}
 		{
 			while(size--)
-				stack_.emplace_not_ts(std::make_shared<typename Atomic_stack<value_type>::element_type>());
+				stack_.emplace_not_ts(std::make_shared<typename Atomic_stack<value_type,PopIfExist>::element_type>());
 		}
 		CLock_bounded_queue(const CLock_bounded_queue &)=delete;
 		inline size_type bounded_size() const noexcept
