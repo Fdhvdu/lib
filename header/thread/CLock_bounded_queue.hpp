@@ -14,7 +14,7 @@ namespace nThread
 	struct Use_pop_if_exist;
 	struct Do_not_use_pop_if_exist;
 
-	template<class T,class PopIfExist=Use_pop_if_exist>
+	template<class T,class PopIfExist=Do_not_use_pop_if_exist>
 	class CLock_bounded_queue
 	{
 	public:
