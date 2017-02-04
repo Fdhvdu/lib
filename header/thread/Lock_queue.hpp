@@ -37,7 +37,7 @@ namespace nThread
 		}
 		inline bool empty() const noexcept
 		{
-			return !std::atomic_load_explicit(&std::atomic_load_explicit(&begin->next,std::memory_order_acquire)->next,std::memory_order_acquire);
+			return !std::atomic_load_explicit(&begin->next,std::memory_order_acquire)->next;
 		}
 		std::shared_ptr<element_type> pop()
 		{
@@ -70,9 +70,8 @@ namespace nThread
 		}
 		std::shared_ptr<element_type> pop_() noexcept
 		{
-			using namespace std;
-			const shared_ptr<element_type> node{atomic_load_explicit(&begin->next,memory_order_acquire)};
-			atomic_store_explicit(&begin->next,atomic_load_explicit(&node->next,memory_order_acquire),memory_order_release);
+			const std::shared_ptr<element_type> node{begin->next};
+			std::atomic_store_explicit(&begin->next,node->next,std::memory_order_release);
 			return node;
 		}
 	};
