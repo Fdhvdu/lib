@@ -18,7 +18,11 @@ namespace nThread
 		std::shared_ptr<element_type> begin;
 		std::shared_ptr<element_type> end;
 		mutex_type mut;
-		Lock_queue()=default;
+		Lock_queue()
+			:begin{make_shared<element_type>()},end{make_shared<element_type>()}
+		{
+			begin->next=end;
+		}
 		Lock_queue(const Lock_queue &)=delete;
 		void emplace(std::shared_ptr<element_type> &&val)
 		{
@@ -26,19 +30,19 @@ namespace nThread
 			std::lock_guard<mutex_type> lock{mut};
 			emplace_(std::move(val));
 		}
-		//do not call Lock_queue::emplace, emplace_not_ts, Lock_queue::pop or Lock_queue::pop_not_ts at same time
+		//do not call other member functions (including const member functions) at same time
 		inline void emplace_not_ts(std::shared_ptr<element_type> &&val) noexcept
 		{
 			emplace_(std::move(val));
 		}
 		inline bool empty() const noexcept
 		{
-			return !std::atomic_load_explicit(&begin,std::memory_order_acquire).operator bool();
+			return !std::atomic_load_explicit(&std::atomic_load_explicit(&begin->next,std::memory_order_acquire)->next,std::memory_order_acquire);
 		}
 		std::shared_ptr<element_type> pop()
 		{
 			std::lock_guard<mutex_type> lock{mut};
-			return pop_not_ts();
+			return pop_();
 		}
 		std::shared_ptr<element_type> pop_if_exist()
 		{
@@ -47,31 +51,29 @@ namespace nThread
 			std::lock_guard<mutex_type> lock{mut};
 			if(empty())
 				return std::shared_ptr<element_type>{};
-			return pop_not_ts();
+			return pop_();
 		}
-		//do not call Lock_queue::emplace, Lock_queue::emplace_not_ts, Lock_queue::pop or pop_not_ts at same time
+		//do not call other member functions (including const member functions) at same time
 		std::shared_ptr<element_type> pop_not_ts() noexcept
 		{
-			const std::shared_ptr<element_type> node{std::move(begin)};
-			begin=node->next;
-			if(empty())
-				end.reset();
+			const std::shared_ptr<element_type> node{std::move(begin->next)};
+			begin->next=node->next;
 			return node;
 		}
 		Lock_queue& operator=(const Lock_queue &)=delete;
 	private:
 		void emplace_(std::shared_ptr<element_type> &&val) noexcept
 		{
-			if(empty())
-			{
-				std::atomic_store_explicit(&begin,val,std::memory_order_release);
-				end=std::move(val);
-			}
-			else
-			{
-				end->next=std::move(val);
-				end=end->next;
-			}
+			end->next=val;
+			std::swap(end->data,val->data);
+			end=std::move(val);
+		}
+		std::shared_ptr<element_type> pop_() noexcept
+		{
+			using namespace std;
+			const shared_ptr<element_type> node{atomic_load_explicit(&begin->next,memory_order_acquire)};
+			atomic_store_explicit(&begin->next,atomic_load_explicit(&node->next,memory_order_acquire),memory_order_release);
+			return node;
 		}
 	};
 }
