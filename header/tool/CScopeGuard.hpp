@@ -10,7 +10,7 @@ namespace nTool
 		const std::function<void()> func_;
 	public:
 		template<class Func>
-		CScopeGuard(Func &&func)
+		explicit CScopeGuard(Func &&func)
 			:func_{std::forward<decltype(func)>(func)}{}
 		CScopeGuard(const CScopeGuard &)=delete;
 		CScopeGuard& operator=(const CScopeGuard &)=delete;
