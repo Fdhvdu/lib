@@ -47,7 +47,7 @@ namespace nThread
 		std::shared_ptr<element_type> pop()
 		{
 			std::lock_guard<mutex_type> lock{mut};
-			return pop_(std::integral_constant<bool,POP_IF_EXIST>{});
+			return pop_();
 		}
 		std::shared_ptr<element_type> pop_if_exist()
 		{
@@ -57,12 +57,14 @@ namespace nThread
 			std::lock_guard<mutex_type> lock{mut};
 			if(empty())
 				return std::shared_ptr<element_type>{};
-			return pop_(std::true_type{});
+			return pop_();
 		}
 		//do not call other member functions (including const member functions) at same time
 		inline std::shared_ptr<element_type> pop_not_ts() noexcept
 		{
-			return pop_(std::false_type{});
+			const std::shared_ptr<element_type> node{std::move(begin)};
+			begin=node->next;
+			return node;
 		}
 		Lock_queue& operator=(const Lock_queue &)=delete;
 	private:
@@ -73,16 +75,10 @@ namespace nThread
 			std::swap(end->data,val->data);
 			end=std::move(val);
 		}
-		std::shared_ptr<element_type> pop_(std::true_type) noexcept
+		std::shared_ptr<element_type> pop_() noexcept
 		{
 			const std::shared_ptr<element_type> node{begin};
 			std::atomic_store_explicit(&begin,node->next,std::memory_order_release);
-			return node;
-		}
-		std::shared_ptr<element_type> pop_(std::false_type) noexcept
-		{
-			const std::shared_ptr<element_type> node{std::move(begin)};
-			begin=node->next;
 			return node;
 		}
 	};
