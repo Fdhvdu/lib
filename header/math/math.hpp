@@ -2,6 +2,7 @@
 #define MATH
 #include<bitset>
 #include<cstddef>
+#include<cstdint>
 #include<stdexcept>	//runtime_error
 #include"../algorithm/algorithm.hpp"
 
@@ -21,9 +22,9 @@ namespace nMath
 	}
 
 	template<class T>
-	uint_fast16_t count_of_1_bit(T val) noexcept
+	std::uint_fast16_t count_of_1_bit(T val) noexcept
 	{
-		uint_fast16_t cnt{0};
+		std::uint_fast16_t cnt{0};
 		for(;val;++cnt)
 			val&=(val-1);
 		return cnt;
