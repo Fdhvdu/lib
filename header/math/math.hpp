@@ -20,6 +20,15 @@ namespace nMath
 		return (N1+N2)*(N1+N2+1)/2+N2;
 	}
 
+	template<class T>
+	uint_fast16_t count_of_1_bit(T val) noexcept
+	{
+		uint_fast16_t cnt{0};
+		for(;val;++cnt)
+			val&=(val-1);
+		return cnt;
+	}
+
 	inline std::size_t diff_bit_count(const unsigned long long lhs,const unsigned long long rhs) noexcept
 	{
 		return std::bitset<sizeof(unsigned long long)*8>{lhs^rhs}.count();
