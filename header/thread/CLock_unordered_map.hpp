@@ -3,6 +3,7 @@
 #include<functional>	//equal_to, hash
 #include<memory>	//allocator
 #include<mutex>
+#include<tuple>
 #include<unordered_map>
 #include<utility>	//forward, move
 
@@ -29,7 +30,7 @@ namespace nThread
 			std::lock_guard<std::mutex> lock{mut_};
 			if(find(key))
 				return false;
-			map_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
+			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(args)>(args)...));
 			return true;
 		}
 		template<class Key_typeFwdRef,class Gen>
@@ -37,7 +38,7 @@ namespace nThread
 		{
 			if(find(key))
 				return false;
-			map_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen)());
+			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(gen)>(gen)()));
 			return true;
 		}
 		template<class Key_typeFwdRef,class Gen>
@@ -74,6 +75,14 @@ namespace nThread
 		{
 			std::lock_guard<std::mutex> lock{mut_};
 			return map_.emplace(std::forward<decltype(args)>(args)...).second;
+		}
+		inline mapped_type& read(const key_type &key)
+		{
+			return map_.find(key)->second;
+		}
+		inline const mapped_type& read(const key_type &key) const
+		{
+			return map_.find(key)->second;
 		}
 		template<class ... Args>
 		inline bool try_emplace(const key_type &key,Args &&...args)
