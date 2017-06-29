@@ -47,12 +47,12 @@ namespace nThread
 			return emplace_if_not_exist_(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen));
 		}
 		template<class Key_typeFwdRef,class Gen>
-		bool try_lock_emplace_gen_(Key_typeFwdRef &&key,Gen &&gen)
+		int try_lock_emplace_gen_(Key_typeFwdRef &&key,Gen &&gen)
 		{
 			std::unique_lock<std::mutex> lock{mut_,std::defer_lock};
 			if(lock.try_lock())
 				return emplace_if_not_exist_(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen));
-			return false;
+			return -1;
 		}
 	public:
 		CLock_unordered_map()=default;
@@ -96,12 +96,12 @@ namespace nThread
 			return try_emplace_gen_(std::move(key),std::forward<decltype(gen)>(gen));
 		}
 		template<class Gen>
-		inline bool try_lock_emplace_gen(const key_type &key,Gen &&gen)
+		inline int try_lock_emplace_gen(const key_type &key,Gen &&gen)
 		{
 			return try_lock_emplace_gen_(key,std::forward<decltype(gen)>(gen));
 		}
 		template<class Gen>
-		inline bool try_lock_emplace_gen(key_type &&key,Gen &&gen)
+		inline int try_lock_emplace_gen(key_type &&key,Gen &&gen)
 		{
 			return try_lock_emplace_gen_(std::move(key),std::forward<decltype(gen)>(gen));
 		}
