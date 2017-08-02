@@ -33,7 +33,7 @@ namespace nTMP
 	{
 		static constexpr auto size(sizeof...(T));
 		if(size==n)
-			throw std::out_of_range("i is greater than size");
+			throw std::out_of_range("n is greater than size");
 		return New_obj<Ret,size-1,T...>::get(n);
 	}
 }
