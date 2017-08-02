@@ -29,7 +29,7 @@ namespace nTMP
 	};
 
 	template<class Ret,class ... T>
-	static Ret get_n_obj(const size_t n)
+	static Ret get_n_obj(const std::size_t n)
 	{
 		static constexpr auto size(sizeof...(T));
 		if(size==n)
