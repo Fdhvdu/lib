@@ -4,13 +4,11 @@
 #include<type_traits>
 #include<utility>	//move
 #include"Node.hpp"
+#include"tag.hpp"
 #include"../tool/CAlloc_obj.hpp"
 
 namespace nThread
 {
-	struct Use_pop_if_exist;
-	struct Do_not_use_pop_if_exist;
-
 	template<class T,class PopIfExist,class Mutex,class Alloc=std::allocator<T>>
 	struct Lock_queue
 	{

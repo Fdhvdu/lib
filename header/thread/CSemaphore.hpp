@@ -5,12 +5,10 @@
 #include<cstddef>
 #include<mutex>
 #include<type_traits>
+#include"tag.hpp"
 
 namespace nThread
 {
-	struct Use_sub_if_greater_than_0{};
-	struct Do_not_use_sub_if_greater_than_0{};
-
 	template<class SubIfGreaterThan0,class Mutex>
 	class CBasic_semaphore
 	{
