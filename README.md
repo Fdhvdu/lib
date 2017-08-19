@@ -19,4 +19,6 @@ or any compiler which supports C++14<br>
 If you get error C4996 when you compile [insert_iterator.cpp](tutorial/insert_iterator.cpp) by VC++, [see this](http://stackoverflow.com/questions/25046829/what-does-use-d-scl-secure-no-warnings-mean).
 # Future work
 constexpr<br>
+replace ::value with _v<br>
 noexcept<br>
+replace using with static_assert<br>
