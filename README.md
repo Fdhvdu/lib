@@ -22,3 +22,4 @@ constexpr<br>
 replace ::value with _v<br>
 noexcept<br>
 replace using with static_assert<br>
+memory order
