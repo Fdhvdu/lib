@@ -32,8 +32,8 @@ namespace nTMP
 	static Ret get_n_obj(const std::size_t n)
 	{
 		static constexpr auto size(sizeof...(T));
-		if(size==n)
-			throw std::out_of_range("n is greater than size");
+		if(size<=n)
+			throw std::out_of_range("n is greater than or equal to size");
 		return New_obj<Ret,size-1,T...>::get(n);
 	}
 }
