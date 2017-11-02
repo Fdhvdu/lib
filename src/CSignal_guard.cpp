@@ -16,8 +16,7 @@ namespace nTool
 	CSignal_guard::Impl::Impl()
 		:alive_{true}{}
 
-	CSignal_guard::CSignal_guard()
-		:impl_{make_unique<Impl>()}{}
+	CSignal_guard::CSignal_guard()=default;
 
 	bool CSignal_guard::alive() const noexcept
 	{
