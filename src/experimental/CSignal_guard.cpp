@@ -1,7 +1,7 @@
-#include"../header/tool/CSignal_guard.hpp"
+#include"../../header/tool/CSignal_guard.hpp"
 #include<atomic>
 #include<memory>
-#include"../header/thread/CSemaphore.hpp"
+#include"../../header/thread/CSemaphore.hpp"
 using namespace std;
 
 namespace nTool

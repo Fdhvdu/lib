@@ -1,6 +1,6 @@
 #ifndef CSIGNAL_GUARD
 #define CSIGNAL_GUARD
-#include"CUnique_obj.hpp"
+#include"../CUnique_obj.hpp"
 
 namespace nTool
 {
