@@ -22,4 +22,6 @@ constexpr<br>
 replace ::value with _v<br>
 noexcept<br>
 replace using with static_assert<br>
-memory order
+memory order<br>
+allocator_type of CAlloc_obj should not be static<br>
+style change (replace {} with ())
