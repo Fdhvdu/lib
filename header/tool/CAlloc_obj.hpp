@@ -17,15 +17,15 @@ namespace nTool
 		using pointer=typename std::allocator_traits<Alloc>::pointer;
 		using size_type=typename std::allocator_traits<Alloc>::size_type;
 	private:
-		template<class S,class T,class ... Args>
+		template<class S,class Arg1,class ... Args>
 		struct First_is_
-			:std::integral_constant<bool,std::is_same<S,std::remove_cv_t<std::remove_reference_t<T>>>::value>
+			:std::integral_constant<bool,std::is_same<S,std::remove_cv_t<std::remove_reference_t<Arg1>>>::value>
 		{};
 		template<class S,class ... Args>
 		struct Only_one_parameter_:std::false_type{};
-		template<class S,class T>
-		struct Only_one_parameter_<S,T>
-			:std::integral_constant<bool,std::is_same<S,std::remove_cv_t<std::remove_reference_t<T>>>::value>
+		template<class S,class Arg1>
+		struct Only_one_parameter_<S,Arg1>
+			:std::integral_constant<bool,std::is_same<S,std::remove_cv_t<std::remove_reference_t<Arg1>>>::value>
 		{};
 		allocator_type alloc_;
 		pointer data_;
