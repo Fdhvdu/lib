@@ -22,7 +22,7 @@ namespace nTool
 		bool has_not_destroy_;
 	public:
 		CAlloc_obj()
-			:data_{alloc_.allocate(1)},has_not_destroy_{false}{}
+			:data_{std::allocator_traits<allocator_type>::allocate(alloc_,1)},has_not_destroy_{false}{}
 		CAlloc_obj(const CAlloc_obj &)=delete;
 		CAlloc_obj(CAlloc_obj &&val) noexcept
 			:data_{val.data_},has_not_destroy_{val.has_not_destroy_}
@@ -38,12 +38,12 @@ namespace nTool
 		template<class ... Args>
 		void construct(Args &&...args) noexcept(std::is_nothrow_constructible<value_type,Args...>::value)
 		{
-			alloc_.construct(data_,std::forward<decltype(args)>(args)...);
+			std::allocator_traits<allocator_type>::construct(alloc_,data_,std::forward<decltype(args)>(args)...);
 			has_not_destroy_=true;
 		}
 		inline void destroy() noexcept
 		{
-			alloc_.destroy(data_);
+			std::allocator_traits<allocator_type>::destroy(alloc_,data_);
 			has_not_destroy_=false;
 		}
 		inline reference get()
@@ -71,7 +71,7 @@ namespace nTool
 			{
 				if(has_not_destroy())
 					destroy();
-				alloc_.deallocate(data_,1);
+				std::allocator_traits<allocator_type>::deallocate(alloc_,data_,1);
 			}
 		}
 	};
