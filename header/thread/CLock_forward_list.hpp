@@ -54,8 +54,9 @@ namespace nThread
 		{
 			stack_.emplace_not_ts(std::make_shared<element_type>(std::forward<decltype(args)>(args)...));
 		}
-		inline bool empty() const noexcept
+		bool empty() const noexcept
 		{
+			std::shared_lock<std::shared_mutex> lock{mut_};
 			return stack_.empty();
 		}
 		value_type pop_front()
