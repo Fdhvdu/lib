@@ -124,6 +124,14 @@ namespace nThread
 		{
 			return try_lock_emplace_gen_(std::move(key),std::forward<decltype(gen)>(gen));
 		}
+		inline std::unordered_map<key_type,mapped_type,Hash,KeyEqual,Alloc>& unordered_map() noexcept
+		{
+			return map_;
+		}
+		inline const std::unordered_map<key_type,mapped_type,Hash,KeyEqual,Alloc>& unordered_map() const noexcept
+		{
+			return map_;
+		}
 		CLock_unordered_map& operator=(const CLock_unordered_map &)=delete;
 		inline mapped_type& operator[](const key_type &key)
 		{
