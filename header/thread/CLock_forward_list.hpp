@@ -17,7 +17,7 @@ namespace nThread
 	private:
 		using element_type=typename Atomic_stack<value_type,Do_not_use_pop_if_exist>::element_type;
 		Atomic_stack<value_type,Do_not_use_pop_if_exist> stack_;
-		std::shared_mutex mut_;
+		mutable std::shared_mutex mut_;
 		void acquire_lock_and_emplace_front_(std::shared_ptr<element_type> &&val)
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};

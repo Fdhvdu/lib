@@ -13,7 +13,7 @@ namespace nThread
 	class CLock_unordered_set
 	{
 		std::unordered_set<Key,Hash,KeyEqual,Alloc> set_;
-		std::shared_mutex mut_;
+		mutable std::shared_mutex mut_;
 		template<class KeyFwdRef,class ... Args>
 		bool try_emplace_(KeyFwdRef &&key,Args &&...args)
 		{

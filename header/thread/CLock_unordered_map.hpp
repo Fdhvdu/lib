@@ -18,7 +18,7 @@ namespace nThread
 		using mapped_type=T;
 	private:
 		std::unordered_map<key_type,mapped_type,Hash,KeyEqual,Alloc> map_;
-		std::shared_mutex mut_;
+		mutable std::shared_mutex mut_;
 		template<class Key_typeFwdRef>
 		mapped_type& subscript_(Key_typeFwdRef &&key)
 		{
