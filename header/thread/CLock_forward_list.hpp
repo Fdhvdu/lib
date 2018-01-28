@@ -65,7 +65,7 @@ namespace nThread
 		}
 		inline void remove(const value_type &remove_val)
 		{
-			remove_if([&](const auto &val) noexcept{return val==remove_val;});
+			remove_if([&](const auto &val){return val==remove_val;});
 		}
 		//will block CLock_forward_list::emplace_front and CLock_forward_list::pop_front
 		template<class UnaryPred>
