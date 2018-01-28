@@ -41,10 +41,7 @@ namespace nThread
 		bool try_emplace_(Key_typeFwdRef &&key,Args &&...args)
 		{
 			std::lock_guard<std::shared_mutex> lock{mut_};
-			if(find_not_ts_(key))
-				return false;
-			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(args)>(args)...));
-			return true;
+			return map_.try_emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...).second;
 		}
 		template<class Key_typeFwdRef,class Gen>
 		bool try_emplace_gen_(Key_typeFwdRef &&key,Gen &&gen)
