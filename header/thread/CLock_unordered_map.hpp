@@ -2,7 +2,7 @@
 #define CLOCK_UNORDERED_MAP
 #include<functional>	//equal_to, hash
 #include<memory>	//allocator
-#include<mutex>
+#include<shared_mutex>
 #include<tuple>
 #include<unordered_map>
 #include<utility>	//forward, move
@@ -17,17 +17,17 @@ namespace nThread
 		using mapped_type=T;
 	private:
 		std::unordered_map<key_type,mapped_type,Hash,KeyEqual,Alloc> map_;
-		std::mutex mut_;
+		std::shared_mutex mut_;
 		template<class Key_typeFwdRef>
 		mapped_type& subscript_(Key_typeFwdRef &&key)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock{mut_};
 			return map_[std::forward<decltype(key)>(key)];
 		}
 		template<class Key_typeFwdRef,class ... Args>
 		bool try_emplace_(Key_typeFwdRef &&key,Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock{mut_};
 			if(find(key))
 				return false;
 			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(args)>(args)...));
@@ -44,13 +44,13 @@ namespace nThread
 		template<class Key_typeFwdRef,class Gen>
 		bool try_emplace_gen_(Key_typeFwdRef &&key,Gen &&gen)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock{mut_};
 			return emplace_if_not_exist_(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen));
 		}
 		template<class Key_typeFwdRef,class Gen>
 		int try_lock_emplace_gen_(Key_typeFwdRef &&key,Gen &&gen)
 		{
-			std::unique_lock<std::mutex> lock{mut_,std::defer_lock};
+			std::unique_lock<std::shared_mutex> lock{mut_,std::defer_lock};
 			if(lock.try_lock())
 				return emplace_if_not_exist_(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen));
 			return -1;
@@ -60,28 +60,33 @@ namespace nThread
 		CLock_unordered_map(const CLock_unordered_map &)=delete;
 		inline mapped_type& at(const key_type &key)
 		{
+			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.at(key);
 		}
 		inline const mapped_type& at(const key_type &key) const
 		{
+			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.at(key);
 		}
 		inline bool find(const key_type &key) const
 		{
+			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.find(key)!=map_.end();
 		}
 		template<class ... Args>
 		bool emplace(Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock{mut_};
 			return map_.emplace(std::forward<decltype(args)>(args)...).second;
 		}
 		inline mapped_type& read(const key_type &key)
 		{
+			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.find(key)->second;
 		}
 		inline const mapped_type& read(const key_type &key) const
 		{
+			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.find(key)->second;
 		}
 		template<class ... Args>

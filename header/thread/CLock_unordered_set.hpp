@@ -2,7 +2,7 @@
 #define CLOCK_UNORDERED_SET
 #include<functional>	//equal_to, hash
 #include<memory>	//allocator
-#include<mutex>
+#include<shared_mutex>
 #include<unordered_set>
 #include<utility>	//forward, move
 
@@ -12,11 +12,11 @@ namespace nThread
 	class CLock_unordered_set
 	{
 		std::unordered_set<Key,Hash,KeyEqual,Alloc> set_;
-		std::mutex mut_;
+		std::shared_mutex mut_;
 		template<class KeyFwdRef,class ... Args>
 		bool try_emplace_(KeyFwdRef &&key,Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock{mut_};
 			if(find(key))
 				return false;
 			set_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
@@ -29,16 +29,17 @@ namespace nThread
 		template<class ... Args>
 		bool emplace(Args &&...args)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock{mut_};
 			return set_.emplace(std::forward<decltype(args)>(args)...).second;
 		}
 		size_type erase(const Key &key)
 		{
-			std::lock_guard<std::mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock{mut_};
 			return set_.erase(key);
 		}
 		inline bool find(const Key &key) const
 		{
+			std::shared_lock<std::shared_mutex> lock{mut_};
 			return set_.find(key)!=set_.end();
 		}
 		template<class ... Args>
