@@ -19,6 +19,14 @@ namespace nThread
 	private:
 		std::unordered_map<key_type,mapped_type,Hash,KeyEqual,Alloc> map_;
 		mutable std::shared_mutex mut_;
+		template<class Key_typeFwdRef,class Gen>
+		bool emplace_if_not_exist_(Key_typeFwdRef &&key,Gen &&gen)
+		{
+			if(find_(key))
+				return false;
+			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(gen)>(gen)()));
+			return true;
+		}
 		inline bool find_(const key_type &key) const
 		{
 			return map_.find(key)!=map_.end();
@@ -36,14 +44,6 @@ namespace nThread
 			if(find_(key))
 				return false;
 			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(args)>(args)...));
-			return true;
-		}
-		template<class Key_typeFwdRef,class Gen>
-		bool emplace_if_not_exist_(Key_typeFwdRef &&key,Gen &&gen)
-		{
-			if(find_(key))
-				return false;
-			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(gen)>(gen)()));
 			return true;
 		}
 		template<class Key_typeFwdRef,class Gen>
