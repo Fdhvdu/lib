@@ -19,6 +19,10 @@ namespace nThread
 	private:
 		std::unordered_map<key_type,mapped_type,Hash,KeyEqual,Alloc> map_;
 		mutable std::shared_mutex mut_;
+		inline bool find_(const key_type &key) const
+		{
+			return map_.find(key)!=map_.end();
+		}
 		template<class Key_typeFwdRef>
 		mapped_type& subscript_(Key_typeFwdRef &&key)
 		{
@@ -29,7 +33,7 @@ namespace nThread
 		bool try_emplace_(Key_typeFwdRef &&key,Args &&...args)
 		{
 			std::lock_guard<std::shared_mutex> lock{mut_};
-			if(find_not_ts(key))
+			if(find_(key))
 				return false;
 			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(args)>(args)...));
 			return true;
@@ -37,7 +41,7 @@ namespace nThread
 		template<class Key_typeFwdRef,class Gen>
 		bool emplace_if_not_exist_(Key_typeFwdRef &&key,Gen &&gen)
 		{
-			if(find_not_ts(key))
+			if(find_(key))
 				return false;
 			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(gen)>(gen)()));
 			return true;
@@ -72,11 +76,7 @@ namespace nThread
 		bool find(const key_type &key) const
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
-			return find_not_ts(key);
-		}
-		inline bool find_not_ts(const key_type &key) const
-		{
-			return map_.find(key)!=map_.end();
+			return find_(key);
 		}
 		template<class ... Args>
 		bool emplace(Args &&...args)
