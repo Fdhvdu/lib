@@ -22,12 +22,12 @@ namespace nThread
 		template<class Key_typeFwdRef,class Gen>
 		bool emplace_if_not_exist_(Key_typeFwdRef &&key,Gen &&gen)
 		{
-			if(find_(key))
+			if(find_not_ts_(key))
 				return false;
 			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(gen)>(gen)()));
 			return true;
 		}
-		inline bool find_(const key_type &key) const
+		inline bool find_not_ts_(const key_type &key) const
 		{
 			return map_.find(key)!=map_.end();
 		}
@@ -41,7 +41,7 @@ namespace nThread
 		bool try_emplace_(Key_typeFwdRef &&key,Args &&...args)
 		{
 			std::lock_guard<std::shared_mutex> lock{mut_};
-			if(find_(key))
+			if(find_not_ts_(key))
 				return false;
 			map_.emplace(std::piecewise_construct,std::forward_as_tuple(std::forward<decltype(key)>(key)),std::forward_as_tuple(std::forward<decltype(args)>(args)...));
 			return true;
@@ -76,7 +76,7 @@ namespace nThread
 		bool find(const key_type &key) const
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
-			return find_(key);
+			return find_not_ts_(key);
 		}
 		template<class ... Args>
 		bool emplace(Args &&...args)
