@@ -38,7 +38,7 @@ namespace nThread
 			std::lock_guard<std::shared_mutex> lock{mut_};
 			return set_.erase(key);
 		}
-		inline bool find(const Key &key) const
+		bool find(const Key &key) const
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
 			return set_.find(key)!=set_.end();

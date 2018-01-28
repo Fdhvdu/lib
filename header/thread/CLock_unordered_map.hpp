@@ -59,17 +59,17 @@ namespace nThread
 	public:
 		CLock_unordered_map()=default;
 		CLock_unordered_map(const CLock_unordered_map &)=delete;
-		inline mapped_type& at(const key_type &key)
+		mapped_type& at(const key_type &key)
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.at(key);
 		}
-		inline const mapped_type& at(const key_type &key) const
+		const mapped_type& at(const key_type &key) const
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.at(key);
 		}
-		inline bool find(const key_type &key) const
+		bool find(const key_type &key) const
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.find(key)!=map_.end();
@@ -80,12 +80,12 @@ namespace nThread
 			std::lock_guard<std::shared_mutex> lock{mut_};
 			return map_.emplace(std::forward<decltype(args)>(args)...).second;
 		}
-		inline mapped_type& read(const key_type &key)
+		mapped_type& read(const key_type &key)
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.find(key)->second;
 		}
-		inline const mapped_type& read(const key_type &key) const
+		const mapped_type& read(const key_type &key) const
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
 			return map_.find(key)->second;
