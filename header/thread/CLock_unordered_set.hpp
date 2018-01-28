@@ -18,7 +18,7 @@ namespace nThread
 		bool try_emplace_(KeyFwdRef &&key,Args &&...args)
 		{
 			std::lock_guard<std::shared_mutex> lock{mut_};
-			if(find(key))
+			if(find_not_ts(key))
 				return false;
 			set_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
 			return true;
@@ -41,6 +41,10 @@ namespace nThread
 		bool find(const Key &key) const
 		{
 			std::shared_lock<std::shared_mutex> lock{mut_};
+			return find_not_ts(key);
+		}
+		inline bool find_not_ts(const Key &key) const
+		{
 			return set_.find(key)!=set_.end();
 		}
 		template<class ... Args>
