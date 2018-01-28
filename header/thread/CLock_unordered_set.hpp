@@ -2,6 +2,7 @@
 #define CLOCK_UNORDERED_SET
 #include<functional>	//equal_to, hash
 #include<memory>	//allocator
+#include<mutex>
 #include<shared_mutex>
 #include<unordered_set>
 #include<utility>	//forward, move

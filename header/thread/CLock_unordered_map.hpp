@@ -2,6 +2,7 @@
 #define CLOCK_UNORDERED_MAP
 #include<functional>	//equal_to, hash
 #include<memory>	//allocator
+#include<mutex>
 #include<shared_mutex>
 #include<tuple>
 #include<unordered_map>
