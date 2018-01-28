@@ -53,6 +53,14 @@ namespace nThread
 		{
 			return try_emplace_(std::move(key),std::forward<decltype(args)>(args)...);
 		}
+		inline std::unordered_set<Key,Hash,KeyEqual,Alloc>& unordered_set() noexcept
+		{
+			return set_;
+		}
+		inline const std::unordered_set<Key,Hash,KeyEqual,Alloc>& unordered_set() const noexcept
+		{
+			return set_;
+		}
 		CLock_unordered_set& operator=(const CLock_unordered_set &)=delete;
 	};
 }
