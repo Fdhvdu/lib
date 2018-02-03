@@ -24,6 +24,14 @@ namespace nTool
 			}
 			return false;
 		}
+		inline void set(const std::string &name)
+		{
+			set(name,std::any{});
+		}
+		inline void set(std::string &&name)
+		{
+			set(std::move(name),std::any{});
+		}
 		template<class T>
 		inline void set(const std::string &name,T &&val)
 		{
