@@ -13,7 +13,7 @@ namespace nTool
 		std::unordered_map<std::string,std::any> param_;
 	public:
 		template<class T>
-		bool get(const std::string &name,T &val)
+		bool get(const std::string &name,T &val) const
 		{
 			const auto iter(param_.find(name));
 			if(iter!=std::end(param_))
