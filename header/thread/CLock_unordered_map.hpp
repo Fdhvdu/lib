@@ -50,6 +50,15 @@ namespace nThread
 			std::lock_guard<std::shared_mutex> lock{mut_};
 			return emplace_if_not_exist_(std::forward<decltype(key)>(key),std::forward<decltype(gen)>(gen));
 		}
+		template<class Key_typeFwdRef,class ... Args>
+		int try_lock_emplace_(Key_typeFwdRef &&key,Args &&...args)
+		{
+			using namespace std;
+			unique_lock<shared_mutex> lock{mut_,defer_lock};
+			if(lock.try_lock())
+				return map_.try_emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...).second;
+			return -1;
+		}
 		template<class Key_typeFwdRef,class Gen>
 		int try_lock_emplace_gen_(Key_typeFwdRef &&key,Gen &&gen)
 		{
@@ -112,6 +121,16 @@ namespace nThread
 		inline bool try_emplace_gen(key_type &&key,Gen &&gen)
 		{
 			return try_emplace_gen_(std::move(key),std::forward<decltype(gen)>(gen));
+		}
+		template<class ... Args>
+		inline int try_lock_emplace(const key_type &key,Args &&...args)
+		{
+			return try_lock_emplace_(key,std::forward<decltype(args)>(args)...);
+		}
+		template<class ... Args>
+		inline int try_lock_emplace(key_type &&key,Args &&...args)
+		{
+			return try_lock_emplace_(std::move(key),std::forward<decltype(args)>(args)...);
 		}
 		template<class Gen>
 		inline int try_lock_emplace_gen(const key_type &key,Gen &&gen)
