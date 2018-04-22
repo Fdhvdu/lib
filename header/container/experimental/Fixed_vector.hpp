@@ -102,6 +102,14 @@ namespace nContainer
 		{
 			return end_-data_;
 		}
+		constexpr reference operator[](const size_type pos)
+		{
+			return data_[pos];
+		}
+		constexpr const_reference operator[](const size_type pos) const
+		{
+			return data_[pos];
+		}
 		Fixed_vector& operator=(const Fixed_vector &rhs)=delete;
 	};
 }
