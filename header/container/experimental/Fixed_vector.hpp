@@ -24,6 +24,12 @@ namespace nContainer
 	public:
 		constexpr Fixed_vector() noexcept(std::is_nothrow_default_constructible_v<T>)
 			:end_(data_){}
+		Fixed_vector(const Fixed_vector &rhs)
+			:Fixed_vector(rhs.begin(),rhs.end()){}
+		Fixed_vector(Fixed_vector &&rhs)
+		{
+			end_=std::move(rhs.begin(),rhs.end(),data_);
+		}
 		template<class InIter>
 		constexpr Fixed_vector(InIter begin,InIter end)
 		{
