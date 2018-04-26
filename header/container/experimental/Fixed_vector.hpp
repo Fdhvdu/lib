@@ -66,6 +66,10 @@ namespace nContainer
 		{
 			return data_==end_;
 		}
+		void erase(const const_iterator pos)
+		{
+			std::move(pos+1,end_,pos);
+		}
 		constexpr pointer data() noexcept
 		{
 			return data_;
