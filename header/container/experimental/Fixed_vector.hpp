@@ -71,11 +71,11 @@ namespace nContainer
 		{
 			return data_==end_;
 		}
-		void erase(const const_iterator pos)
+		inline void erase(const iterator pos)
 		{
 			std::move(pos+1,end_,pos);
 		}
-		void erase(const const_iterator first,const const_iterator last)
+		inline void erase(const iterator first,const iterator last)
 		{
 			std::move(last,end_,first);
 		}
