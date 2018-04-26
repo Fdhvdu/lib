@@ -35,7 +35,6 @@ namespace nContainer
 		{
 			end_=std::copy(begin,end,data_);
 		}
-		Fixed_vector(const Fixed_vector &rhs)=delete;
 		constexpr reference back() noexcept
 		{
 			return *(end_-1);
