@@ -100,6 +100,11 @@ namespace nContainer
 			std::move_backward(pos,end_,end_);
 			*pos=val;
 		}
+		void insert(const iterator pos,value_type &&val)
+		{
+			std::move_backward(pos,end_,end_);
+			*pos=std::move(val);
+		}
 		constexpr void pop_back() noexcept
 		{
 			--end_;
