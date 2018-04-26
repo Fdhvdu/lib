@@ -76,6 +76,10 @@ namespace nContainer
 		{
 			std::move(pos+1,end_,pos);
 		}
+		void erase(const const_iterator first,const const_iterator last)
+		{
+			std::move(last,end_,first);
+		}
 		constexpr pointer data() noexcept
 		{
 			return data_;
@@ -91,6 +95,11 @@ namespace nContainer
 		constexpr const_reference front() const noexcept
 		{
 			return data_[0];
+		}
+		void insert(const iterator pos,const_reference val)
+		{
+			std::move_backward(pos,end_,end_);
+			*pos=val;
 		}
 		constexpr void pop_back() noexcept
 		{
