@@ -73,8 +73,7 @@ namespace nContainer
 		}
 		inline void erase(const iterator pos)
 		{
-			std::move(pos+1,end_,pos);
-			--end_;
+			std::move(pos+1,end_--,pos);
 		}
 		inline void erase(const iterator first,const iterator last)
 		{
