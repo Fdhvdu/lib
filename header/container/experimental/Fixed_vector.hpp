@@ -105,7 +105,7 @@ namespace nContainer
 		{
 			--end_;
 		}
-		constexpr void push_back(const value_type &val) noexcept(std::is_nothrow_copy_assignable_v<value_type>)
+		constexpr void push_back(const_reference val) noexcept(std::is_nothrow_copy_assignable_v<value_type>)
 		{
 			*(end_++)=val;
 		}
