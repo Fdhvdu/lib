@@ -97,13 +97,13 @@ namespace nContainer
 		}
 		void insert(const iterator pos,const_reference val)
 		{
-			std::move_backward(pos,end_,end_);
+			std::move_backward(pos,end_,end_+1);
 			++end_;
 			*pos=val;
 		}
 		void insert(const iterator pos,value_type &&val)
 		{
-			std::move_backward(pos,end_,end_);
+			std::move_backward(pos,end_,end_+1);
 			++end_;
 			*pos=std::move(val);
 		}
