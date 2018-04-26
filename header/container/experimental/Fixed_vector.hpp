@@ -120,7 +120,18 @@ namespace nContainer
 		{
 			return data_[pos];
 		}
-		Fixed_vector& operator=(const Fixed_vector &rhs)=delete;
+		Fixed_vector& operator=(const Fixed_vector &rhs)
+		{
+			if(this!=&rhs)
+				end_=std::copy(rhs.begin(),rhs.end(),data_);
+			return *this;
+		}
+		Fixed_vector& operator=(Fixed_vector &&rhs)
+		{
+			if(this!=&rhs)
+				end_=std::move(rhs.begin(),rhs.end(),data_);
+			return *this;
+		}
 	};
 }
 
