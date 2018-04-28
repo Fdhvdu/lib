@@ -12,17 +12,22 @@ namespace nTool
 	{
 		std::unordered_map<std::string,std::any> param_;
 	public:
-		template<class T>
-		bool get(const std::string &name,T &val) const
+		template<class T1,class T2>
+		bool get(const std::string &name,T2 &val) const
 		{
 			const auto iter(param_.find(name));
 			if(iter!=std::end(param_))
 			{
 				if(const auto &temp(iter->second);temp.has_value())
-					val=std::any_cast<T>(temp);
+					val=std::any_cast<T1>(temp);
 				return true;
 			}
 			return false;
+		}
+		template<class T>
+		inline bool get(const std::string &name,T &val) const
+		{
+			return get<T,T>(name,val);
 		}
 		inline void set(const std::string &name)
 		{
