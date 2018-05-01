@@ -107,6 +107,14 @@ namespace nContainer
 			++end_;
 			*pos=std::move(val);
 		}
+		template<class InIter>
+		void insert(const iterator pos,const InIter begin,const InIter end)
+		{
+			const auto dis(std::distance(begin,end));
+			std::move_backward(pos,end_,end_+dis);
+			end_+=dis;
+			std::copy(begin,end,pos);
+		}
 		constexpr void pop_back() noexcept
 		{
 			--end_;
