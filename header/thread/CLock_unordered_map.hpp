@@ -25,7 +25,7 @@ namespace nThread
 			using namespace std;
 			if(find_not_ts_(key))
 				return false;
-			map_.emplace(piecewise_construct,forward_as_tuple(forward<decltype(key)>(key)),forward_as_tuple(forward<decltype(gen)>(gen)()));
+			map_.emplace(piecewise_construct,forward_as_tuple(forward<decltype(key)>(key)),tuple_cat(forward<decltype(gen)>(gen)()));
 			return true;
 		}
 		inline bool find_not_ts_(const key_type &key) const
