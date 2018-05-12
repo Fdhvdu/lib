@@ -131,6 +131,10 @@ namespace nContainer
 		{
 			end_=data_+new_size;
 		}
+		constexpr void resize(const iterator new_end) noexcept
+		{
+			end_=new_end;
+		}
 		constexpr size_type size() const noexcept
 		{
 			return end_-data_;
