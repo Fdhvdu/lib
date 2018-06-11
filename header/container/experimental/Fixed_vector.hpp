@@ -160,6 +160,18 @@ namespace nContainer
 			return *this;
 		}
 	};
+
+	template<class T,auto N1,auto N2>
+	inline bool operator==(const Fixed_vector<T,N1> &lhs,const Fixed_vector<T,N2> &rhs)
+	{
+		return std::equal(lhs.begin(),lhs.end(),rhs.begin(),rhs.end());
+	}
+
+	template<class T,auto N1,auto N2>
+	inline bool operator!=(const Fixed_vector<T,N1> &lhs,const Fixed_vector<T,N2> &rhs)
+	{
+		return !(lhs==rhs);
+	}
 }
 
 #endif
