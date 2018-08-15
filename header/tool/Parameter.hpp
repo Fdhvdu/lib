@@ -27,7 +27,7 @@ namespace nTool
 		template<class T1,class T2
 			,class=std::enable_if_t<std::negation_v<std::is_same<std::remove_reference_t<T1>,T2>>>
 		>
-		bool get(const std::string &name,T2 &val) const
+		inline bool get(const std::string &name,T2 &val) const
 		{
 			return get_<T1>(name,val);
 		}
