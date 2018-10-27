@@ -19,13 +19,13 @@ namespace nTool
 	private:
 		template<class S,class Arg1,class ... Args>
 		struct First_is_
-			:std::integral_constant<bool,std::is_same<S,std::remove_cv_t<std::remove_reference_t<Arg1>>>::value>
+			:std::integral_constant<bool,std::is_same_v<S,std::remove_cv_t<std::remove_reference_t<Arg1>>>>
 		{};
 		template<class S,class ... Args>
 		struct Only_one_parameter_:std::false_type{};
 		template<class S,class Arg1>
 		struct Only_one_parameter_<S,Arg1>
-			:std::integral_constant<bool,std::is_same<S,std::remove_cv_t<std::remove_reference_t<Arg1>>>::value>
+			:std::integral_constant<bool,std::is_same_v<S,std::remove_cv_t<std::remove_reference_t<Arg1>>>>
 		{};
 		allocator_type alloc_;
 		pointer data_;
@@ -36,10 +36,10 @@ namespace nTool
 		explicit CAlloc_obj(const allocator_type &alloc)
 			:alloc_{alloc},data_{std::allocator_traits<allocator_type>::allocate(alloc_,1)},has_not_destroy_{false}{}
 		CAlloc_obj(const CAlloc_obj &)=delete;
-		CAlloc_obj(CAlloc_obj &&val) noexcept
-			:data_{val.data_},has_not_destroy_{val.has_not_destroy_}
+		CAlloc_obj(CAlloc_obj &&rhs) noexcept(std::is_nothrow_move_constructible_v<allocator_type>)
+			:alloc_{std::move(rhs.alloc_)},data_{rhs.data_},has_not_destroy_{rhs.has_not_destroy_}
 		{
-			val.data_=nullptr;
+			rhs.data_=nullptr;
 		}
 		template<class ... Args,class=std::enable_if_t<
 			!(First_is_<std::allocator_arg_t,Args...>::value
@@ -55,12 +55,12 @@ namespace nTool
 			construct(std::forward<decltype(args)>(args)...);
 		}
 		template<class ... Args>
-		void construct(Args &&...args) noexcept(std::is_nothrow_constructible<value_type,Args...>::value)
+		void construct(Args &&...args)
 		{
 			std::allocator_traits<allocator_type>::construct(alloc_,data_,std::forward<decltype(args)>(args)...);
 			has_not_destroy_=true;
 		}
-		inline void destroy() noexcept
+		inline void destroy()
 		{
 			std::allocator_traits<allocator_type>::destroy(alloc_,data_);
 			has_not_destroy_=false;
