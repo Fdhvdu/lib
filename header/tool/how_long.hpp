@@ -7,7 +7,7 @@
 namespace nTool
 {
 	template<class Func,class ... Args>
-	std::chrono::steady_clock::time_point how_long(Func &&func,Args &&...args)
+	std::chrono::steady_clock::duration how_long(Func &&func,Args &&...args)
 	{
 		using namespace std;
 		const auto timer_begin(chrono::steady_clock::now());
