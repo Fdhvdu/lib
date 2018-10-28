@@ -22,7 +22,7 @@ namespace nThread
 		std::conditional_t<std::is_same<PopIfExist,Use_pop_if_exist>::value,CBasic_semaphore<Use_sub_if_greater_than_0,std::mutex>,CSemaphore> sema_;
 	public:
 		explicit CWait_bounded_queue(const size_type size)
-			:queue_{size}{}
+			:queue_(size){}
 		CWait_bounded_queue(const CWait_bounded_queue &)=delete;
 		inline size_type bounded_size() const noexcept
 		{

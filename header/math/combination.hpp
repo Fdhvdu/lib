@@ -16,16 +16,16 @@ namespace nMath
 	{
 		using namespace std;
 		//To speed up, I do not call factorial.
-		const T start{max(n-k,k)};
+		const T start(max(n-k,k));
 		vector<T> numerator(n-start),divisor(n-start);
 		iota(begin(numerator),end(numerator),start+1);
 		iota(begin(divisor),end(divisor),1);
-		T product{1};
+		T product(1);
 		for(auto &val:numerator)
 		{
 			for(auto &val2:divisor)
 			{
-				const T temp{gcd(val,val2)};
+				const T temp(gcd(val,val2));
 				if(temp!=1)
 				{
 					val/=temp;
@@ -55,10 +55,10 @@ namespace nMath
 					vec.emplace_back(std::cbegin(vec.back()),next(std::cbegin(vec.back()),level));
 			}
 		}};
-		const auto dis{static_cast<size_t>(distance(gbegin,gend))};
+		const auto dis(static_cast<size_t>(distance(gbegin,gend)));
 		if(!dis||dis<take_count)
 			return {};
-		Vec vec(1);	//not {}
+		Vec vec(1);
 		vec.reserve(C(dis,take_count));
 		combination_(gbegin,prev(gend,take_count-1),vec,0);
 		return vec;

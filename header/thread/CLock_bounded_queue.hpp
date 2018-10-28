@@ -51,7 +51,7 @@ namespace nThread
 		}
 	public:
 		explicit CLock_bounded_queue(size_type size)
-			:bounded_size_{size}
+			:bounded_size_(size)
 		{
 			while(size--)
 				stack_.emplace_not_ts(std::make_shared<typename Atomic_stack<value_type,PopIfExist>::element_type>());
@@ -64,7 +64,7 @@ namespace nThread
 		template<class ... Args>
 		void emplace(Args &&...args)
 		{
-			std::shared_ptr<element_type> node{stack_.pop()};
+			std::shared_ptr<element_type> node(stack_.pop());
 			destroy_and_construct_(node,std::forward<decltype(args)>(args)...);
 			queue_.emplace(std::move(node));
 		}
@@ -72,7 +72,7 @@ namespace nThread
 		template<class ... Args>
 		void emplace_not_ts(Args &&...args)
 		{
-			std::shared_ptr<element_type> node{stack_.pop_not_ts()};
+			std::shared_ptr<element_type> node(stack_.pop_not_ts());
 			destroy_and_construct_(node,std::forward<decltype(args)>(args)...);
 			queue_.emplace_not_ts(std::move(node));
 		}
@@ -82,13 +82,13 @@ namespace nThread
 		}
 		value_type pop()
 		{
-			std::shared_ptr<element_type> node{queue_.pop()};
+			std::shared_ptr<element_type> node(queue_.pop());
 			const nTool::CScopeGuard sg{[&,this]() noexcept{stack_.emplace(std::move(node));}};
 			return std::move(node->data.get());
 		}
 		bool pop_if_exist(value_type &val)
 		{
-			std::shared_ptr<element_type> node{queue_.pop_if_exist()};
+			std::shared_ptr<element_type> node(queue_.pop_if_exist());
 			if(node)
 			{
 				val=std::move(node->data.get());

@@ -14,7 +14,7 @@ namespace nTool
 	};
 
 	CSignal_guard::Impl::Impl()
-		:alive_{true}{}
+		:alive_(true){}
 
 	CSignal_guard::CSignal_guard()=default;
 

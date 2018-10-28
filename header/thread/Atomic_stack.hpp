@@ -65,7 +65,7 @@ namespace nThread
 		std::shared_ptr<element_type> pop_not_ts() noexcept
 		{
 			count_.sub();
-			const std::shared_ptr<element_type> node{std::move(begin)};
+			const std::shared_ptr<element_type> node(std::move(begin));
 			begin=std::move(node->next);
 			return node;
 		}
@@ -82,7 +82,7 @@ namespace nThread
 			std::atomic<size_type> count_;
 		public:
 			Count() noexcept
-				:count_{0}{}
+				:count_(0){}
 			Count(const Count &)=delete;
 			inline void add() noexcept
 			{
@@ -98,7 +98,7 @@ namespace nThread
 			}
 			bool sub_if_greater_than_0() noexcept
 			{
-				auto val{count_.load(std::memory_order_relaxed)};
+				auto val(count_.load(std::memory_order_relaxed));
 				do
 				{
 					if(!val)
@@ -117,7 +117,7 @@ namespace nThread
 		std::shared_ptr<element_type> pop_() noexcept
 		{
 			using namespace std;
-			shared_ptr<element_type> node{atomic_load_explicit(&begin,memory_order_relaxed)};
+			shared_ptr<element_type> node(atomic_load_explicit(&begin,memory_order_relaxed));
 			while(!atomic_compare_exchange_weak_explicit(&begin,&node,atomic_load(&node->next),memory_order_acquire,memory_order_relaxed))
 				;
 			return node;

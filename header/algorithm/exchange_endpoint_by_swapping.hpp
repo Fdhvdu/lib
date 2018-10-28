@@ -16,7 +16,7 @@ namespace nAlgorithm
 	{
 		using namespace std;
 		using Temp_Container=vector<vector<pair<const BidIter,const BidIter>>>;
-		const auto dist{static_cast<size_t>(distance(begin,end))};
+		const auto dist(static_cast<size_t>(distance(begin,end)));
 		if(dist<2)
 			return {};
 		function<void(BidIter,BidIter,Temp_Container &,size_t)> exchange_endpoint_by_swapping_;
@@ -44,7 +44,7 @@ namespace nAlgorithm
 				to_right_(to_right,to_left,container,level);
 			else
 			{
-				bool copy{false};
+				bool copy(false);
 				if(to_right!=prev(end))
 				{
 					to_right_(to_right,to_left,container,level);
@@ -61,7 +61,7 @@ namespace nAlgorithm
 				}
 			}
 		};
-		Temp_Container container(1);	//not {}
+		Temp_Container container(1);
 		reserve(container.back());
 		exchange_endpoint_by_swapping_(begin,prev(end),container,0);
 		result_of_t<decltype(exchange_endpoint_by_swapping<BidIter,BinaryOp>)&(BidIter,BidIter,BinaryOp)> result;

@@ -24,7 +24,7 @@ namespace nMath
 	template<class T>
 	std::uint_fast16_t count_of_1_bit(T val) noexcept
 	{
-		std::uint_fast16_t cnt{0};
+		std::uint_fast16_t cnt(0);
 		for(;val;++cnt)
 			val&=(val-1);
 		return cnt;
@@ -32,13 +32,13 @@ namespace nMath
 
 	inline std::size_t diff_bit_count(const unsigned long long lhs,const unsigned long long rhs) noexcept
 	{
-		return std::bitset<sizeof(unsigned long long)*8>{lhs^rhs}.count();
+		return std::bitset<sizeof(unsigned long long)*8>(lhs^rhs).count();
 	}
 
 	template<class T>
 	T factorial(T n) noexcept
 	{
-		T temp{1};
+		T temp(1);
 		while(n)
 			temp*=n--;
 		return temp;
@@ -49,7 +49,7 @@ namespace nMath
 	{
 		while(rhs)
 		{
-			const T temp{lhs%rhs};
+			const T temp(lhs%rhs);
 			lhs=rhs;
 			rhs=temp;
 		}
@@ -59,16 +59,16 @@ namespace nMath
 	template<class T>
 	inline bool is_power_of_2(const T val) noexcept
 	{
-		return std::bitset<sizeof(T)*8>(val).count()==1;	//use () instead of {}
+		return std::bitset<sizeof(T)*8>(val).count()==1;
 	}
 
 	template<class T>
 	std::size_t log_2(const T val)
 	{
-		const std::bitset<sizeof(T)*8> temp(val);	//use () instead of {}
+		const std::bitset<sizeof(T)*8> temp(val);
 		if(temp.count()==1)
 			return nAlgorithm::find_if_val<std::size_t>(0,temp.size(),[&](const auto i) noexcept{return temp[i];});
-		throw std::runtime_error{"The argument of log_2 is not a power of 2"};
+		throw std::runtime_error("The argument of log_2 is not a power of 2");
 	}
 
 	template<class T>

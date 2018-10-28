@@ -20,7 +20,7 @@ namespace nThread
 		mutable std::shared_mutex mut_;
 		void acquire_lock_and_emplace_front_(std::shared_ptr<element_type> &&val)
 		{
-			std::shared_lock<std::shared_mutex> lock{mut_};
+			std::shared_lock<std::shared_mutex> lock(mut_);
 			stack_.emplace(std::move(val));
 		}
 	public:
@@ -30,7 +30,7 @@ namespace nThread
 			std::shared_ptr<element_type> p_;
 		public:
 			CNode()
-				:p_{std::make_shared<element_type>()}{}
+				:p_(std::make_shared<element_type>()){}
 			CNode(const CNode &)=delete;
 			CNode(CNode &&)=default;
 			CNode& operator=(const CNode &)=delete;
@@ -56,12 +56,12 @@ namespace nThread
 		}
 		bool empty() const noexcept
 		{
-			std::shared_lock<std::shared_mutex> lock{mut_};
+			std::shared_lock<std::shared_mutex> lock(mut_);
 			return stack_.empty();
 		}
 		value_type pop_front()
 		{
-			std::shared_lock<std::shared_mutex> lock{mut_};
+			std::shared_lock<std::shared_mutex> lock(mut_);
 			return std::move(stack_.pop()->data.get());
 		}
 		inline void remove(const value_type &remove_val)
@@ -72,8 +72,8 @@ namespace nThread
 		template<class UnaryPred>
 		void remove_if(UnaryPred &&pred)
 		{
-			std::lock_guard<std::shared_mutex> lock{mut_};
-			for(std::shared_ptr<element_type> bef{stack_.begin},iter{bef};iter;)
+			std::lock_guard<std::shared_mutex> lock(mut_);
+			for(std::shared_ptr<element_type> bef(stack_.begin),iter(bef);iter;)
 				if(pred(iter->data.get()))
 					if(stack_.begin==iter)
 					{

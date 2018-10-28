@@ -17,13 +17,13 @@ namespace nAlgorithm
 	{
 		using namespace std;
 		const function<FwdIter(FwdIter,FwdIter)> unique_without_sort_thr_{[&,N](const FwdIter begin,const FwdIter end){
-			const auto size{static_cast<size_t>(distance(begin,end))};
+			const auto size(static_cast<size_t>(distance(begin,end)));
 			if(N&&N<size)
 			{
-				const auto mid{next(begin,size/2)};
+				const auto mid(next(begin,size/2));
 				FwdIter lhs_end,rhs_end;
 				{
-					future<FwdIter> fut{async(launch::async,unique_without_sort_thr_,begin,mid)};
+					future<FwdIter> fut(async(launch::async,unique_without_sort_thr_,begin,mid));
 					rhs_end=async(launch::async,unique_without_sort_thr_,mid,end);
 					lhs_end=fut.get();
 				}

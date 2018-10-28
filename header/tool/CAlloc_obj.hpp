@@ -32,12 +32,12 @@ namespace nTool
 		bool has_not_destroy_;
 	public:
 		CAlloc_obj()
-			:CAlloc_obj{allocator_type{}}{}
+			:CAlloc_obj(allocator_type{}){}
 		explicit CAlloc_obj(const allocator_type &alloc)
-			:alloc_{alloc},data_{std::allocator_traits<allocator_type>::allocate(alloc_,1)},has_not_destroy_{false}{}
+			:alloc_(alloc),data_(std::allocator_traits<allocator_type>::allocate(alloc_,1)),has_not_destroy_(false){}
 		CAlloc_obj(const CAlloc_obj &)=delete;
 		CAlloc_obj(CAlloc_obj &&rhs) noexcept(std::is_nothrow_move_constructible_v<allocator_type>)
-			:alloc_{std::move(rhs.alloc_)},data_{rhs.data_},has_not_destroy_{rhs.has_not_destroy_}
+			:alloc_(std::move(rhs.alloc_)),data_(rhs.data_),has_not_destroy_(rhs.has_not_destroy_)
 		{
 			rhs.data_=nullptr;
 		}
@@ -47,10 +47,10 @@ namespace nTool
 				||Only_one_parameter_<CAlloc_obj,Args...>::value)
 		>>
 		CAlloc_obj(Args &&...args)
-			:CAlloc_obj{std::allocator_arg,allocator_type{},std::forward<decltype(args)>(args)...}{}
+			:CAlloc_obj(std::allocator_arg,allocator_type{},std::forward<decltype(args)>(args)...){}
 		template<class ... Args>
 		CAlloc_obj(std::allocator_arg_t,const allocator_type &alloc,Args &&...args)
-			:CAlloc_obj{alloc}
+			:CAlloc_obj(alloc)
 		{
 			construct(std::forward<decltype(args)>(args)...);
 		}

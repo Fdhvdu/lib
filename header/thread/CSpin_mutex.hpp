@@ -6,9 +6,9 @@ namespace nThread
 {
 	class CSpin_mutex
 	{
-		std::atomic_flag flag_;
+		std::atomic_flag flag_=ATOMIC_FLAG_INIT;
 	public:
-		CSpin_mutex() noexcept;
+		CSpin_mutex()=default;
 		CSpin_mutex(const CSpin_mutex &)=delete;
 		void lock() noexcept;
 		inline bool try_lock() noexcept

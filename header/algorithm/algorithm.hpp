@@ -74,7 +74,7 @@ namespace nAlgorithm
 	{
 		while(lbegin!=lend)
 		{
-			for(auto begin{rbegin};begin!=rend;++begin,++des)
+			for(auto begin(rbegin);begin!=rend;++begin,++des)
 				*des=std::forward<decltype(op)>(op)(*lbegin,*begin);
 			++lbegin;
 		}

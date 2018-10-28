@@ -22,7 +22,7 @@ namespace nThread
 		std::shared_ptr<element_type> end;
 		mutex_type mut;
 		Lock_queue()
-			:end{std::make_shared<element_type>()}
+			:end(std::make_shared<element_type>())
 		{
 			begin=end;
 		}
@@ -30,7 +30,7 @@ namespace nThread
 		void emplace(std::shared_ptr<element_type> &&val)
 		{
 			val->next.reset();
-			std::lock_guard<mutex_type> lock{mut};
+			std::lock_guard<mutex_type> lock(mut);
 			emplace_(std::move(val));
 		}
 		//do not call other member functions (including const member functions) at same time
@@ -44,7 +44,7 @@ namespace nThread
 		}
 		std::shared_ptr<element_type> pop()
 		{
-			std::lock_guard<mutex_type> lock{mut};
+			std::lock_guard<mutex_type> lock(mut);
 			return pop_();
 		}
 		std::shared_ptr<element_type> pop_if_exist()
@@ -52,7 +52,7 @@ namespace nThread
 			using is_enable=std::enable_if_t<POP_IF_EXIST>;
 			if(empty())
 				return std::shared_ptr<element_type>{};
-			std::lock_guard<mutex_type> lock{mut};
+			std::lock_guard<mutex_type> lock(mut);
 			if(empty())
 				return std::shared_ptr<element_type>{};
 			return pop_();
@@ -60,7 +60,7 @@ namespace nThread
 		//do not call other member functions (including const member functions) at same time
 		inline std::shared_ptr<element_type> pop_not_ts() noexcept
 		{
-			const std::shared_ptr<element_type> node{std::move(begin)};
+			const std::shared_ptr<element_type> node(std::move(begin));
 			begin=node->next;
 			return node;
 		}
@@ -75,7 +75,7 @@ namespace nThread
 		}
 		std::shared_ptr<element_type> pop_() noexcept
 		{
-			const std::shared_ptr<element_type> node{begin};
+			const std::shared_ptr<element_type> node(begin);
 			std::atomic_store_explicit(&begin,node->next,std::memory_order_release);
 			return node;
 		}

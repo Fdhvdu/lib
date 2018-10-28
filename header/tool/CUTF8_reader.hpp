@@ -15,9 +15,9 @@ namespace nTool
 		std::size_t size_;
 		void calc_size_()
 		{
-			const auto uc{std::make_unsigned_t<typename String_type::value_type>(hold_[i_])};
+			const auto uc(std::make_unsigned_t<typename String_type::value_type>(hold_[i_]));
 			if((127<uc&&uc<192)||(247<uc))
-				throw std::runtime_error{"not standard UTF8"};
+				throw std::runtime_error("not standard UTF8");
 			if(uc<128)
 				size_=1;
 			else
@@ -32,7 +32,7 @@ namespace nTool
 		}
 	public:
 		explicit CUTF8_reader(const String_type &hold)
-			:hold_{hold},i_{0}
+			:hold_(hold),i_(0)
 		{
 			calc_size_();
 		}

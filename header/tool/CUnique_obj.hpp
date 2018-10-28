@@ -16,12 +16,11 @@ namespace nTool
 		std::unique_ptr<element_type> p_;
 	public:
 		CUnique_obj()
-			:p_{std::make_unique<element_type>()}{}
+			:p_(std::make_unique<element_type>()){}
 		CUnique_obj(const CUnique_obj &val)
-			:p_{std::make_unique<element_type>(*val)}{}
+			:p_(std::make_unique<element_type>(*val)){}
 		CUnique_obj(CUnique_obj &&rVal) noexcept
-			:p_{std::move(rVal.p_)}{}
-		//as smart pointer, use () instead of {}
+			:p_(std::move(rVal.p_)){}
 		template<class ... Args>
 		CUnique_obj(Args &&...args)
 			:p_(std::make_unique<element_type>(std::forward<decltype(args)>(args)...)){}

@@ -17,7 +17,7 @@ namespace nThread
 		template<class KeyFwdRef,class ... Args>
 		bool try_emplace_(KeyFwdRef &&key,Args &&...args)
 		{
-			std::lock_guard<std::shared_mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock(mut_);
 			if(set_.find(key)!=set_.end())
 				return false;
 			set_.emplace(std::forward<decltype(key)>(key),std::forward<decltype(args)>(args)...);
@@ -30,17 +30,17 @@ namespace nThread
 		template<class ... Args>
 		bool emplace(Args &&...args)
 		{
-			std::lock_guard<std::shared_mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock(mut_);
 			return set_.emplace(std::forward<decltype(args)>(args)...).second;
 		}
 		size_type erase(const Key &key)
 		{
-			std::lock_guard<std::shared_mutex> lock{mut_};
+			std::lock_guard<std::shared_mutex> lock(mut_);
 			return set_.erase(key);
 		}
 		bool find(const Key &key) const
 		{
-			std::shared_lock<std::shared_mutex> lock{mut_};
+			std::shared_lock<std::shared_mutex> lock(mut_);
 			return set_.find(key)!=set_.end();
 		}
 		template<class ... Args>

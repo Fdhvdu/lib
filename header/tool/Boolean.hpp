@@ -8,9 +8,9 @@ namespace nTool
 		bool bit_;
 	public:
 		Boolean() noexcept
-			:bit_{false}{}
+			:bit_(false){}
 		Boolean(const bool bit) noexcept
-			:bit_{bit}{}
+			:bit_(bit){}
 		Boolean(const Boolean &)=default;
 		inline operator bool() const noexcept
 		{

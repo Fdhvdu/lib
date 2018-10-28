@@ -20,24 +20,24 @@ namespace nThread
 		using check_SubIfGreaterThan0_type=std::enable_if_t<std::is_same<SubIfGreaterThan0,Use_sub_if_greater_than_0>::value||std::is_same<SubIfGreaterThan0,Do_not_use_sub_if_greater_than_0>::value>;
 		std::atomic<size_type> count_;
 		std::conditional_t<std::is_same<mutex_type,std::mutex>::value,std::condition_variable,std::condition_variable_any> cv_;
-		std::atomic_flag only_one_notify_;
+		std::atomic_flag only_one_notify_=ATOMIC_FLAG_INIT;
 		mutex_type mut_;
 		void wait_(std::true_type)
 		{
-			std::unique_lock<mutex_type> lock{mut_};
+			std::unique_lock<mutex_type> lock(mut_);
 			cv_.wait(lock,[this]() noexcept{return sub_if_greater_than_0();});
 		}
 		void wait_(std::false_type)
 		{
-			std::unique_lock<mutex_type> lock{mut_};
+			std::unique_lock<mutex_type> lock(mut_);
 			cv_.wait(lock,[this]() noexcept{return count();});
 			--count_;
 		}
 	public:
 		CBasic_semaphore()
-			:CBasic_semaphore{0}{}
+			:CBasic_semaphore(0){}
 		explicit CBasic_semaphore(const size_type count)
-			:count_{count},only_one_notify_{ATOMIC_FLAG_INIT}{}
+			:count_(count){}
 		CBasic_semaphore(const CBasic_semaphore &)=delete;
 		inline size_type count() const noexcept
 		{
@@ -54,7 +54,7 @@ namespace nThread
 		{
 			if(!count_++&&!only_one_notify_.test_and_set(std::memory_order_acquire))
 			{
-				std::lock_guard<mutex_type> lock{mut_};
+				std::lock_guard<mutex_type> lock(mut_);
 				cv_.notify_all();
 				only_one_notify_.clear(std::memory_order_release);
 			}
@@ -65,7 +65,7 @@ namespace nThread
 		bool sub_if_greater_than_0() noexcept
 		{
 			using is_enable=std::enable_if_t<SUB_IF_GREATER_THAN_0>;
-			auto val{count_.load(std::memory_order_relaxed)};
+			auto val(count_.load(std::memory_order_relaxed));
 			do
 			{
 				if(!val)

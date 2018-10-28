@@ -23,7 +23,7 @@ namespace nThread
 			std::shared_ptr<element_type> p_;
 		public:
 			CNode()
-				:p_{std::make_shared<element_type>()}{}
+				:p_(std::make_shared<element_type>()){}
 			CNode(const CNode &)=delete;
 			CNode(CNode &&)=default;
 			CNode& operator=(const CNode &)=delete;
@@ -71,7 +71,7 @@ namespace nThread
 		//return true if it has an element; otherwise, return false
 		bool pop_if_exist(value_type &val) noexcept(noexcept(std::declval<underlying_type>().pop_if_exist())&&noexcept(std::is_nothrow_move_assignable<value_type>::value))
 		{
-			std::shared_ptr<element_type> temp{container_.pop_if_exist()};
+			std::shared_ptr<element_type> temp(container_.pop_if_exist());
 			if(temp)
 			{
 				val=std::move(temp->data.get());

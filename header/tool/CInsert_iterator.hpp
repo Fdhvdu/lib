@@ -14,7 +14,7 @@ namespace nTool
 		using holder_type=Holder;
 		using value_type=T;
 		explicit CInsert_iterator(holder_type &hold) noexcept
-			:hold_{std::addressof(hold)}{}
+			:hold_(std::addressof(hold)){}
 		inline CInsert_iterator& operator*() noexcept
 		{
 			return *this;
