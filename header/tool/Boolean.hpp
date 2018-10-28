@@ -1,5 +1,5 @@
-#ifndef BOOLEAN
-#define BOOLEAN
+#ifndef BOOLEAN_HPP
+#define BOOLEAN_HPP
 
 namespace nTool
 {
@@ -7,21 +7,21 @@ namespace nTool
 	{
 		bool bit_;
 	public:
-		Boolean() noexcept
+		constexpr Boolean() noexcept
 			:bit_(false){}
-		Boolean(const bool bit) noexcept
+		constexpr Boolean(bool bit) noexcept
 			:bit_(bit){}
-		Boolean(const Boolean &)=default;
-		inline operator bool() const noexcept
+		constexpr Boolean(const Boolean &rhs)=default;
+		constexpr operator bool() const noexcept
 		{
 			return bit_;
 		}
-		Boolean& operator=(const bool b) noexcept
+		constexpr Boolean& operator=(bool b) noexcept
 		{
 			bit_=b;
 			return *this;
 		}
-		Boolean& operator=(const Boolean &)=default;
+		constexpr Boolean& operator=(const Boolean &rhs)=default;
 	};
 }
 
