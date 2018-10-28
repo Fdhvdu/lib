@@ -78,7 +78,7 @@ namespace nTool
 			return has_not_destroy_;
 		}
 		CAlloc_obj& operator=(const CAlloc_obj &)=delete;
-		CAlloc_obj& operator=(CAlloc_obj &&val) noexcept
+		CAlloc_obj& operator=(CAlloc_obj &&val) noexcept(std::is_nothrow_swappable_v<allocator_type>)
 		{
 			if(this!=&val)
 			{
