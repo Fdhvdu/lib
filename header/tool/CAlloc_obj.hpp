@@ -12,8 +12,8 @@ namespace nTool
 	public:
 		using allocator_type=Alloc;
 		using value_type=T;
-		using reference=value_type&;
-		using const_reference=const value_type&;
+		using reference=T&;
+		using const_reference=const T&;
 		using pointer=typename std::allocator_traits<Alloc>::pointer;
 		using size_type=typename std::allocator_traits<Alloc>::size_type;
 	private:
@@ -78,13 +78,13 @@ namespace nTool
 			return has_not_destroy_;
 		}
 		CAlloc_obj& operator=(const CAlloc_obj &)=delete;
-		CAlloc_obj& operator=(CAlloc_obj &&val) noexcept(std::is_nothrow_swappable_v<allocator_type>)
+		CAlloc_obj& operator=(CAlloc_obj &&rhs) noexcept(std::is_nothrow_swappable_v<allocator_type>)
 		{
-			if(this!=&val)
+			if(this!=&rhs)
 			{
-				std::swap(alloc_,val.alloc_);
-				std::swap(data_,val.data_);
-				std::swap(has_not_destroy_,val.has_not_destroy_);
+				std::swap(alloc_,rhs.alloc_);
+				std::swap(data_,rhs.data_);
+				std::swap(has_not_destroy_,rhs.has_not_destroy_);
 			}
 			return *this;
 		}
