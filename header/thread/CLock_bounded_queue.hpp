@@ -7,7 +7,7 @@
 #include"Atomic_stack.hpp"
 #include"Lock_queue.hpp"
 #include"../tool/CAlloc_obj.hpp"
-#include"../tool/CScopeGuard.hpp"
+#include"../tool/Scope_guard.hpp"
 
 namespace nThread
 {
@@ -83,7 +83,7 @@ namespace nThread
 		value_type pop()
 		{
 			std::shared_ptr<element_type> node(queue_.pop());
-			const nTool::CScopeGuard sg{[&,this]() noexcept{stack_.emplace(std::move(node));}};
+			const nTool::Scope_guard sg{[&,this]() noexcept{stack_.emplace(std::move(node));}};
 			return std::move(node->data.get());
 		}
 		bool pop_if_exist(value_type &val)

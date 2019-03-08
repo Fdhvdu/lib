@@ -4,7 +4,7 @@ CXX=g++
 CXXFLAGS=-std=c++17
 VPATH=header:$(wildcard header/*):src:$(wildcard src/*)
 
-obj=CSignal_guard.o CScopeGuard.o CSpin_mutex.o
+obj=CSignal_guard.o Scope_guard.o CSpin_mutex.o
 
 all:$(obj)
 
